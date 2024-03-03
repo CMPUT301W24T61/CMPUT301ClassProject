@@ -8,53 +8,34 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
-import java.util.Objects;
-
 public class MainActivity extends AppCompatActivity {
-
+    private Organizer organizer;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        Button organizerButton = findViewById(R.id.button_organizer);
+        organizerButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Navigate to the Organizer Dashboard page
+                Intent intent = new Intent(MainActivity.this, OrganizerDashboardActivity.class);
+                startActivity(intent);
+            }
+        });
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setTitle("EventWiz");
         }
 
-        Button buttonBrowseEvents = findViewById(R.id.button_browse_events);
-//        buttonBrowseEvents.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Intent intent = new Intent(MainActivity.this, BrowseEventsActivity.class);
-//                startActivity(intent);
-//
-//            }
-//        });
-
-        Button buttonRegister = findViewById(R.id.button_register);
-//        buttonRegister.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Intent intent = new Intent(MainActivity.this, RegisterActivity.class);
-//                startActivity(intent);
-//
-//            }
-//        });
-
         Button buttonScanQR = findViewById(R.id.button_scan_qr);
-//        buttonScanQR.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Intent intent = new Intent(MainActivity.this, ScanQRActivity.class);
-//                startActivity(intent);
-//
-//            }
-//        });
-
-
-
-
-
+        buttonScanQR.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // Start the QR Code Scanner Activity
+                Intent intent = new Intent(MainActivity.this, ScanQRActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 }
