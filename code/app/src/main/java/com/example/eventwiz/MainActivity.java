@@ -43,14 +43,13 @@ public class MainActivity extends AppCompatActivity {
 //        });
 
         Button buttonScanQR = findViewById(R.id.button_scan_qr);
-//        buttonScanQR.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Intent intent = new Intent(MainActivity.this, ScanQRActivity.class);
-//                startActivity(intent);
-//
-//            }
-//        });
+        buttonScanQR.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this, QRCodeScannerActivity.class);
+                startActivity(intent);
+            }
+        });
 
 
 
