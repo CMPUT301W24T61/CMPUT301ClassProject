@@ -27,11 +27,11 @@ public class SaveUserProfileActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                PickImageFromGallery();
+//                PickImageFromGallery();
             }
         });
 
-
+    }
     }
     /*
     private void PickImageFromGallery(){
