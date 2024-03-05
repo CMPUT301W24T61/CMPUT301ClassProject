@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "413205754002",
+    "project_id": "eventwiz-4dde7",
+    "storage_bucket": "eventwiz-4dde7.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:413205754002:android:8fb041c9c7dffc8d8f764b",
+        "android_client_info": {
+          "package_name": "com.example.eventwiz"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAn1O5_INISX7ScFPtoB0FVzoaJw2FPT_4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

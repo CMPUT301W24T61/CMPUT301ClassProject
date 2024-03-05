@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">EventWiz</string>
+    <string name="welcome_text">Join &amp; Create Events Instantly!</string>
 </resources>

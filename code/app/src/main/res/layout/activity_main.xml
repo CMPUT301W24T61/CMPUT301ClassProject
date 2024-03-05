@@ -4,13 +4,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-
+    android:background="#EDEDED"
     tools:context=".MainActivity">
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="15dp"
+        android:layout_gravity="center"
 
         android:padding="15dp">
 
@@ -22,7 +23,9 @@
             android:layout_marginTop="30dp"
             android:adjustViewBounds="true"
             android:maxWidth="180dp"
-            app:srcCompat="@drawable/ic_logo" />
+            app:srcCompat="@drawable/ic_logo_round"
+            android:background="@drawable/circle"
+            android:elevation="4dp"/>
 
         <TextView
             android:id="@+id/textView_app_name"
@@ -31,7 +34,10 @@
             android:layout_below="@id/imageView_logo"
             android:text="@string/app_name"
             android:textAlignment="center"
-            android:textAppearance="@style/TextAppearance.AppCompat.Headline" />
+            android:textAppearance="@style/TextAppearance.AppCompat.Headline"
+            android:textColor="?attr/actionMenuTextColor"
+            android:textSize="48sp"
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/textView_main_head"
@@ -39,9 +45,12 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/textView_app_name"
             android:layout_marginTop="10dp"
-            android:text="Welcome\nto\nAndroid Firebase App"
+            android:fontFamily="sans-serif"
+            android:text="@string/welcome_text"
             android:textAlignment="center"
-            android:textAppearance="@style/TextAppearance.AppCompat.Menu" />
+            android:textAppearance="@style/TextAppearance.AppCompat.Menu"
+            android:textColor="#FF000000"
+            android:textSize="20sp" />
 
         <Button
             android:id="@+id/button_browse_events"
@@ -49,10 +58,11 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/textView_main_head"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="50dp"
-            android:backgroundTint="@color/amber"
-            android:textColor="@color/black"
-            android:text="Login" />
+            android:layout_marginTop="40dp"
+            android:backgroundTint="#FFAE42"
+            android:text="Check/Create Events"
+            android:textColor="#FF000000"
+            app:iconTint="#FF000000" />
 
         <Button
             android:id="@+id/button_register"
@@ -60,10 +70,10 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/button_browse_events"
             android:layout_centerHorizontal="true"
-            android:backgroundTint="@color/amber"
-            android:textColor="@color/black"
             android:layout_marginTop="10dp"
-            android:text="Register" />
+            android:backgroundTint="#FFAE42"
+            android:text="Create Profile"
+            android:textColor="#FF000000" />
 
         <Button
             android:id="@+id/button_scan_qr"
@@ -72,9 +82,20 @@
             android:layout_below="@id/button_register"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="10dp"
-            android:backgroundTint="@color/amber"
-            android:textColor="@color/black"
-            android:text="Scan QR" />
+            android:backgroundTint="#FFAE42"
+            android:text="Scan QR"
+            android:textColor="#FF000000" />
+
+        <ImageView
+            android:id="@+id/button_open_camera"
+            android:layout_width="100dp"
+            android:layout_height="50dp"
+            android:layout_below="@id/button_scan_qr"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="40dp"
+            android:background="?android:attr/selectableItemBackground"
+            android:src="@drawable/ic_cam"
+            android:elevation="4dp"/>
 
     </RelativeLayout>
 

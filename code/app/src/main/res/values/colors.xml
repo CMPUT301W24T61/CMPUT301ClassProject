@@ -4,7 +4,10 @@
     <color name="white">#FFFFFFFF</color>
     <color name="blue">#4169E1</color>
     <color name="coral">#FF6F61</color>
-    <color name="amber">#ffae42</color>
-    <color name="green">#008080</color>
+    <color name="amber">#FFAE42</color>
+    <color name="green">#3EB489</color>
+    <color name="turqoise">#40E0D0</color>
+    <color name="scarlet">#FF2400</color>
+    <color name="lightgray" >#EDEDED</color>
 
 </resources>
