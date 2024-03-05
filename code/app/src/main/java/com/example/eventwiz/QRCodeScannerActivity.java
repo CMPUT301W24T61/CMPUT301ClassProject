@@ -1,14 +1,13 @@
 package com.example.eventwiz;
 //https://reintech.io/blog/implementing-android-app-qr-code-scanner
+
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -17,9 +16,16 @@ import androidx.core.app.ActivityCompat;
 
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
-import com.google.zxing.qrcode.QRCodeReader;
-import com.google.zxing.qrcode.encoder.QRCode;
 
+
+/**
+ * This class is responsible for fetching permission from the user to use the camera app
+ * to scan a QR Code. After the Scan QR code button is pressed on the main screen, this class
+ * is called which switched to the activity_qrcode_scanner.xml.
+ * Handles the actual scanning of the QR Code
+ * @author Hunaid
+ * @see GenerateQRCode
+ */
 public class QRCodeScannerActivity extends AppCompatActivity{
 
     private static final int PERMISSION_REQUEST_CAMERA = 1;
@@ -55,7 +61,17 @@ public class QRCodeScannerActivity extends AppCompatActivity{
         integrator.initiateScan();
     }
 
-
+    /**
+     *
+     * @param requestCode The integer request code originally supplied to
+     *                    startActivityForResult(), allowing you to identify who this
+     *                    result came from.
+     * @param resultCode The integer result code returned by the child activity
+     *                   through its setResult().
+     * @param data An Intent, which can return result data to the caller
+     *               (various data can be attached to Intent "extras").
+     *
+     */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
@@ -79,6 +95,16 @@ public class QRCodeScannerActivity extends AppCompatActivity{
         }
     }
 
+    /**
+     *
+     * @param requestCode The request code passed in requestPermissions
+     * android.app.Activity, String[], int)}
+     * @param permissions The requested permissions. Never null.
+     * @param grantResults The grant results for the corresponding permissions
+     *     which is either {@link android.content.pm.PackageManager#PERMISSION_GRANTED}
+     *     or {@link android.content.pm.PackageManager#PERMISSION_DENIED}. Never null.
+     *
+     */
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
