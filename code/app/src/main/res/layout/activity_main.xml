@@ -57,7 +57,7 @@
     <Button
         android:id="@+id/button_browse_events"
         android:layout_width="150dp"
-        android:layout_height="50dp"
+        android:layout_height="60dp"
         android:layout_below="@id/textView_main_head"
         android:layout_marginTop="50dp"
         android:layout_centerHorizontal="true"
@@ -66,40 +66,27 @@
         android:textColor="#FF000000"
         app:iconTint="#FF000000" />
 
-    <Button
-        android:id="@+id/button_register"
-        android:layout_width="150dp"
-        android:layout_height="50dp"
-        android:layout_below="@+id/button_browse_events"
-        android:layout_marginTop="20dp"
-        android:layout_centerHorizontal="true"
-        android:backgroundTint="#FFAE42"
-        android:text="Create Profile"
-        android:textColor="#FF000000" />
+<!--    <Button-->
+<!--        android:id="@+id/button_register"-->
+<!--        android:layout_width="150dp"-->
+<!--        android:layout_height="50dp"-->
+<!--        android:layout_below="@+id/button_browse_events"-->
+<!--        android:layout_marginTop="20dp"-->
+<!--        android:layout_centerHorizontal="true"-->
+<!--        android:backgroundTint="#FFAE42"-->
+<!--        android:text="Create Profile"-->
+<!--        android:textColor="#FF000000" />-->
 
     <Button
         android:id="@+id/button_scan_qr"
         android:layout_width="150dp"
         android:layout_height="50dp"
-        android:layout_below="@id/button_register"
-        android:layout_marginTop="20dp"
+        android:layout_below="@+id/button_browse_events"
         android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
         android:backgroundTint="#FFAE42"
         android:text="Scan QR"
         android:textColor="#FF000000" />
-
-    <ImageButton
-        android:id="@+id/button_open_camera"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_below="@id/button_scan_qr"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="30dp"
-        android:background="@drawable/circle"
-        android:padding="10dp"
-        android:scaleType="fitCenter"
-        android:elevation="4dp"
-        android:src="@drawable/ic_cam" />
 
 
 </RelativeLayout>

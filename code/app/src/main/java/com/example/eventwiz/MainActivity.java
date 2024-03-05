@@ -54,16 +54,16 @@ public class MainActivity extends AppCompatActivity {
 //            }
 //        });
 
-        Button buttonRegister = findViewById(R.id.button_register);
+//        Button buttonRegister = findViewById(R.id.button_register);
 
-        buttonRegister.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this, SaveUserProfileActivity.class);
-                startActivity(intent);
-
-            }
-        });
+//        buttonRegister.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                Intent intent = new Intent(MainActivity.this, SaveUserProfileActivity.class);
+//                startActivity(intent);
+//
+//            }
+//        });
 
 //        buttonRegister.setOnClickListener(new View.OnClickListener() {
 //            @Override
@@ -86,16 +86,16 @@ public class MainActivity extends AppCompatActivity {
 
 
         // Find the camera button (ImageView) by ID
-        ImageView cameraButton = findViewById(R.id.button_open_camera);
-
-        // Set an OnClickListener for the camera button (ImageView)
-        cameraButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                // Handle camera button click by opening the camera
-                openCamera();
-            }
-        });
+//        ImageView cameraButton = findViewById(R.id.button_open_camera);
+//
+//        // Set an OnClickListener for the camera button (ImageView)
+//        cameraButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                // Handle camera button click by opening the camera
+//                openCamera();
+//            }
+//        });
     }
 
     // Method to open the camera
