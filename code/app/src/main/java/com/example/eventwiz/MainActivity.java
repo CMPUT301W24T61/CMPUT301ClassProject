@@ -1,7 +1,9 @@
 package com.example.eventwiz;
 
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -17,6 +19,14 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+import androidx.appcompat.app.ActionBar;
+
+/**
+ * This class will handle button presses from the main screen and will call other classes
+ * and activities as necessary
+ * @author Hunaid
+ * Will need to update this with @see for classes as they are created.
+ */
 public class MainActivity extends AppCompatActivity {
     private FirebaseAuth userAuth;
 
@@ -24,6 +34,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
 
         if (getSupportActionBar() != null) {
             getSupportActionBar().setTitle("EventWiz");
@@ -33,19 +44,18 @@ public class MainActivity extends AppCompatActivity {
         userAuth = FirebaseAuth.getInstance();
 
 
-
-
         Button buttonBrowseEvents = findViewById(R.id.button_browse_events);
-        buttonBrowseEvents.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this, BrowseEventsActivity.class);
-                startActivity(intent);
-
-            }
-        });
+//        buttonBrowseEvents.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                Intent intent = new Intent(MainActivity.this, BrowseEventsActivity.class);
+//                startActivity(intent);
+//
+//            }
+//        });
 
         Button buttonRegister = findViewById(R.id.button_register);
+
         buttonRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -55,13 +65,22 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+//        buttonRegister.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                Intent intent = new Intent(MainActivity.this, RegisterActivity.class);
+//                startActivity(intent);
+//
+//            }
+//        });
+
+
         Button buttonScanQR = findViewById(R.id.button_scan_qr);
         buttonScanQR.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this, ScanQRActivity.class);
+                Intent intent = new Intent(MainActivity.this, QRCodeScannerActivity.class);
                 startActivity(intent);
-
             }
         });
 

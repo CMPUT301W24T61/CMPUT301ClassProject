@@ -1,3 +1,4 @@
+
 package com.example.eventwiz;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -32,11 +33,15 @@ public class SaveUserProfileActivity extends AppCompatActivity {
 
 
     }
-
+    /*
     private void PickImageFromGallery(){
         Intent intent = new Intent();
         intent.setType("image/*");
         intent.setAction(Intent.ACTION_GET_CONTENT);
 
     }
+
+    ?
+
+ */
 
