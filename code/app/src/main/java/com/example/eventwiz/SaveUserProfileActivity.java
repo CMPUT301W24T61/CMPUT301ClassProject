@@ -1,18 +1,16 @@
 
 package com.example.eventwiz;
 
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
-import androidx.annotation.NonNull;
+
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.Intent;
-
+/**
+ * This class is responsible for saving the information provided by the user via the user profile.
+ * @author Yesith
+ */
 public class SaveUserProfileActivity extends AppCompatActivity {
 
     private ImageView SelectPhoto;

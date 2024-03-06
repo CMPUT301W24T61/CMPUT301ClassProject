@@ -1,13 +1,18 @@
 package com.example.eventwiz;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.os.Bundle;
 import android.widget.ListView;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * This class is responsible for handling the Browse Events screen
+ * @see Event
+ * @author Hunaid
+ */
 public class BrowseEventsActivity extends AppCompatActivity {
     private ListView listView;
     private EventAdapter adapter;
