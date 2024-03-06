@@ -6,8 +6,10 @@ import androidx.appcompat.app.AppCompatActivity;
 
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -29,6 +31,8 @@ import androidx.appcompat.app.ActionBar;
  */
 public class MainActivity extends AppCompatActivity {
     private FirebaseAuth userAuth;
+    SharedPreferences sp;
+    String uid;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +46,13 @@ public class MainActivity extends AppCompatActivity {
 
 
         userAuth = FirebaseAuth.getInstance();
+        uid = userAuth.getUid();
+        sp = getSharedPreferences("MyPrefs", MODE_PRIVATE);
+        SharedPreferences.Editor editor = sp.edit();
+        editor.putString("anonymousUserId", uid);
+        editor.commit();
+        Log.d("SharedPreferences", "Saved Anonymous User ID: " + uid);
+
 
 
         Button buttonBrowseEvents = findViewById(R.id.button_browse_events);
@@ -63,16 +74,7 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
 
             }
-        });
-
-        buttonRegister.setOnClickListener(new View.OnClickListener() {
-            @Override
-/            public void onClick(View view) {
-//                Intent intent = new Intent(MainActivity.this, RegisterActivity.class);
-//                startActivity(intent);
-//
-//            }
-//        });
+       });
 
 
         Button buttonScanQR = findViewById(R.id.button_scan_qr);
@@ -111,30 +113,58 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onStart(){
+    public void onStart() {
         super.onStart();
 
-        //check if user is signed-in)non-null) and update UI
+        // Check if the user is signed in (non-null) and update UI
         FirebaseUser currentUser = userAuth.getCurrentUser();
-        updateUI(currentUser);
-
-    }
-
-    private void updateUI(FirebaseUser user){
-        if (user==null){
-            userAuth.signInAnonymously().addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                @Override
-                public void onComplete(@NonNull Task<AuthResult> task) {
-                    if(task.isSuccessful()){
-                        FirebaseUser user = userAuth.getCurrentUser();
-                        updateUI(user);
-                    }else{
-                       updateUI(null);
-                    }
-                }
-            });
+        if (currentUser == null) {
+            // If the user is not signed in, attempt anonymous authentication
+            Log.d("Authentication", "User is not signed in. Attempting anonymous authentication.");
+            attemptAnonymousAuthentication();
+        } else {
+            // If the user is already signed in, update UI
+            Log.d("Authentication", "User is already signed in. UID: " + currentUser.getUid());
+            updateUI(currentUser);
         }
     }
+
+    private void attemptAnonymousAuthentication() {
+        userAuth.signInAnonymously().addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
+                if (task.isSuccessful()) {
+                    // If anonymous authentication is successful, get the current user
+                    FirebaseUser user = userAuth.getCurrentUser();
+                    Log.d("Authentication", "Anonymous authentication successful. UID: " + user.getUid());
+                    updateUI(user);
+                } else {
+                    // If anonymous authentication fails, update UI accordingly and show a toast
+                    Log.e("Authentication", "Anonymous authentication failed: " + task.getException());
+                    updateUI(null);
+                    Toast.makeText(MainActivity.this, "Anonymous authentication failed: " + task.getException(), Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+    }
+
+    private void updateUI(FirebaseUser user) {
+        if (user != null) {
+            // Update UI for a signed-in user
+            Log.d("Authentication", "User is signed in. UID: " + user.getUid());
+            Toast.makeText(MainActivity.this, "Signed in anonymously", Toast.LENGTH_SHORT).show();
+            // You can navigate to another activity or perform additional actions here
+        } else {
+            // Handle the case when the user is still not signed in after attempting anonymous authentication
+            Log.d("Authentication", "User is still not signed in.");
+            Toast.makeText(MainActivity.this, "User is not signed in", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    // Method to save anonymous user's UID to SharedPreferences
+
+
+
 
 
 
