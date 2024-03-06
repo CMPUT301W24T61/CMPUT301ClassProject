@@ -41,11 +41,19 @@ public class EventAdapter extends ArrayAdapter<Event> {
 //        tvEventTimeRange.setText("Time: " + event.getEventTime());
 //        tvEventVenue.setText("Venue: " + event.getVenue());
         Toast.makeText(this.getContext(), "Scanned: " + event.getPosterUrl(), Toast.LENGTH_LONG).show();
+        setImageFromFirebaseUrl(imgEventPoster, event.getPosterUrl());
 //        Glide.with(getContext())
 //                .load(event.getPosterUrl())
 //                .into(imgEventPoster);
 
         // Return the completed view to render on screen
         return convertView;
+    }
+
+    private void setImageFromFirebaseUrl(ImageView imgEventPoster, String imageUrl) {
+        // Using Glide to load the image into the ImageView
+        Glide.with(this.getContext())
+                .load(imageUrl)
+                .into(imgEventPoster);
     }
 }
