@@ -157,7 +157,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    // Method to save anonymous user's UID to SharedPreferences
+
 
 
 

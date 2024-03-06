@@ -72,6 +72,7 @@
         app:layout_constraintEnd_toEndOf="parent" />
 
 <<<<<<< HEAD
+<<<<<<< HEAD
     <Button
         android:id="@+id/button_register"
         android:layout_width="150dp"
@@ -96,6 +97,19 @@
     <!--        android:text="Create Profile"-->
     <!--        android:textColor="#FF000000" />-->
 >>>>>>> origin/Junkai
+=======
+
+<!--    <Button-->
+<!--        android:id="@+id/button_register"-->
+<!--        android:layout_width="150dp"-->
+<!--        android:layout_height="50dp"-->
+<!--        android:layout_below="@+id/button_browse_events"-->
+<!--        android:layout_marginTop="20dp"-->
+<!--        android:layout_centerHorizontal="true"-->
+<!--        android:backgroundTint="#FFAE42"-->
+<!--        android:text="Create Profile"-->
+<!--        android:textColor="#FF000000" />-->
+>>>>>>> origin/hunaid
 
     <Button
         android:id="@+id/button_scan_qr"
