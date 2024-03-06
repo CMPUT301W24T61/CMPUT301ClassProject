@@ -80,6 +80,8 @@ public class QRCodeScannerActivity extends AppCompatActivity{
                 Toast.makeText(this, "Scan cancelled", Toast.LENGTH_LONG).show();
             } else {
                 Toast.makeText(this, "Scanned: " + result.getContents(), Toast.LENGTH_LONG).show();
+                Intent intent = new Intent(QRCodeScannerActivity.this, SaveUserProfileActivity.class);
+                startActivity(intent);
 //                Bitmap qrCodeBitmap = GenerateQRCode.generateEventQRCode();
 //                if (qrCodeBitmap != null) {
 //                    // Display the QR code in the ImageView
