@@ -57,7 +57,12 @@
     <Button
         android:id="@+id/button_browse_events"
         android:layout_width="150dp"
+<<<<<<< HEAD
         android:layout_height="50dp"
+=======
+        android:layout_height="60dp"
+        android:layout_below="@id/textView_main_head"
+>>>>>>> origin/Junkai
         android:layout_marginTop="50dp"
         android:backgroundTint="#FFAE42"
         android:text="Check/Create Events"
@@ -66,6 +71,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
+<<<<<<< HEAD
     <Button
         android:id="@+id/button_register"
         android:layout_width="150dp"
@@ -77,11 +83,29 @@
         app:layout_constraintTop_toBottomOf="@id/button_browse_events"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
+=======
+
+    <!--    <Button-->
+    <!--        android:id="@+id/button_register"-->
+    <!--        android:layout_width="150dp"-->
+    <!--        android:layout_height="50dp"-->
+    <!--        android:layout_below="@+id/button_browse_events"-->
+    <!--        android:layout_marginTop="20dp"-->
+    <!--        android:layout_centerHorizontal="true"-->
+    <!--        android:backgroundTint="#FFAE42"-->
+    <!--        android:text="Create Profile"-->
+    <!--        android:textColor="#FF000000" />-->
+>>>>>>> origin/Junkai
 
     <Button
         android:id="@+id/button_scan_qr"
         android:layout_width="150dp"
         android:layout_height="50dp"
+<<<<<<< HEAD
+=======
+        android:layout_below="@+id/button_browse_events"
+        android:layout_centerHorizontal="true"
+>>>>>>> origin/Junkai
         android:layout_marginTop="20dp"
         android:backgroundTint="#FFAE42"
         android:text="Scan QR"
@@ -90,6 +114,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
+<<<<<<< HEAD
     <ImageButton
         android:id="@+id/button_open_camera"
         android:layout_width="50dp"
@@ -108,4 +133,7 @@
 
 
 
+=======
+>>>>>>> origin/Junkai
 
+</RelativeLayout>

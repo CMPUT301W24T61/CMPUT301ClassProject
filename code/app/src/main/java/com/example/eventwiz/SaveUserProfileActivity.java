@@ -107,9 +107,10 @@ public class SaveUserProfileActivity extends AppCompatActivity {
             public void onClick(View view) {
                 //CheckStoragePermission();
 
-                PickImageFromGallery();
+//                PickImageFromGallery();
             }
         });
+
 
         SaveProfileButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -122,7 +123,10 @@ public class SaveUserProfileActivity extends AppCompatActivity {
 
 
 
+
     }
+
+
     /*
     private void CheckStoragePermission(){
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
