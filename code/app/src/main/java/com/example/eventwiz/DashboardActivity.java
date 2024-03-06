@@ -6,19 +6,23 @@ import android.view.View;
 import android.widget.Button;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
-import com.example.eventwiz.R;  
 
-public class OrganizerDashboardActivity extends AppCompatActivity {
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
+public class DashboardActivity extends AppCompatActivity {
 
     // Declare UI components
     private Button createEventButton;
-    private Button viewEventsButton;
-    private Button manageEventsButton;
+    private Button hostedEventsButton;
+    private Button browseEventsButton;
+    private Button profileButton;
+
+    private FloatingActionButton scanQRButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.organizer_dashboard);
+        setContentView(R.layout.dashboard);
 
         // Initialize ActionBar
         ActionBar actionBar = getSupportActionBar();
@@ -29,15 +33,27 @@ public class OrganizerDashboardActivity extends AppCompatActivity {
 
         // Initialize UI components
         createEventButton = findViewById(R.id.createEvent);
-        viewEventsButton = findViewById(R.id.myEvents);
-        manageEventsButton = findViewById(R.id.eventDashboard);
+        hostedEventsButton = findViewById(R.id.myHostedEvents);
+        browseEventsButton = findViewById(R.id.browseEvents);
+        profileButton = findViewById(R.id.myProfile);
+        scanQRButton = findViewById(R.id.fabCamera);
+
 
         // Set onClickListeners for each button
         createEventButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 // Intent to navigate to CreateEventActivity
-                Intent intent = new Intent(OrganizerDashboardActivity.this, EventDetailActivity.class);
+                Intent intent = new Intent(DashboardActivity.this, EventDetailActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        scanQRButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // Start the QRCodeScannerActivity
+                Intent intent = new Intent(DashboardActivity.this, ScanQRActivity.class);
                 startActivity(intent);
             }
         });
