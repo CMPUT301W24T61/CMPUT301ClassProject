@@ -1,103 +1,96 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-
+    android:background="#EDEDED"
     tools:context=".MainActivity">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_margin="15dp"
+        android:padding="15dp" />
 
-        android:padding="15dp">
+    <ImageView
+        android:id="@+id/imageView_logo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="50dp"
+        android:adjustViewBounds="true"
+        android:elevation="4dp"
+        android:maxWidth="180dp"
+        app:srcCompat="@drawable/ic_logo_round" />
 
-        <ImageView
-            android:id="@+id/imageView_logo"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_marginStart="84dp"
-            android:layout_marginTop="28dp"
-            android:adjustViewBounds="true"
-            android:maxWidth="180dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_logo" />
+    <TextView
+        android:id="@+id/textView_app_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/imageView_logo"
+        android:layout_marginTop="4dp"
+        android:layout_marginLeft="100dp"
+        android:layout_marginRight="100dp"
+        android:text="@string/app_name"
+        android:textAlignment="center"
+        android:textAppearance="@style/TextAppearance.AppCompat.Headline"
+        android:textColor="?attr/actionMenuTextColor"
+        android:textSize="48sp"
+        android:textStyle="bold" />
 
-        <TextView
-            android:id="@+id/textView_main_head"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/textView_app_name"
-            android:layout_marginStart="15dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="15dp"
-            android:text="Welcome\nto\nAndroid Firebase App"
-            android:textAlignment="center"
-            android:textAppearance="@style/TextAppearance.AppCompat.Menu"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView_app_name" />
+    <TextView
+        android:id="@+id/textView_main_head"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/textView_app_name"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="70dp"
+        android:layout_marginRight="70dp"
+        android:text="@string/welcome_text"
+        android:textAlignment="center"
+        android:textAppearance="@style/TextAppearance.AppCompat.Menu"
+        android:textColor="#FF000000"
+        android:textSize="20sp" />
 
-        <Button
-            android:id="@+id/button_browse_events"
-            android:layout_width="180dp"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/textView_main_head"
-            android:layout_centerHorizontal="true"
-            android:layout_marginStart="84dp"
-            android:layout_marginTop="20dp"
-            android:backgroundTint="@color/amber"
-            android:text="Check/Create Events"
-            android:textColor="@color/black"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView_main_head" />
+    <Button
+        android:id="@+id/button_browse_events"
+        android:layout_width="150dp"
+        android:layout_height="60dp"
+        android:layout_below="@id/textView_main_head"
+        android:layout_marginTop="50dp"
+        android:layout_centerHorizontal="true"
+        android:backgroundTint="#FFAE42"
+        android:text="Check/Create Events"
+        android:textColor="#FF000000"
+        app:iconTint="#FF000000" />
 
-        <TextView
-            android:id="@+id/textView_app_name"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/imageView_logo"
-            android:text="@string/app_name"
-            android:textAlignment="center"
-            android:textAppearance="@style/TextAppearance.AppCompat.Headline"
-            app:layout_constraintTop_toBottomOf="@+id/imageView_logo"
-            tools:layout_editor_absoluteX="15dp" />
 
-        <Button
-            android:id="@+id/button_register"
-            android:layout_width="180dp"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/button_browse_events"
-            android:layout_centerHorizontal="true"
-            android:layout_marginStart="84dp"
-            android:layout_marginTop="20dp"
-            android:backgroundTint="@color/amber"
-            android:text="Register"
-            android:textColor="@color/black"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/button_scan_qr" />
+<!--    <Button-->
+<!--        android:id="@+id/button_register"-->
+<!--        android:layout_width="150dp"-->
+<!--        android:layout_height="50dp"-->
+<!--        android:layout_below="@+id/button_browse_events"-->
+<!--        android:layout_marginTop="20dp"-->
+<!--        android:layout_centerHorizontal="true"-->
+<!--        android:backgroundTint="#FFAE42"-->
+<!--        android:text="Create Profile"-->
+<!--        android:textColor="#FF000000" />-->
 
-        <Button
-            android:id="@+id/button_scan_qr"
-            android:layout_width="180dp"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/button_register"
-            android:layout_centerHorizontal="true"
-            android:layout_marginStart="84dp"
-            android:layout_marginTop="20dp"
-            android:backgroundTint="@color/amber"
-            android:text="Scan QR"
-            android:textColor="@color/black"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/button_browse_events" />
+    <Button
+        android:id="@+id/button_scan_qr"
+        android:layout_width="150dp"
+        android:layout_height="50dp"
+        android:layout_below="@+id/button_browse_events"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
+        android:backgroundTint="#FFAE42"
+        android:text="Scan QR"
+        android:textColor="#FF000000" />
+
+
+</RelativeLayout>
 
 
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-</ScrollView>

@@ -18,7 +18,7 @@
         android:theme="@style/Theme.EventWiz"
         tools:targetApi="31">
         <activity
-            android:name=".BrowseEventsActivity"
+            android:name=".SaveUserProfileActivity"
             android:exported="false" />
         <activity
             android:name=".QRCodeScannerActivity"

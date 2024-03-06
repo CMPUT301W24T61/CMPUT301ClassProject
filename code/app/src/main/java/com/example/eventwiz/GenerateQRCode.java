@@ -3,6 +3,7 @@ package com.example.eventwiz;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 
+
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
@@ -13,8 +14,17 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.UUID;
 
+/**
+ * This class is responsible for generating the QR Code for each event.
+ * @author Hunaid
+ * @see QRCodeScannerActivity
+ */
 public class GenerateQRCode {
 
+    /**
+     * Generates the QR code.
+     * @return Bitmap
+     */
     public static Bitmap generateEventQRCode() {
         //call this function to generate QR code:
 //        Bitmap qrCodeBitmap = GenerateQRCode.generateEventQRCode();
