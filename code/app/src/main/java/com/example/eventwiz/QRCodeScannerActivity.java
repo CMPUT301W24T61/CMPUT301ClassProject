@@ -4,16 +4,22 @@ package com.example.eventwiz;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
@@ -80,8 +86,10 @@ public class QRCodeScannerActivity extends AppCompatActivity{
                 Toast.makeText(this, "Scan cancelled", Toast.LENGTH_LONG).show();
             } else {
                 Toast.makeText(this, "Scanned: " + result.getContents(), Toast.LENGTH_LONG).show();
+                //validate firebase authentication
                 Intent intent = new Intent(QRCodeScannerActivity.this, SaveUserProfileActivity.class);
                 startActivity(intent);
+                String scannedCode = result.getContents();
 //                Bitmap qrCodeBitmap = GenerateQRCode.generateEventQRCode();
 //                if (qrCodeBitmap != null) {
 //                    // Display the QR code in the ImageView
@@ -91,6 +99,32 @@ public class QRCodeScannerActivity extends AppCompatActivity{
 //                    // Handle the error, the QR code generation failed
 //                    // Show error message or take appropriate action
 //                }
+
+                FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+                // Query the 'AdministratorCodes' collection for the scanned code
+                db.collection("AdministratorCodes")
+                        .whereEqualTo("accessHash", scannedCode)
+                        .get()
+                        .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                if (task.isSuccessful()) {
+                                    QuerySnapshot querySnapshot = task.getResult();
+                                    if (querySnapshot != null && !querySnapshot.isEmpty()) {
+                                        // QR Code is valid and exists in Firestore
+                                        Intent intent = new Intent(QRCodeScannerActivity.this, SaveUserProfileActivity.class);
+                                        startActivity(intent);
+                                    } else {
+                                        // QR Code does not exist in Firestore
+                                        Toast.makeText(QRCodeScannerActivity.this, "Invalid QR Code", Toast.LENGTH_LONG).show();
+                                    }
+                                } else {
+                                    // Handle the error
+                                    Toast.makeText(QRCodeScannerActivity.this, "Error checking QR Code", Toast.LENGTH_LONG).show();
+                                }
+                            }
+                        });
             }
         } else {
             super.onActivityResult(requestCode, resultCode, data);

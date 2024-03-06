@@ -2,6 +2,7 @@ package com.example.eventwiz;
 
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.util.Log;
 
 
 import com.google.zxing.BarcodeFormat;
@@ -39,6 +40,7 @@ public class GenerateQRCode {
 //        }
         String uniqueString = generateUniqueString();
         String hashedString = hashString(uniqueString);
+        Log.d("Hash", hashedString);
         return generateQRCodeBitmap(hashedString);
     }
 

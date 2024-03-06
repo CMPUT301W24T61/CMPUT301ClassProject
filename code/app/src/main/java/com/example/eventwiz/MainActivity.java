@@ -43,7 +43,6 @@ public class MainActivity extends AppCompatActivity {
 
         userAuth = FirebaseAuth.getInstance();
 
-
         Button buttonBrowseEvents = findViewById(R.id.button_browse_events);
         buttonBrowseEvents.setOnClickListener(new View.OnClickListener() {
             @Override

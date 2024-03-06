@@ -26,6 +26,8 @@ public class BrowseEventsActivity extends AppCompatActivity {
         Event newEvent = new Event("IDK", "DS", "SDSD", "https://www.google.com/url?sa=i&url=https%3A%2F%2Fsamderlust.com%2Fdev-blog%2Fjava%2Fwrite-read-arraylist-object-file-java&psig=AOvVaw3WnZBF_93h7cCM7S14ij7e&ust=1709789902768000&source=images&cd=vfe&opi=89978449&ved=0CBMQjRxqFwoTCMidrPD13oQDFQAAAAAdAAAAABAJ", "SDS");
         events.add(newEvent);
         events.add(newEvent);
+        events.add(newEvent);
+        events.add(newEvent);
         adapter = new EventAdapter(this, events);
         listView.setAdapter(adapter);
     }
