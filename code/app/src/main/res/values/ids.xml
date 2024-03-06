@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="tvEventName" type="id" />
+    <item name="tvEventDate" type="id" />
+    <item name="tvEventTimeRange" type="id" />
+    <item name="tvEventVenue" type="id" />
+</resources>

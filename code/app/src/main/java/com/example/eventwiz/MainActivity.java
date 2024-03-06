@@ -45,14 +45,14 @@ public class MainActivity extends AppCompatActivity {
 
 
         Button buttonBrowseEvents = findViewById(R.id.button_browse_events);
-//        buttonBrowseEvents.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Intent intent = new Intent(MainActivity.this, BrowseEventsActivity.class);
-//                startActivity(intent);
-//
-//            }
-//        });
+        buttonBrowseEvents.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this, BrowseEventsActivity.class);
+                startActivity(intent);
+
+            }
+        });
 
 //        Button buttonRegister = findViewById(R.id.button_register);
 
