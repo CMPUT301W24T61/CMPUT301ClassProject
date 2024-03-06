@@ -7,11 +7,13 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import com.bumptech.glide.Glide;
 
+
 public class EventSuccessActivity extends AppCompatActivity {
 
     private TextView tvEventName, tvEventDate, tvEventStartTime, tvEventEndTime, tvEventLocation, tvMaxAttendees;
     private ImageView ivEventPoster, ivCheckInQRCode, ivPromotionQRCode;
     private Event event;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,21 +47,17 @@ public class EventSuccessActivity extends AppCompatActivity {
             tvEventLocation.setText("Location: " + event.getLocation());
             tvMaxAttendees.setText("Max Attendees: " + event.getMaxAttendees());
 
-            // Load poster image
-            if (event.getPoster() != null && !event.getPoster().isEmpty()) {
-                Glide.with(this).load(event.getPoster()).into(ivEventPoster);
+            if (event.getPosterUrl() != null && !event.getPosterUrl().isEmpty()) {
+                Glide.with(this).load(event.getPosterUrl()).into(ivEventPoster);
             } else {
                 ivEventPoster.setImageResource(R.drawable.image_placeholder_background);
             }
-
-            // Load check-in QR code image if it's generated
             if (event.getCheckInQRCode() != null && !event.getCheckInQRCode().isEmpty()) {
                 Glide.with(this).load(event.getCheckInQRCode()).into(ivCheckInQRCode);
             } else {
                 ivCheckInQRCode.setVisibility(View.GONE);
             }
 
-// Hide the promotion QR code ImageView if QR code is not generated
             if (event.getPromotionQRCode() != null && !event.getPromotionQRCode().isEmpty()) {
                 Glide.with(this).load(event.getPromotionQRCode()).into(ivPromotionQRCode);
             } else {

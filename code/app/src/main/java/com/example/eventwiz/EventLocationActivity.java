@@ -1,6 +1,7 @@
 package com.example.eventwiz;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -9,24 +10,28 @@ import android.widget.ImageButton;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.firebase.firestore.FirebaseFirestore;
+
 public class EventLocationActivity extends AppCompatActivity {
 
     private EditText etAddressLine1, etAddressLine2, etAddressLine3, etCity, etAreaCodePostalCode, etStateProvince, etCountry;
     private Button btnNext;
-    private Event event; // Added to hold the Event object
+    private Event event;
+    public Organizer organizer;
+    private FirebaseFirestore db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_event_location_detail);
+        organizer = (Organizer) getIntent().getSerializableExtra("organizer");
+        db = FirebaseFirestore.getInstance(); // Initialize Firestore instance
 
         if (getIntent().hasExtra("event")) {
             event = (Event) getIntent().getSerializableExtra("event");
         }
 
         initializeUI();
-        setupActionBar();
-        setupNextButton();
     }
 
     private void initializeUI() {
@@ -38,79 +43,49 @@ public class EventLocationActivity extends AppCompatActivity {
         etStateProvince = findViewById(R.id.etStateProvince);
         etCountry = findViewById(R.id.etCountry);
         btnNext = findViewById(R.id.btnNext);
-
         ImageButton backButton = findViewById(R.id.BackArrow);
-        backButton.setOnClickListener(view -> onBackPressed());
-    }
 
-    private void setupActionBar() {
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
             actionBar.setTitle("Location Details");
         }
+
+        btnNext.setOnClickListener(v -> processEventLocation());
+        backButton.setOnClickListener(view -> onBackPressed());
     }
 
-    private void setupNextButton() {
-        btnNext.setOnClickListener(v -> {
-            StringBuilder locationBuilder = new StringBuilder();
+    private void processEventLocation() {
+        StringBuilder locationBuilder = new StringBuilder();
+        appendLocationPart(etAddressLine1, locationBuilder);
+        appendLocationPart(etAddressLine2, locationBuilder);
+        appendLocationPart(etAddressLine3, locationBuilder);
+        appendLocationPart(etCity, locationBuilder);
+        appendLocationPart(etAreaCodePostalCode, locationBuilder);
+        appendLocationPart(etStateProvince, locationBuilder);
+        appendLocationPart(etCountry, locationBuilder);
 
-            // Append AddressLine1
-            String addressLine1 = etAddressLine1.getText().toString().trim();
-            if (!addressLine1.isEmpty()) {
-                locationBuilder.append(addressLine1).append(", ");
-            }
+        // Remove trailing comma and space
+        String location = locationBuilder.toString().replaceAll(", $", "");
 
-            // Append AddressLine2 if it holds user input
-            String addressLine2 = etAddressLine2.getText().toString().trim();
-            if (!addressLine2.isEmpty()) {
-                locationBuilder.append(addressLine2).append(", ");
-            }
+        event.setLocation(location);
+        saveEventToFirestore(event);
 
-            // Append AddressLine3 if it holds user input
-            String addressLine3 = etAddressLine3.getText().toString().trim();
-            if (!addressLine3.isEmpty()) {
-                locationBuilder.append(addressLine3).append(", ");
-            }
+        Intent intent = new Intent(EventLocationActivity.this, CreateEventActivity.class);
+        intent.putExtra("event", event);
+        intent.putExtra("organizer", organizer);
+        startActivity(intent);
+    }
 
-            // Append City
-            String city = etCity.getText().toString().trim();
-            if (!city.isEmpty()) {
-                locationBuilder.append(city).append(", ");
-            }
+    private void appendLocationPart(EditText editText, StringBuilder builder) {
+        String text = editText.getText().toString().trim();
+        if (!text.isEmpty()) {
+            builder.append(text).append(", ");
+        }
+    }
 
-            // Append AreaCodePostalCode
-            String areaCodePostalCode = etAreaCodePostalCode.getText().toString().trim();
-            if (!areaCodePostalCode.isEmpty()) {
-                locationBuilder.append(areaCodePostalCode).append(", ");
-            }
-
-            // Append StateProvince
-            String stateProvince = etStateProvince.getText().toString().trim();
-            if (!stateProvince.isEmpty()) {
-                locationBuilder.append(stateProvince).append(", ");
-            }
-
-            // Append Country
-            String country = etCountry.getText().toString().trim();
-            if (!country.isEmpty()) {
-                locationBuilder.append(country);
-            }
-
-            // Remove trailing comma and space if present
-            if (locationBuilder.length() > 0 && locationBuilder.charAt(locationBuilder.length() - 1) == ' ') {
-                locationBuilder.deleteCharAt(locationBuilder.length() - 1); // Remove space
-                locationBuilder.deleteCharAt(locationBuilder.length() - 1); // Remove comma
-            }
-
-            String location = locationBuilder.toString();
-
-            event.setLocation(location);
-
-            Intent intent = new Intent(EventLocationActivity.this, CreateEventActivity.class);
-            intent.putExtra("event", event);
-            startActivity(intent);
-        });
+    private void saveEventToFirestore(Event event) {
+        db.collection("events").document(event.getId()).set(event);
     }
 
     @Override

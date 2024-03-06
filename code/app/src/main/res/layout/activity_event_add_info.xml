@@ -80,11 +80,20 @@
         android:layout_below="@+id/generateNewQRCode"
         android:text="Reuse a QR Code"/>
 
+
+    <Spinner
+        android:id="@+id/qrCodeSpinner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/reuseQRCode"
+        android:layout_marginTop="10dp"
+        android:visibility="gone" />
+
     <TextView
         android:id="@+id/promotionQRCodeHeader"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/reuseQRCode"
+        android:layout_below="@+id/qrCodeSpinner"
         android:layout_marginTop="10dp"
         android:text="Promotion QR Code:"/>
 

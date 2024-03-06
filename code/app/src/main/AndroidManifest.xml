@@ -27,7 +27,7 @@
             </intent-filter>
 
         </activity>
-        <activity android:name=".OrganizerDashboardActivity"></activity>
+        <activity android:name=".DashboardActivity"></activity>
         <activity android:name=".EventDetailActivity"></activity>
         <activity android:name=".EventLocationActivity"></activity>
         <activity android:name=".CreateEventActivity" />

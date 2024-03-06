@@ -1,5 +1,6 @@
 package com.example.eventwiz;
 
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -11,12 +12,18 @@ import android.widget.Spinner;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
+
+import com.google.firebase.firestore.FirebaseFirestore;
+
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 
+
 public class EventDetailActivity extends AppCompatActivity {
+
 
     private EditText etEventName, etEventDescription, etMaxAttendees;
     private Spinner spinnerDay, spinnerMonth, spinnerYear;
@@ -24,19 +31,23 @@ public class EventDetailActivity extends AppCompatActivity {
     private Spinner spinnerToHour, spinnerToMinute, toAmPM;
     private Button btnNext;
     private ImageButton backArrow;
-    private Organizer organizer;
+    public Organizer organizer;
+    public FirebaseFirestore db;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_event_detail);
+        db = FirebaseFirestore.getInstance();
 
-        // Initialize organizer here as required, for example with a default name
-        organizer = new Organizer("Default Organizer",this);
+        organizer = new Organizer();
+
 
         initializeUI();
         populateSpinners();
     }
+
 
     private void initializeUI() {
         ActionBar actionBar = getSupportActionBar();
@@ -44,9 +55,11 @@ public class EventDetailActivity extends AppCompatActivity {
             actionBar.hide();
         }
 
+
         etEventName = findViewById(R.id.etEventName);
         etEventDescription = findViewById(R.id.etEventDescription);
         etMaxAttendees = findViewById(R.id.etMaxAttendees);
+
 
         spinnerDay = findViewById(R.id.spinnerDay);
         spinnerMonth = findViewById(R.id.spinnerMonth);
@@ -58,8 +71,10 @@ public class EventDetailActivity extends AppCompatActivity {
         spinnerToMinute = findViewById(R.id.spinnerToMinute);
         toAmPM = findViewById(R.id.toAmPM);
 
+
         btnNext = findViewById(R.id.btnNext);
         btnNext.setOnClickListener(v -> goToNextActivity());
+
 
         backArrow = findViewById(R.id.BackArrow);
         backArrow.setOnClickListener(v -> finish());
@@ -89,6 +104,7 @@ public class EventDetailActivity extends AppCompatActivity {
                 "August", "September", "October", "November", "December");
     }
 
+
     private List<String> getDays(int days) {
         List<String> dayList = new ArrayList<>();
         for (int i = 1; i <= days; i++) {
@@ -96,6 +112,7 @@ public class EventDetailActivity extends AppCompatActivity {
         }
         return dayList;
     }
+
 
     private List<String> getYears() {
         List<String> yearList = new ArrayList<>();
@@ -106,6 +123,7 @@ public class EventDetailActivity extends AppCompatActivity {
         return yearList;
     }
 
+
     private List<String> getHours() {
         List<String> hours = new ArrayList<>();
         for (int i = 1; i <= 12; i++) { // Assuming 12-hour format
@@ -113,6 +131,7 @@ public class EventDetailActivity extends AppCompatActivity {
         }
         return hours;
     }
+
 
     private List<String> getMinutes() {
         List<String> minutes = new ArrayList<>();
@@ -123,11 +142,14 @@ public class EventDetailActivity extends AppCompatActivity {
     }
 
 
+
+
     private void goToNextActivity() {
         String eventName = etEventName.getText().toString();
         String eventDescription = etEventDescription.getText().toString();
         String maxAttendeesStr = etMaxAttendees.getText().toString();
         int maxAttendees = maxAttendeesStr.isEmpty() ? 0 : Integer.parseInt(maxAttendeesStr);
+
 
         String date = spinnerDay.getSelectedItem().toString() + "-" +
                 spinnerMonth.getSelectedItem().toString() + "-" +
@@ -140,10 +162,31 @@ public class EventDetailActivity extends AppCompatActivity {
                 toAmPM.getSelectedItem().toString();
 
 
-        Event event = organizer.createEvent(eventName, eventDescription, date, startTime, endTime, "", maxAttendees);
+        // Placeholder or dynamically generated values for QR codes and poster URL
+        String checkInQRCodePath = "";
+        String promotionQRCodePath = "";
+        String posterUrl = "";
+
+
+        // Adjusting this call to match the updated Event constructor
+        Event event = new Event(eventName, eventDescription, date, startTime, endTime, "", maxAttendees, checkInQRCodePath, promotionQRCodePath, posterUrl);
+
 
         Intent intent = new Intent(EventDetailActivity.this, EventLocationActivity.class);
         intent.putExtra("event", event);
+        intent.putExtra("organizer", organizer);
         startActivity(intent);
     }
+
+    private void saveEventToFirestore(Event event) {
+        db.collection("events").document(event.getId()).set(event);
+    }
+
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
+    }
 }
+
