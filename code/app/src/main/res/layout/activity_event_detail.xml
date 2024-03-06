@@ -209,6 +209,26 @@
         android:hint="Type here..."
         android:layout_marginTop="8dp"/>
 
+    <TextView
+        android:id="@+id/tvMaxAttendeesLabel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/etEventDescription"
+        android:paddingLeft="14dp"
+        android:text="Max Attendees:"
+        android:textColor="@android:color/black"
+        android:textAppearance="@android:style/TextAppearance.Medium"
+        android:layout_marginTop="16dp"/>
+
+    <EditText
+        android:id="@+id/etMaxAttendees"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tvMaxAttendeesLabel"
+        android:paddingLeft="14dp"
+        android:inputType="number"
+        android:hint="Enter max attendees (optional)"/>
+
     <Button
         android:id="@+id/btnNext"
         android:layout_width="wrap_content"

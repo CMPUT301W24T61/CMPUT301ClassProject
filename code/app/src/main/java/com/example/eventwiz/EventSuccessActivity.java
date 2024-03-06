@@ -1,27 +1,24 @@
 package com.example.eventwiz;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.net.Uri;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
-
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import com.bumptech.glide.Glide;
 
 public class EventSuccessActivity extends AppCompatActivity {
 
-    private TextView tvEventName, tvEventDate, tvEventStartTime, tvEventEndTime, tvEventLocation;
+    private TextView tvEventName, tvEventDate, tvEventStartTime, tvEventEndTime, tvEventLocation, tvMaxAttendees;
     private ImageView ivEventPoster, ivCheckInQRCode, ivPromotionQRCode;
+    private Event event;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_event_creation_success);
+
+        event = (Event) getIntent().getSerializableExtra("event");
 
         initializeUI();
         loadEventDetails();
@@ -30,61 +27,50 @@ public class EventSuccessActivity extends AppCompatActivity {
     private void initializeUI() {
         tvEventName = findViewById(R.id.tvEventName);
         tvEventDate = findViewById(R.id.tvEventDate);
-        tvEventStartTime = findViewById(R.id.tvEventStartTime);
-        tvEventEndTime = findViewById(R.id.tvEventEndTime);
         tvEventLocation = findViewById(R.id.tvEventLocation);
+        tvMaxAttendees = findViewById(R.id.tvMaxAttendees);
         ivEventPoster = findViewById(R.id.ivEventPoster);
         ivCheckInQRCode = findViewById(R.id.ivCheckInQRCode);
         ivPromotionQRCode = findViewById(R.id.ivPromotionQRCode);
-
-        ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null) {
-            actionBar.setDisplayHomeAsUpEnabled(true);
-            actionBar.setTitle("Event Details");
-        }
+        tvEventStartTime = findViewById((R.id.tvEventStartTime));
+        tvEventEndTime = findViewById((R.id.tvEventEndTime));
     }
 
     private void loadEventDetails() {
-        // Load passed data from intent
-        Bundle extras = getIntent().getExtras();
-        if (extras != null) {
-            tvEventName.setText(extras.getString("eventName", "Event Name"));
-            tvEventDate.setText("Date: " + extras.getString("eventDate", "TBD"));
-            tvEventStartTime.setText("From: " + extras.getString("eventStartTime", "TBD"));
-            tvEventEndTime.setText("To: " + extras.getString("eventEndTime", "TBD"));
-            tvEventLocation.setText("Location: " + extras.getString("eventLocation", "TBD"));
+        if (event != null) {
+            tvEventName.setText(event.getName());
+            tvEventDate.setText("Date: " + event.getDate());
+            tvEventStartTime.setText(event.getStartTime());
+            tvEventEndTime.setText(event.getEndTime());
+            tvEventLocation.setText("Location: " + event.getLocation());
+            tvMaxAttendees.setText("Max Attendees: " + event.getMaxAttendees());
 
-            loadPosterImage(extras.getString("eventPosterUri"));
-            loadQRCodeImage(ivCheckInQRCode, extras.getString("eventQrCodeFileName"));
-            loadQRCodeImage(ivPromotionQRCode, extras.getString("promoQrCodeFileName"));
+            // Load poster image
+            if (event.getPoster() != null && !event.getPoster().isEmpty()) {
+                Glide.with(this).load(event.getPoster()).into(ivEventPoster);
+            } else {
+                ivEventPoster.setImageResource(R.drawable.image_placeholder_background);
+            }
+
+            // Load check-in QR code image if it's generated
+            if (event.getCheckInQRCode() != null && !event.getCheckInQRCode().isEmpty()) {
+                Glide.with(this).load(event.getCheckInQRCode()).into(ivCheckInQRCode);
+            } else {
+                ivCheckInQRCode.setVisibility(View.GONE);
+            }
+
+// Hide the promotion QR code ImageView if QR code is not generated
+            if (event.getPromotionQRCode() != null && !event.getPromotionQRCode().isEmpty()) {
+                Glide.with(this).load(event.getPromotionQRCode()).into(ivPromotionQRCode);
+            } else {
+                ivPromotionQRCode.setVisibility(View.GONE);
+            }
         }
     }
-
-    private void loadPosterImage(String imageUri) {
-        try {
-            ivEventPoster.setImageURI(Uri.parse(imageUri));
-        } catch (Exception e) {
-            e.printStackTrace();
-            ivEventPoster.setImageResource(R.drawable.image_placeholder_background);
-        }
-    }
-
-    private void loadQRCodeImage(ImageView imageView, String fileName) {
-        try {
-            FileInputStream fis = openFileInput(fileName);
-            Bitmap bitmap = BitmapFactory.decodeStream(fis);
-            imageView.setImageBitmap(bitmap);
-            fis.close();
-        } catch (FileNotFoundException e) {
-            imageView.setImageResource(R.drawable.image_placeholder_background);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
     @Override
     public boolean onSupportNavigateUp() {
         onBackPressed();
         return true;
     }
 }
+

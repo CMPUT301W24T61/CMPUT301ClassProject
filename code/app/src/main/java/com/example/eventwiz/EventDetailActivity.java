@@ -1,7 +1,6 @@
 package com.example.eventwiz;
 
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -11,35 +10,44 @@ import android.widget.ImageButton;
 import android.widget.Spinner;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
-import java.time.LocalDate;
-import java.time.format.TextStyle;
+
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
 import java.util.List;
-import java.util.Locale;
 
 public class EventDetailActivity extends AppCompatActivity {
 
-    private EditText etEventName, etEventDescription;
+    private EditText etEventName, etEventDescription, etMaxAttendees;
     private Spinner spinnerDay, spinnerMonth, spinnerYear;
     private Spinner spinnerFromHour, spinnerFromMinute, fromAmPM;
     private Spinner spinnerToHour, spinnerToMinute, toAmPM;
     private Button btnNext;
     private ImageButton backArrow;
+    private Organizer organizer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_event_detail);
 
+        // Initialize organizer here as required, for example with a default name
+        organizer = new Organizer("Default Organizer",this);
+
         initializeUI();
-        setupActionBar();
-        setupListeners();
         populateSpinners();
     }
 
     private void initializeUI() {
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.hide();
+        }
+
         etEventName = findViewById(R.id.etEventName);
         etEventDescription = findViewById(R.id.etEventDescription);
+        etMaxAttendees = findViewById(R.id.etMaxAttendees);
+
         spinnerDay = findViewById(R.id.spinnerDay);
         spinnerMonth = findViewById(R.id.spinnerMonth);
         spinnerYear = findViewById(R.id.spinnerYear);
@@ -49,78 +57,59 @@ public class EventDetailActivity extends AppCompatActivity {
         spinnerToHour = findViewById(R.id.spinnerToHour);
         spinnerToMinute = findViewById(R.id.spinnerToMinute);
         toAmPM = findViewById(R.id.toAmPM);
+
         btnNext = findViewById(R.id.btnNext);
-        backArrow = findViewById(R.id.BackArrow);
-    }
-
-    private void setupActionBar() {
-        ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null) {
-            actionBar.setTitle("Event Details");
-        }
-    }
-
-    private void setupListeners() {
         btnNext.setOnClickListener(v -> goToNextActivity());
+
+        backArrow = findViewById(R.id.BackArrow);
         backArrow.setOnClickListener(v -> finish());
     }
+
 
     private void populateSpinners() {
         ArrayAdapter<String> monthAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, getMonths());
         spinnerMonth.setAdapter(monthAdapter);
-
         ArrayAdapter<String> dayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, getDays(31));
         spinnerDay.setAdapter(dayAdapter);
-
         ArrayAdapter<String> yearAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, getYears());
         spinnerYear.setAdapter(yearAdapter);
-
         ArrayAdapter<String> hourAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, getHours());
         spinnerFromHour.setAdapter(hourAdapter);
         spinnerToHour.setAdapter(hourAdapter);
-
         ArrayAdapter<String> minuteAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, getMinutes());
         spinnerFromMinute.setAdapter(minuteAdapter);
         spinnerToMinute.setAdapter(minuteAdapter);
-
         ArrayAdapter<String> amPmAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, new String[]{"AM", "PM"});
         fromAmPM.setAdapter(amPmAdapter);
         toAmPM.setAdapter(amPmAdapter);
     }
-
     private List<String> getMonths() {
-        List<String> months = new ArrayList<>();
-        for (int i = 1; i <= 12; i++) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                months.add(LocalDate.of(0, i, 1).getMonth().getDisplayName(TextStyle.FULL, Locale.getDefault()));
-            }
-        }
-        return months;
+        // This is a simple implementation. You might want to localize month names.
+        return Arrays.asList("January", "February", "March", "April", "May", "June", "July",
+                "August", "September", "October", "November", "December");
     }
-    private List<String> getDays(int maxDays) {
-        List<String> days = new ArrayList<>();
-        for (int i = 1; i <= maxDays; i++) {
-            days.add(String.valueOf(i));
+
+    private List<String> getDays(int days) {
+        List<String> dayList = new ArrayList<>();
+        for (int i = 1; i <= days; i++) {
+            dayList.add(String.valueOf(i));
         }
-        return days;
+        return dayList;
     }
 
     private List<String> getYears() {
-        List<String> years = new ArrayList<>();
-        int currentYear = 0;
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-            currentYear = LocalDate.now().getYear();
+        List<String> yearList = new ArrayList<>();
+        int currentYear = Calendar.getInstance().get(Calendar.YEAR);
+        for (int i = currentYear; i <= currentYear + 10; i++) { // Example range
+            yearList.add(String.valueOf(i));
         }
-        for (int i = 0; i <= 10; i++) {
-            years.add(String.valueOf(currentYear + i));
-        }
-        return years;
+        return yearList;
     }
 
     private List<String> getHours() {
         List<String> hours = new ArrayList<>();
-        for (int i = 1; i <= 12; i++) {
-            hours.add(String.format(Locale.getDefault(), "%02d", i));
+        for (int i = 1; i <= 12; i++) { // Assuming 12-hour format
+            hours.add(String.format("%02d", i));
         }
         return hours;
     }
@@ -128,34 +117,33 @@ public class EventDetailActivity extends AppCompatActivity {
     private List<String> getMinutes() {
         List<String> minutes = new ArrayList<>();
         for (int i = 0; i < 60; i++) {
-            minutes.add(String.format(Locale.getDefault(), "%02d", i));
+            minutes.add(String.format("%02d", i));
         }
         return minutes;
     }
 
-    private void goToNextActivity() {
-        Intent intent = new Intent(EventDetailActivity.this, EventLocationActivity.class);
-        intent.putExtra("eventName", etEventName.getText().toString());
-        intent.putExtra("eventDescription", etEventDescription.getText().toString());
 
-        // Combine date and time parts to create full date-time strings
-        String eventDate = spinnerDay.getSelectedItem().toString() + "-" +
+    private void goToNextActivity() {
+        String eventName = etEventName.getText().toString();
+        String eventDescription = etEventDescription.getText().toString();
+        String maxAttendeesStr = etMaxAttendees.getText().toString();
+        int maxAttendees = maxAttendeesStr.isEmpty() ? 0 : Integer.parseInt(maxAttendeesStr);
+
+        String date = spinnerDay.getSelectedItem().toString() + "-" +
                 spinnerMonth.getSelectedItem().toString() + "-" +
                 spinnerYear.getSelectedItem().toString();
-
-        String eventStartTime = spinnerFromHour.getSelectedItem().toString() + ":" +
+        String startTime = spinnerFromHour.getSelectedItem().toString() + ":" +
                 spinnerFromMinute.getSelectedItem().toString() + " " +
                 fromAmPM.getSelectedItem().toString();
-
-        String eventEndTime = spinnerToHour.getSelectedItem().toString() + ":" +
+        String endTime = spinnerToHour.getSelectedItem().toString() + ":" +
                 spinnerToMinute.getSelectedItem().toString() + " " +
                 toAmPM.getSelectedItem().toString();
 
-        // Add date and time information to intent
-        intent.putExtra("eventDate", eventDate);
-        intent.putExtra("eventStartTime", eventStartTime);
-        intent.putExtra("eventEndTime", eventEndTime);
 
+        Event event = organizer.createEvent(eventName, eventDescription, date, startTime, endTime, "", maxAttendees);
+
+        Intent intent = new Intent(EventDetailActivity.this, EventLocationActivity.class);
+        intent.putExtra("event", event);
         startActivity(intent);
     }
 }

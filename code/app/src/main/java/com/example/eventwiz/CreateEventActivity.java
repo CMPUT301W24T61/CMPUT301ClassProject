@@ -1,7 +1,6 @@
 package com.example.eventwiz;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
@@ -9,19 +8,14 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.Toast;
-
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.google.zxing.BarcodeFormat;
 import com.google.zxing.WriterException;
-import com.journeyapps.barcodescanner.BarcodeEncoder;
 
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 
 public class CreateEventActivity extends AppCompatActivity {
@@ -30,6 +24,8 @@ public class CreateEventActivity extends AppCompatActivity {
     private Button uploadButton, createEventButton;
     private CheckBox generateNewQRCodeCheckBox, reuseQRCodeCheckBox, generatePromotionQRCodeCheckBox;
     private Uri imageUri;
+    private Event event;
+    private Organizer organizer; // Assume Organizer is passed or instantiated elsewhere
 
     private final ActivityResultLauncher<String> mGetContent = registerForActivityResult(
             new ActivityResultContracts.GetContent(),
@@ -47,6 +43,9 @@ public class CreateEventActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_event_add_info);
+
+        organizer = new Organizer("Default Organizer", this);
+        event = (Event) getIntent().getSerializableExtra("event");
 
         initializeUI();
         setupActionBar();
@@ -78,51 +77,41 @@ public class CreateEventActivity extends AppCompatActivity {
                 Toast.makeText(this, "Please upload an event poster", Toast.LENGTH_SHORT).show();
                 return;
             }
-            try {
-                handleQRCodeGeneration();
-            } catch (IOException | WriterException e) {
-                Toast.makeText(CreateEventActivity.this, "Error handling QR codes: " + e.getMessage(), Toast.LENGTH_LONG).show();
+            event.setPoster(imageUri.toString());
+
+            // Adjust based on Organizer's capability to generate QR codes
+            if (generateNewQRCodeCheckBox.isChecked()) {
+                // Assuming generateCheckInQRCode now directly updates the event or returns a path/URL
+                String checkInQRCodePath = null; // This method needs to be implemented accordingly
+                try {
+                    checkInQRCodePath = organizer.generateCheckInQRCode(event);
+                } catch (WriterException e) {
+                    throw new RuntimeException(e);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+                event.setCheckInQRCode(checkInQRCodePath); // This assumes setCheckInQRCode accepts a String path or URL
             }
+
+            if (generatePromotionQRCodeCheckBox.isChecked()) {
+                // Similarly for promotion QR codes
+                String promotionQRCodePath = null; // Implement this method to return a path/URL
+                try {
+                    promotionQRCodePath = organizer.generatePromotionQRCode(event);
+                } catch (WriterException | IOException e) {
+                    throw new RuntimeException(e);
+                }
+                event.setPromotionQRCode(promotionQRCodePath); // Assumes setPromotionQRCode accepts a String path or URL
+            }
+
+            Intent intent = new Intent(CreateEventActivity.this, EventSuccessActivity.class);
+            intent.putExtra("event", event);
+            startActivity(intent);
         });
     }
-
-    private void handleQRCodeGeneration() throws WriterException, IOException {
-        String eventQrCodeFileName = "event_qr_code.png";
-        String promoQrCodeFileName = "promo_qr_code.png";
-
-        Bitmap qrCodeBitmap = null;
-        if (generateNewQRCodeCheckBox.isChecked()) {
-            qrCodeBitmap = generateQRCode("Event-specific QR Code Data");
-            saveQRCodeToFile(qrCodeBitmap, eventQrCodeFileName);
-        } else if (reuseQRCodeCheckBox.isChecked() && !checkQRCodeFileExists(eventQrCodeFileName)) {
-            Toast.makeText(this, "No existing QR code to reuse.", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        if (generatePromotionQRCodeCheckBox.isChecked()) {
-            Bitmap promoQrCodeBitmap = generateQRCode("Promotion-specific QR Code Data");
-            saveQRCodeToFile(promoQrCodeBitmap, promoQrCodeFileName);
-        }
-
-        // Prepare data for next activity
-        Intent intent = new Intent(CreateEventActivity.this, EventSuccessActivity.class);
-        intent.putExtra("eventPosterUri", imageUri.toString());
-        startActivity(intent);
-    }
-
-    private Bitmap generateQRCode(String data) throws WriterException {
-        BarcodeEncoder barcodeEncoder = new BarcodeEncoder();
-        return barcodeEncoder.encodeBitmap(data, BarcodeFormat.QR_CODE, 400, 400);
-    }
-
-    private void saveQRCodeToFile(Bitmap qrCodeBitmap, String fileName) throws IOException {
-        FileOutputStream fos = openFileOutput(fileName, MODE_PRIVATE);
-        qrCodeBitmap.compress(Bitmap.CompressFormat.PNG, 100, fos);
-        fos.close();
-    }
-
-    private boolean checkQRCodeFileExists(String fileName) {
-        File file = getFileStreamPath(fileName);
-        return file.exists();
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
     }
 }

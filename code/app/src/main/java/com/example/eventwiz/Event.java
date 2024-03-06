@@ -1,114 +1,72 @@
 package com.example.eventwiz;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
+import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
-public class Event {
-    private String id;
+public class Event implements Serializable {
+    private final String id;
     private String name;
     private String description;
-    private LocalDateTime dateTime; // Use LocalDateTime for dateTime
+    private String date; // Changed from dateTime to date
+    private String startTime; // Added
+    private String endTime; // Added
     private String location;
     private int maxAttendees;
-    private List<String> attendeeIds;
     private String poster;
-    private String qrCodeReference; // Add field for QR code reference
+    private String checkInQRCode;
+    private String promotionQRCode;
+    private Set<String> attendeeIds;
 
-    // Constructor
-    public Event(String name, String description, LocalDateTime dateTime, String location, int maxAttendees) {
-        this.id = UUID.randomUUID().toString(); // Generate unique ID internally
+    public Event(String name, String description, String date, String startTime, String endTime, String location, int maxAttendees) {
+        this.id = UUID.randomUUID().toString();
         this.name = name;
         this.description = description;
-        this.dateTime = dateTime;
+        this.date = date;
+        this.startTime = startTime;
+        this.endTime = endTime;
         this.location = location;
         this.maxAttendees = maxAttendees;
-        this.attendeeIds = new ArrayList<>();
-        this.poster = null;
-        this.qrCodeReference = null; // Initialize QR code reference as null
+        this.attendeeIds = new HashSet<>();
     }
 
-    // Add a setter for QR code reference
-    public void setQrCodeReference(String qrCodeReference) {
-        this.qrCodeReference = qrCodeReference;
+
+    public String getDate() { return date; }
+    public void setDate(String date) { this.date = date; }
+    public String getStartTime() { return startTime; }
+    public void setStartTime(String startTime) { this.startTime = startTime; }
+    public String getEndTime() { return endTime; }
+    public void setEndTime(String endTime) { this.endTime = endTime; }
+    public String getId() { return id; }
+    public String getName() { return name; }
+    public void setName(String name) { this.name = name; }
+    public String getDescription() { return description; }
+    public void setDescription(String description) { this.description = description; }
+    public String getLocation() { return location; }
+    public void setLocation(String location) { this.location = location; }
+    public int getMaxAttendees() { return maxAttendees; }
+    public void setMaxAttendees(int maxAttendees) { this.maxAttendees = maxAttendees; }
+    public String getPoster() { return poster; }
+    public void setPoster(String poster) { this.poster = poster; }
+    public String getCheckInQRCode() {
+        return this.checkInQRCode;
+    }
+    public void setCheckInQRCode(String checkInQRCodePath) {
+        this.checkInQRCode = checkInQRCodePath;
     }
 
-    // Getters and Setters
-    public String getId() {
-        return id;
+
+
+    public void setPromotionQRCode(String promotionQRCodePath) {
+        this.promotionQRCode = promotionQRCodePath;
     }
 
-    public void setId(String id) {
-        this.id = id;
-    }
-    public String getPoster() {return poster;}
-
-    public void setPoster(String poster) {this.poster = poster;}
-
-
-    public String getName() {
-        return name;
+    public String getPromotionQRCode() {
+        return this.promotionQRCode;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
 
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public LocalDateTime getDateTime() {
-        return dateTime;
-    }
-
-    public void setDateTime(LocalDateTime dateTime) {
-        this.dateTime = dateTime;
-    }
-
-    public String getLocation() {
-        return location;
-    }
-
-    public void setLocation(String location) {
-        this.location = location;
-    }
-
-    public int getMaxAttendees() {
-        return maxAttendees;
-    }
-
-    public void setMaxAttendees(int maxAttendees) {
-        this.maxAttendees = maxAttendees;
-    }
-
-    public List<String> getAttendeeIds() {
-        return attendeeIds;
-    }
-
-    public boolean addAttendee(String attendeeId) {
-        if (attendeeIds.size() < maxAttendees) {
-            return attendeeIds.add(attendeeId);
-        }
-        System.out.println("Event is at full capacity.");
-        return false;
-    }
-
-    public boolean removeAttendee(String attendeeId) {
-        return attendeeIds.remove(attendeeId);
-    }
-
-    public boolean isAttendeeRegistered(String attendeeId) {
-        return attendeeIds.contains(attendeeId);
-    }
-
-    public boolean isFull() {
-        return attendeeIds.size() >= maxAttendees;
-    }
-
+    public Set<String> getAttendeeIds() { return attendeeIds; }
+    public void setAttendeeIds(Set<String> attendeeIds) { this.attendeeIds = attendeeIds; }
 }
