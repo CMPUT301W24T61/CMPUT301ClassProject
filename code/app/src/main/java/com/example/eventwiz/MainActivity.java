@@ -1,10 +1,24 @@
 package com.example.eventwiz;
 
 
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import static android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.location.LocationManager;
+import android.os.Bundle;
+import android.provider.Settings;
+import android.view.View;
+import android.widget.TextView;
+
+
+import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -34,10 +48,14 @@ public class MainActivity extends AppCompatActivity {
     SharedPreferences sp;
     String uid;
 
+    private TextView gpsStatus;
+    private LocationManager locationManager;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
 
 
 
@@ -49,13 +67,16 @@ public class MainActivity extends AppCompatActivity {
         editor.apply();
         Log.d("SharedPreferences", "Saved Anonymous User ID: " + uid);
 
+        gpsStatus = findViewById(R.id.gps_status);
+        locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
 
 
-        Button buttonBrowseEvents = findViewById(R.id.button_browse_events);
-        buttonBrowseEvents.setOnClickListener(new View.OnClickListener() {
+
+        Button buttonGetStarted = findViewById(R.id.button_get_started);
+        buttonGetStarted.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this, BrowseEventsActivity.class);
+                Intent intent = new Intent(MainActivity.this, DashboardActivity.class);
                 startActivity(intent);
 
             }
@@ -82,7 +103,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-
+        /*
         // Find the camera button (ImageView) by ID
         ImageView cameraButton = findViewById(R.id.button_open_camera);
 
@@ -106,7 +127,11 @@ public class MainActivity extends AppCompatActivity {
         } else {
             Toast.makeText(this, "No camera app found", Toast.LENGTH_SHORT).show();
         }
+    */
+
     }
+
+
 
     @Override
     public void onStart() {
@@ -122,6 +147,13 @@ public class MainActivity extends AppCompatActivity {
             // If the user is already signed in, update UI
             Log.d("Authentication", "User is already signed in. UID: " + currentUser.getUid());
             updateUI(currentUser);
+        }
+
+        if(locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)){
+            gpsStatus.setText("GPS is ON");
+
+        }else{
+            gpsStatus.setText("GPS is OFF");
         }
     }
 
@@ -159,14 +191,56 @@ public class MainActivity extends AppCompatActivity {
 
 
 
+    public void buttonSwitchGPS(View view) {
+        if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+            // GPS is currently ON, turn it OFF
+            turnOffGPS();
+        } else {
+            // GPS is currently OFF, turn it ON
+            turnOnGPS();
+        }
+    }
 
+    private void turnOnGPS() {
 
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+        alertDialogBuilder.setMessage("GPS is disabled. Would you like to enable it?")
+                .setCancelable(true)
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+                    }
+                })
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.cancel();
+                    }
+                });
+        AlertDialog alertDialog = alertDialogBuilder.create();
+        alertDialog.show();
+    }
 
-
-
-
-
-
-
+    private void turnOffGPS() {
+        // Check if the user wants to enable GPS
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+        alertDialogBuilder.setMessage("GPS is enabled. Would you like to disable it?")
+                .setCancelable(true)
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+                    }
+                })
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.cancel();
+                    }
+                });
+        AlertDialog alertDialog = alertDialogBuilder.create();
+        alertDialog.show();
+    }
 
 }

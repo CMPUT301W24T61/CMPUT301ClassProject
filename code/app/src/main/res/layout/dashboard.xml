@@ -4,40 +4,37 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white">
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:context=".MainActivity">
+    tools:context=".DashboardActivity">
 
         <TextView
-            android:id="@+id/tvEventWizHeader"
+            android:id="@+id/tvHeader"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="EventWiz"
+            android:text="User Dashboard"
+            android:gravity="center"
             android:textSize="24sp"
-            android:textColor="@android:color/black"
-            android:gravity="center_horizontal"
-            android:background="@android:color/holo_blue_bright"
-            android:padding="16dp" />
+            android:textColor="@android:color/white"
+            android:textStyle="bold"
+            android:background="@color/turqoise"
+            android:padding="16dp"/>
 
-        <ImageButton
-            android:id="@+id/BackArrow"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingTop="18dp"
-            android:paddingLeft="14dp"
-            android:src="@drawable/ic_back_arrow"
-            android:contentDescription="go back to previous page"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentStart="true"
-            android:background="@android:color/transparent"/>
+            <ImageButton
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/BackArrow"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingTop="18dp"
+                android:paddingLeft="14dp"
+                android:src="@drawable/ic_back_arrow"
+                android:contentDescription="go back to previous page"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentStart="true"
+                android:background="@android:color/transparent"/>
+
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_below="@id/tvEventWizHeader"
             android:paddingBottom="56dp">
 
             <TextView
@@ -45,8 +42,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
-                android:layout_marginTop="32dp"
-                android:text="Welcome [Name]"
+                android:layout_marginTop="100dp"
+                android:text="Welcome "
                 android:textColor="@color/black"
                 android:textSize="24sp" />
 
@@ -118,7 +115,7 @@
                 android:textColor="@color/black" />
 
         </RelativeLayout>
-    </RelativeLayout>
+
 
     <com.google.android.material.bottomappbar.BottomAppBar
         android:id="@+id/bottomAppBar"

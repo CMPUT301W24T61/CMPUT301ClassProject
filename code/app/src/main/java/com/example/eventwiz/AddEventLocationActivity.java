@@ -1,9 +1,7 @@
 package com.example.eventwiz;
 
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -12,7 +10,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.firestore.FirebaseFirestore;
 
-public class EventLocationActivity extends AppCompatActivity {
+public class AddEventLocationActivity extends AppCompatActivity {
 
     private EditText etAddressLine1, etAddressLine2, etAddressLine3, etCity, etAreaCodePostalCode, etStateProvince, etCountry;
     private Button btnNext;
@@ -71,7 +69,7 @@ public class EventLocationActivity extends AppCompatActivity {
         event.setLocation(location);
         saveEventToFirestore(event);
 
-        Intent intent = new Intent(EventLocationActivity.this, CreateEventActivity.class);
+        Intent intent = new Intent(AddEventLocationActivity.this, CreateEventActivity.class);
         intent.putExtra("event", event);
         intent.putExtra("organizer", organizer);
         startActivity(intent);

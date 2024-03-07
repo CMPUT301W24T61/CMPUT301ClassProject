@@ -8,6 +8,7 @@
     android:background="#EDEDED"
     tools:context=".MainActivity">
 
+
     <ImageView
         android:id="@+id/imageView_logo"
         android:layout_width="wrap_content"
@@ -55,24 +56,17 @@
         app:layout_constraintEnd_toEndOf="parent" />
 
     <Button
-        android:id="@+id/button_browse_events"
+        android:id="@+id/button_get_started"
         android:layout_width="150dp"
-<<<<<<< HEAD
         android:layout_height="50dp"
-=======
-        android:layout_height="60dp"
-        android:layout_below="@id/textView_main_head"
->>>>>>> origin/Junkai
         android:layout_marginTop="50dp"
         android:backgroundTint="#FFAE42"
-        android:text="Check/Create Events"
+        android:text="Get Started!"
         android:textColor="#FF000000"
         app:layout_constraintTop_toBottomOf="@id/textView_main_head"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-<<<<<<< HEAD
-<<<<<<< HEAD
     <Button
         android:id="@+id/button_register"
         android:layout_width="150dp"
@@ -81,45 +75,14 @@
         android:backgroundTint="#FFAE42"
         android:text="Create Profile"
         android:textColor="#FF000000"
-        app:layout_constraintTop_toBottomOf="@id/button_browse_events"
+        app:layout_constraintTop_toBottomOf="@id/button_get_started"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
-=======
-
-    <!--    <Button-->
-    <!--        android:id="@+id/button_register"-->
-    <!--        android:layout_width="150dp"-->
-    <!--        android:layout_height="50dp"-->
-    <!--        android:layout_below="@+id/button_browse_events"-->
-    <!--        android:layout_marginTop="20dp"-->
-    <!--        android:layout_centerHorizontal="true"-->
-    <!--        android:backgroundTint="#FFAE42"-->
-    <!--        android:text="Create Profile"-->
-    <!--        android:textColor="#FF000000" />-->
->>>>>>> origin/Junkai
-=======
-
-<!--    <Button-->
-<!--        android:id="@+id/button_register"-->
-<!--        android:layout_width="150dp"-->
-<!--        android:layout_height="50dp"-->
-<!--        android:layout_below="@+id/button_browse_events"-->
-<!--        android:layout_marginTop="20dp"-->
-<!--        android:layout_centerHorizontal="true"-->
-<!--        android:backgroundTint="#FFAE42"-->
-<!--        android:text="Create Profile"-->
-<!--        android:textColor="#FF000000" />-->
->>>>>>> origin/hunaid
 
     <Button
         android:id="@+id/button_scan_qr"
         android:layout_width="150dp"
         android:layout_height="50dp"
-<<<<<<< HEAD
-=======
-        android:layout_below="@+id/button_browse_events"
-        android:layout_centerHorizontal="true"
->>>>>>> origin/Junkai
         android:layout_marginTop="20dp"
         android:backgroundTint="#FFAE42"
         android:text="Scan QR"
@@ -128,26 +91,35 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-<<<<<<< HEAD
     <ImageButton
-        android:id="@+id/button_open_camera"
+        android:id="@+id/button_geolocation"
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_marginTop="30dp"
         android:background="@drawable/circle"
-        android:elevation="4dp"
+        android:onClick="buttonSwitchGPS"
+        android:elevation="10dp"
         android:padding="10dp"
         android:scaleType="fitCenter"
-        android:src="@drawable/ic_cam"
+        android:src="@drawable/ic_location"
         app:layout_constraintTop_toBottomOf="@id/button_scan_qr"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
+
+    <TextView
+        android:id="@+id/gps_status"
+        android:layout_width="197dp"
+        android:layout_height="26dp"
+        android:layout_marginTop="16dp"
+        android:text="Click to see Location Status"
+        android:textAlignment="center"
+        android:textSize="12sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/button_geolocation" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 
 
 
-=======
->>>>>>> origin/Junkai
-
-</RelativeLayout>

@@ -3,7 +3,6 @@ package com.example.eventwiz;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -22,7 +21,7 @@ import java.util.Calendar;
 import java.util.List;
 
 
-public class EventDetailActivity extends AppCompatActivity {
+public class AddEventDetailActivity extends AppCompatActivity {
 
 
     private EditText etEventName, etEventDescription, etMaxAttendees;
@@ -52,7 +51,9 @@ public class EventDetailActivity extends AppCompatActivity {
     private void initializeUI() {
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
+
             actionBar.hide();
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
 
 
@@ -172,7 +173,7 @@ public class EventDetailActivity extends AppCompatActivity {
         Event event = new Event(eventName, eventDescription, date, startTime, endTime, "", maxAttendees, checkInQRCodePath, promotionQRCodePath, posterUrl);
 
 
-        Intent intent = new Intent(EventDetailActivity.this, EventLocationActivity.class);
+        Intent intent = new Intent(AddEventDetailActivity.this, AddEventLocationActivity.class);
         intent.putExtra("event", event);
         intent.putExtra("organizer", organizer);
         startActivity(intent);

@@ -2,16 +2,19 @@ package com.example.eventwiz;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.widget.Button;
-import android.widget.CheckBox;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
-import com.google.android.gms.tasks.Task;
+import androidx.core.content.ContextCompat;
+
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -41,9 +44,13 @@ public class CreateEventActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_event_add_info); // Adjust this layout file name as necessary
 
+
+
         posterImageView = findViewById(R.id.poster);
         Button uploadButton = findViewById(R.id.uploadButton);
         Button createEventButton = findViewById(R.id.createEventButton);
+        ImageButton backButton = findViewById(R.id.BackArrow);
+        backButton.setOnClickListener(view -> onBackPressed());
 
         uploadButton.setOnClickListener(v -> mGetContent.launch("image/*"));
 
@@ -122,12 +129,18 @@ public class CreateEventActivity extends AppCompatActivity {
     }
 
     private void navigateToSuccessActivity(Event event) {
-        Intent intent = new Intent(CreateEventActivity.this, EventSuccessActivity.class);
+        Intent intent = new Intent(CreateEventActivity.this, EventCreationSuccessActivity.class);
         intent.putExtra("event", event);
         startActivity(intent);
     }
 
     interface OnUploadCompleteListener {
         void onUploadComplete(String url);
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
     }
 }

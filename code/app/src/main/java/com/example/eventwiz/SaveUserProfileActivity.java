@@ -107,7 +107,7 @@ public class SaveUserProfileActivity extends AppCompatActivity {
             public void onClick(View view) {
                 //CheckStoragePermission();
 
-//                PickImageFromGallery();
+                PickImageFromGallery();
             }
         });
 

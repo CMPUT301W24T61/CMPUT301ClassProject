@@ -11,9 +11,9 @@
         android:text="Event Details"
         android:gravity="center"
         android:textSize="24sp"
-        android:textColor="@android:color/black"
+        android:textColor="@android:color/white"
         android:textStyle="bold"
-        android:background="@android:color/holo_blue_bright"
+        android:background="@color/turqoise"
         android:padding="16dp"/>
 
     <ImageButton
@@ -233,9 +233,9 @@
         android:id="@+id/btnNext"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="NEXT"
-        android:backgroundTint="@android:color/holo_orange_dark"
-        android:textColor="@android:color/white"
+        android:text="Next"
+        android:backgroundTint="@color/amber"
+        android:textColor="@android:color/black"
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
         android:layout_marginBottom="16dp"

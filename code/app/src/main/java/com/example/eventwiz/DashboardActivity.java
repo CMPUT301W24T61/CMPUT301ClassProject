@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
+
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -19,6 +21,8 @@ public class DashboardActivity extends AppCompatActivity {
 
     private FloatingActionButton scanQRButton;
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -27,8 +31,8 @@ public class DashboardActivity extends AppCompatActivity {
         // Initialize ActionBar
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
-            actionBar.setTitle("Organizer Dashboard");
-            actionBar.setDisplayHomeAsUpEnabled(true); // Enable the Up button
+            actionBar.setTitle("User Dashboard");
+            actionBar.setDisplayHomeAsUpEnabled(true);
         }
 
         // Initialize UI components
@@ -37,6 +41,7 @@ public class DashboardActivity extends AppCompatActivity {
         browseEventsButton = findViewById(R.id.browseEvents);
         profileButton = findViewById(R.id.myProfile);
         scanQRButton = findViewById(R.id.fabCamera);
+        ImageButton backButton = findViewById(R.id.BackArrow);
 
 
         // Set onClickListeners for each button
@@ -44,7 +49,7 @@ public class DashboardActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 // Intent to navigate to CreateEventActivity
-                Intent intent = new Intent(DashboardActivity.this, EventDetailActivity.class);
+                Intent intent = new Intent(DashboardActivity.this, AddEventDetailActivity.class);
                 startActivity(intent);
             }
         });
@@ -58,14 +63,14 @@ public class DashboardActivity extends AppCompatActivity {
             }
         });
 
-        //viewEventsButton.setOnClickListener(new View.OnClickListener() {
-            //@Override
-            //public void onClick(View view) {
+        browseEventsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
 
-               // Intent intent = new Intent(OrganizerDashboardActivity.this, ViewEventsActivity.class);
-                //startActivity(intent);
-            //}
-        //});
+                Intent intent = new Intent(DashboardActivity.this, BrowseEventsActivity.class);
+                startActivity(intent);
+            }
+        });
 
         //manageEventsButton.setOnClickListener(new View.OnClickListener() {
             //@Override
@@ -75,5 +80,15 @@ public class DashboardActivity extends AppCompatActivity {
                 //startActivity(intent);
             //}
         //});
+
+        backButton.setOnClickListener(view -> onBackPressed());
+
+
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
     }
 }

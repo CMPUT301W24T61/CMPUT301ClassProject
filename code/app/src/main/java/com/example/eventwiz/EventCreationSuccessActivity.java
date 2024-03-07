@@ -1,14 +1,17 @@
 package com.example.eventwiz;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import com.bumptech.glide.Glide;
 
 
-public class EventSuccessActivity extends AppCompatActivity {
+public class EventCreationSuccessActivity extends AppCompatActivity {
 
     private TextView tvEventName, tvEventDate, tvEventStartTime, tvEventEndTime, tvEventLocation, tvMaxAttendees;
     private ImageView ivEventPoster, ivCheckInQRCode, ivPromotionQRCode;
@@ -36,6 +39,9 @@ public class EventSuccessActivity extends AppCompatActivity {
         ivPromotionQRCode = findViewById(R.id.ivPromotionQRCode);
         tvEventStartTime = findViewById((R.id.tvEventStartTime));
         tvEventEndTime = findViewById((R.id.tvEventEndTime));
+
+        ImageButton btnGoToDashboard = findViewById(R.id.gotodasboard);
+        btnGoToDashboard.setOnClickListener(v -> goToDashboardActivity());
     }
 
     private void loadEventDetails() {
@@ -69,6 +75,12 @@ public class EventSuccessActivity extends AppCompatActivity {
     public boolean onSupportNavigateUp() {
         onBackPressed();
         return true;
+    }
+
+    private void goToDashboardActivity() {
+        Intent intent = new Intent(EventCreationSuccessActivity.this, DashboardActivity.class);
+        // You may need to adjust the class (DashboardActivity) based on your actual dashboard activity class
+        startActivity(intent);
     }
 }
 
