@@ -3,6 +3,7 @@ package com.example.eventwiz;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.ListView;
@@ -27,12 +28,22 @@ public class BrowseEventsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_browse_events);
 
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setTitle("EventWiz");
+            int color = ContextCompat.getColor(this, R.color.turqoise);
+
+            // Set the background color of the ActionBar
+            actionBar.setBackgroundDrawable(new ColorDrawable(color));
+
+            // Set display option
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
+
         listView = findViewById(R.id.lvEvents);
         events = new ArrayList<>();
         adapter = new EventAdapter(this, events);
         listView.setAdapter(adapter);
-
-
         fetchEvents();
     }
 
