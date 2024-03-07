@@ -4,16 +4,23 @@ package com.example.eventwiz;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
@@ -29,6 +36,8 @@ import com.google.zxing.integration.android.IntentResult;
 public class QRCodeScannerActivity extends AppCompatActivity{
 
     private static final int PERMISSION_REQUEST_CAMERA = 1;
+
+    private static final String ADMIN_QR_CODE_HASH = "9d249f377060a7ed85b770bcecf6f207031b0f49bb2bf3f0d5f7bf5f1645976f";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,17 +89,19 @@ public class QRCodeScannerActivity extends AppCompatActivity{
                 Toast.makeText(this, "Scan cancelled", Toast.LENGTH_LONG).show();
             } else {
                 Toast.makeText(this, "Scanned: " + result.getContents(), Toast.LENGTH_LONG).show();
-                Intent intent = new Intent(QRCodeScannerActivity.this, SaveUserProfileActivity.class);
-                startActivity(intent);
-//                Bitmap qrCodeBitmap = GenerateQRCode.generateEventQRCode();
-//                if (qrCodeBitmap != null) {
-//                    // Display the QR code in the ImageView
-//                    ImageView qrCodeImageView = findViewById(R.id.qrCodeImageView);
-//                    qrCodeImageView.setImageBitmap(qrCodeBitmap);
-//                } else {
-//                    // Handle the error, the QR code generation failed
-//                    // Show error message or take appropriate action
-//                }
+                //validate firebase authentication
+//                Intent intent = new Intent(QRCodeScannerActivity.this, SaveUserProfileActivity.class);
+//                startActivity(intent);
+                String scannedCode = result.getContents();
+                Log.d("SCannedContent", scannedCode);
+                if(scannedCode.equals(ADMIN_QR_CODE_HASH)) {
+                    //this is an admin so redirect to admin activity
+                    //set this user as admin
+                    Toast.makeText(this, "Welcome Admin", Toast.LENGTH_LONG).show();
+                    Intent intent = new Intent(QRCodeScannerActivity.this, BrowseEventsActivity.class);
+                    startActivity(intent);
+                }
+
             }
         } else {
             super.onActivityResult(requestCode, resultCode, data);

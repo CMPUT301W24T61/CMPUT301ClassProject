@@ -11,8 +11,12 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+
+import com.bumptech.glide.Glide;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -51,6 +55,17 @@ public class MainActivity extends AppCompatActivity {
         Log.d("SharedPreferences", "Saved Anonymous User ID: " + uid);
 
 
+        Button buttonBrowseEvents = findViewById(R.id.button_browse_events);
+        buttonBrowseEvents.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this, BrowseEventsActivity.class);
+                startActivity(intent);
+
+            }
+        });
+
+//        Button buttonRegister = findViewById(R.id.button_register);
 
         Button buttonBrowseEvents = findViewById(R.id.button_browse_events);
 //        buttonBrowseEvents.setOnClickListener(new View.OnClickListener() {

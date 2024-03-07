@@ -48,8 +48,8 @@ public class EventAdapter extends ArrayAdapter<Event> {
         TextView tvEventName = convertView.findViewById(R.id.tvEventName);
         TextView tvEventDateTime = convertView.findViewById(R.id.tvEventDateTime);
         ImageView imgEventPoster = convertView.findViewById(R.id.ivEventPoster);
-//        TextView tvEventTimeRange = convertView.findViewById(R.id.tvEventTimeRange);
-//        TextView tvEventVenue = convertView.findViewById(R.id.tvEventVenue);
+        //TextView tvEventTimeRange = convertView.findViewById(R.id.tvEventTimeRange);
+        //extView tvEventVenue = convertView.findViewById(R.id.tvEventVenue);
 
         // Populate the data into the template view using the data object
         tvEventName.setText(event.getEventName());
@@ -57,12 +57,19 @@ public class EventAdapter extends ArrayAdapter<Event> {
 //        tvEventTimeRange.setText("Time: " + event.getEventTime());
 //        tvEventVenue.setText("Venue: " + event.getVenue());
         Toast.makeText(this.getContext(), "Scanned: " + event.getPosterUrl(), Toast.LENGTH_LONG).show();
+        setImageFromFirebaseUrl(imgEventPoster, event.getPosterUrl());
 //        Glide.with(getContext())
 //                .load(event.getPosterUrl())
 //                .into(imgEventPoster);
 
-
         // Return the completed view to render on screen
         return convertView;
+    }
+
+    private void setImageFromFirebaseUrl(ImageView imgEventPoster, String imageUrl) {
+        // Using Glide to load the image into the ImageView
+        Glide.with(this.getContext())
+                .load(imageUrl)
+                .into(imgEventPoster);
     }
 }
