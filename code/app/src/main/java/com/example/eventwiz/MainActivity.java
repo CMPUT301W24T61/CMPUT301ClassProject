@@ -1,10 +1,6 @@
 package com.example.eventwiz;
 
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
-
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -15,13 +11,14 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-
-import androidx.appcompat.app.ActionBar;
 
 /**
  * This class will handle button presses from the main screen and will call other classes
@@ -112,6 +109,9 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * This is the on start function when the app is loaded. Handles loading the main page and connecting to FireBase
+     */
     @Override
     public void onStart() {
         super.onStart();
