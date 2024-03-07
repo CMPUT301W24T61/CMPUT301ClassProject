@@ -1,12 +1,16 @@
 package com.example.eventwiz;
 
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.graphics.drawable.ColorDrawable;
+
+
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.ListView;
+
 
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -16,6 +20,18 @@ import java.util.ArrayList;
 import java.util.List;
 import androidx.appcompat.app.ActionBar;
 import androidx.core.content.ContextCompat;
+
+import androidx.appcompat.app.AppCompatActivity;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * This class is responsible for handling the Browse Events screen
+ * @see Event
+ * @author Hunaid
+ */
+
 public class BrowseEventsActivity extends AppCompatActivity {
     private ListView listView;
     private EventAdapter adapter;

@@ -1,5 +1,10 @@
 package com.example.eventwiz;
 
+/**
+ * This class stores all the data for Events made in the app
+ * @see EventAdapter
+ * @author Hunaid
+ */
 public class Event {
     private String eventName;
     private String eventDate;
@@ -8,7 +13,14 @@ public class Event {
     private String venue;
 
 
-
+    /**
+     * This method initializes the events information.
+     * @param eventName
+     * @param eventDate
+     * @param eventTime
+     * @param posterUrl
+     * @param venue
+     */
     public Event(String eventName, String eventDate, String eventTime, String posterUrl, String venue) {
         this.eventName = eventName;
         this.eventDate = eventDate;
@@ -18,45 +30,90 @@ public class Event {
     }
 
     // Getters and Setters
+
+    /**
+     * @return venue name as a string
+     */
     public String getVenue() {
         return venue;
     }
 
+    /**
+     * Sets venue name
+     * @param venue
+     */
     public void setVenue(String venue) {
         this.venue = venue;
     }
+
+    /**
+     *
+     * @return event name as a string
+     */
     public String getEventName() {
         return eventName;
     }
 
+    /**
+     * Sets the event name
+     * @param eventName
+     */
     public void setEventName(String eventName) {
         this.eventName = eventName;
     }
 
+    /**
+     *
+     * @return event date as a string
+     */
     public String getEventDate() {
         return eventDate;
     }
 
+    /**
+     * Sets event date
+     * @param eventDate
+     */
     public void setEventDate(String eventDate) {
         this.eventDate = eventDate;
     }
 
+    /**
+     *
+     * @return event time as a string
+     */
     public String getEventTime() {
         return eventTime;
     }
 
+    /**
+     * Sets event time
+     * @param eventTime
+     */
     public void setEventTime(String eventTime) {
         this.eventTime = eventTime;
     }
 
+    /**
+     *
+     * @return poster URL as a string
+     */
     public String getPosterUrl() {
         return posterUrl;
     }
 
+    /**
+     * Sets poster URL
+     * @param posterUrl
+     */
     public void setPosterUrl(String posterUrl) {
         this.posterUrl = posterUrl;
     }
 
+    /**
+     *
+     * @return all the details of an event in string format
+     */
     // You may add a toString() method for easy logging/debugging
     @Override
     public String toString() {
