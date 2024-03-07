@@ -1,20 +1,23 @@
 package com.example.eventwiz;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.app.AlertDialog;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 
+/**
+ * AdminBrowseEventPosters is an activity that allows administrators to browse event posters stored in Firebase Storage.
+ * @author Hunaid
+ */
 public class AdminBrowseEventPosters extends AppCompatActivity {
     private ArrayList<String> imagelist;
     private RecyclerView recyclerView;
@@ -48,6 +51,11 @@ public class AdminBrowseEventPosters extends AppCompatActivity {
         });
     }
 
+    /**
+     * Deletes the specified poster image from Firebase Storage.
+     *
+     * @param imageUrl URL of the image to be deleted.
+     */
     private void deletePoster(String imageUrl) {
         adminService.deletePoster(imageUrl, new AdminService.OnDeletionCompleteListener() {
             @Override

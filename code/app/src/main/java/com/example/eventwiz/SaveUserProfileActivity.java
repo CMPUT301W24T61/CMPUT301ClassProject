@@ -40,6 +40,7 @@ import java.io.IOException;
 
 /**
  * This class is responsible for Saving data to the user profile
+ * Works with FireBase to store data for each user
  * @author Yesith
  */
 public class SaveUserProfileActivity extends AppCompatActivity {

@@ -1,33 +1,23 @@
 package com.example.eventwiz;
 
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.graphics.drawable.ColorDrawable;
-
-
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.ListView;
 
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
-
-import java.util.ArrayList;
-import java.util.List;
-import androidx.appcompat.app.ActionBar;
-import androidx.core.content.ContextCompat;
-
-import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * This class is responsible for handling the Browse Events screen
+ * BrowseEventsActivity is responsible for displaying events in a list from the firebase database
  * @see Event
  * @author Hunaid
  */

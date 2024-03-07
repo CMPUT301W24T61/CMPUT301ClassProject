@@ -11,12 +11,8 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-
-import com.bumptech.glide.Glide;
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -28,7 +24,7 @@ import com.google.firebase.auth.FirebaseUser;
  * This class will handle button presses from the main screen and will call other classes
  * and activities as necessary
  * @author Hunaid
- * Will need to update this with @see for classes as they are created.
+ *
  */
 public class MainActivity extends AppCompatActivity {
     private FirebaseAuth userAuth;
@@ -67,7 +63,7 @@ public class MainActivity extends AppCompatActivity {
 
 //        Button buttonRegister = findViewById(R.id.button_register);
 
-        Button buttonBrowseEvents = findViewById(R.id.button_browse_events);
+//        Button buttonBrowseEvents = findViewById(R.id.button_browse_events);
 //        buttonBrowseEvents.setOnClickListener(new View.OnClickListener() {
 //            @Override
 //            public void onClick(View view) {

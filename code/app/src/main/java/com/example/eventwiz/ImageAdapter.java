@@ -14,19 +14,34 @@ import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
 
+/**
+ * ImageAdapter is a RecyclerView adapter responsible for displaying images in a grid layout.
+ * @author Hunaid
+ */
 public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ViewHolder> {
 
     private ArrayList<String> imageList;
 
     private OnItemClickListener listener;
 
+    /**
+     * Interface definition for a callback to be invoked when an item in the image list is clicked.
+     */
     public interface OnItemClickListener {
         void onItemClick(String imageUrl);
     }
+
+
     public void setOnItemClickListener(OnItemClickListener listener) {
         this.listener = listener;
     }
 
+    /**
+     * Constructs an ImageAdapter with the provided image list and context.
+     *
+     * @param imageList The list of image URLs to display.
+     * @param context   The context in which the adapter will be used.
+     */
     public ImageAdapter(ArrayList<String> imageList, Context context) {
         this.imageList = imageList;
         this.context = context;
@@ -60,8 +75,17 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ViewHolder> 
         return imageList.size();
     }
 
+    /**
+     * ViewHolder class for holding the views of a grid item.
+     */
     public class ViewHolder extends RecyclerView.ViewHolder {
         ImageView imageView;
+
+        /**
+         * Constructs a ViewHolder with the given itemView.
+         *
+         * @param itemView The item view to hold.
+         */
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             imageView=itemView.findViewById(R.id.item);
