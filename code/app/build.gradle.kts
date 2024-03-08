@@ -15,7 +15,12 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+
+
     }
+
+
 
 
     buildTypes {
@@ -72,6 +77,7 @@ dependencies {
     implementation("com.github.bumptech.glide:glide:4.12.0")
     annotationProcessor("com.github.bumptech.glide:compiler:4.12.0")
     implementation ("com.squareup.picasso:picasso:2.8")
+    androidTestImplementation ("org.mockito:mockito-core:2.28.2")
 
 
 
