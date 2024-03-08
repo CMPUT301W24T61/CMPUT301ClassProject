@@ -13,12 +13,20 @@ import com.bumptech.glide.Glide;
 
 import java.util.List;
 
+/**
+ * Adapter class for displaying user profiles in a RecyclerView.
+ * @author Hunaid
+ */
 public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
 
     private List<UserProfile> userProfiles;
     private OnItemClickListener onItemClickListener;
 
-
+    /**
+     * Constructor for the UserAdapter class.
+     * @param userProfiles List of user profiles to be displayed
+     * @param onItemClickListener Listener for item click events
+     */
     public UserAdapter(List<UserProfile> userProfiles, OnItemClickListener onItemClickListener) {
         this.userProfiles = userProfiles;
         this.onItemClickListener = onItemClickListener;
@@ -45,16 +53,24 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
         return userProfiles.size();
     }
 
+    /**
+     * Sets the user profiles to be displayed.
+     * @param userProfiles List of user profiles
+     */
     public void setUserProfiles(List<UserProfile> userProfiles) {
         this.userProfiles = userProfiles;
     }
 
+    /**
+     * ViewHolder class for holding the views of each list item.
+     */
     class ViewHolder extends RecyclerView.ViewHolder {
         ImageView userProfilePic;
         TextView userNameTextView;
         TextView userEmailTextView;
         TextView userHomepageTextView;
         TextView userPhoneTextView;
+
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -68,6 +84,10 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
             itemView.setOnClickListener(v -> onItemClickListener.onItemClicked(userProfiles.get(getAdapterPosition())));
         }
 
+        /**
+         * Binds the UserProfile object to the views.
+         * @param userProfile UserProfile object to be bound
+         */
         void bind(UserProfile userProfile) {
             // Set the data to view elements
             userNameTextView.setText(userProfile.getUserName());
@@ -89,6 +109,10 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
         }
     }
 
+    /**
+     * Removes a UserProfile object from the adapter's dataset.
+     * @param userProfile UserProfile object to be removed
+     */
     public void removeUserProfile(UserProfile userProfile) {
         int position = userProfiles.indexOf(userProfile);
         if (position > -1) {
@@ -97,6 +121,9 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
         }
     }
 
+    /**
+     * Interface for handling item click events.
+     */
     interface OnItemClickListener {
         void onItemClicked(UserProfile userProfile);
     }

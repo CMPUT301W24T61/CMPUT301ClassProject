@@ -14,7 +14,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
  * It provides access to various functionalities such as browsing events, users, and images.
  * Administrators can perform actions like scanning QR codes and managing the application.
  *
- * @author Your Name
+ * @author Hunaid
  * @version 1.0
  * @since 2024-03-08
  */

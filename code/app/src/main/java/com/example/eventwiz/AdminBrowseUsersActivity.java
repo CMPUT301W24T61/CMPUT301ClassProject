@@ -1,12 +1,12 @@
 package com.example.eventwiz;
 
+import android.content.DialogInterface;
+import android.os.Bundle;
+
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import android.content.DialogInterface;
-import android.os.Bundle;
 
 import java.util.ArrayList;
 /**
@@ -15,6 +15,7 @@ import java.util.ArrayList;
  *
  * This activity allows administrators to browse user profiles, confirm deletions,
  * and interact with the AdminService to perform user-related actions.
+ * @author Hunaid
  */
 public class AdminBrowseUsersActivity extends AppCompatActivity {
 
