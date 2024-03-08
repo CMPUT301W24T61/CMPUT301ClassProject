@@ -52,8 +52,10 @@
             android:name=".BrowseEventsActivity"
             android:parentActivityName=".DashboardActivity"
             />
-        <activity android:name=".AddEventDetailActivity"/>
-        <activity android:name=".AddEventLocationActivity"/>
+        <activity android:name=".AddEventDetailActivity"
+            android:parentActivityName=".DashboardActivity"/>
+        <activity android:name=".AddEventLocationActivity"
+            android:parentActivityName=".AddEventDetailActivity"/>
         <activity android:name=".CreateEventActivity" />
         <activity android:name=".EventCreationSuccessActivity"/>
         <activity
