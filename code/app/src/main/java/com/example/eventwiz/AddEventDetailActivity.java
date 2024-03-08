@@ -172,7 +172,7 @@ public class AddEventDetailActivity extends AppCompatActivity {
         String posterUrl = "";
 
 
-        Event event = new Event(eventName, eventDescription, date, startTime, endTime, "", maxAttendees, checkInQRCodePath, promotionQRCodePath, posterUrl);
+        Event event = new Event(eventName, eventDescription, date, startTime, endTime, "", maxAttendees, checkInQRCodePath, promotionQRCodePath, posterUrl, "");
         saveEventToFirestore(event);
 
         Intent intent = new Intent(AddEventDetailActivity.this, AddEventLocationActivity.class);
