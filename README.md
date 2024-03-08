@@ -4,7 +4,7 @@
 ## Halfway Point-at a glance
 
 - 17/30 user stories definitively implemented and tested
-- 4 more implemented but under review for testing
+- 5 more implemented but under review for testing
 - UML/Mockups and Storyboard Updates Completed
 - Java Documentation added
 - P.S. - Check the branch testing_new for test implementations.
