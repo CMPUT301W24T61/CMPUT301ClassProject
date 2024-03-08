@@ -103,32 +103,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        /*
-        // Find the camera button (ImageView) by ID
-        ImageView cameraButton = findViewById(R.id.button_open_camera);
-
-        // Set an OnClickListener for the camera button (ImageView)
-        cameraButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                // Handle camera button click by opening the camera
-                openCamera();
-            }
-        });
-    }
-
-    // Method to open the camera
-    private void openCamera() {
-        Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-
-        // Check if there is a camera app available
-        if (cameraIntent.resolveActivity(getPackageManager()) != null) {
-            startActivity(cameraIntent);
-        } else {
-            Toast.makeText(this, "No camera app found", Toast.LENGTH_SHORT).show();
-        }
-    */
-
     }
 
 

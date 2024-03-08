@@ -47,6 +47,12 @@
             android:exported="false"
             android:parentActivityName=".MainActivity" />
         <activity
+            android:name=".ViewProfileActivity"
+            android:theme="@style/Theme.AppCompat.Light.DarkActionBar"
+            android:parentActivityName=".SaveUserProfileActivity"
+            android:exported="false" />
+
+        <activity
             android:name=".MainActivity"
 
             android:exported="true" />
