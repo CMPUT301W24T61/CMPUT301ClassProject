@@ -18,7 +18,6 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -31,6 +30,7 @@ import java.util.List;
 /**
  * Activity for creating an event by uploading event details and poster.
  * @author Junkai
+ * @see Event
  */
 public class CreateEventActivity extends AppCompatActivity {
     private FirebaseStorage storage = FirebaseStorage.getInstance();
