@@ -101,7 +101,7 @@ public class QRCodeScannerActivity extends AppCompatActivity{
 //                Intent intent = new Intent(QRCodeScannerActivity.this, SaveUserProfileActivity.class);
 //                startActivity(intent);
                 if (scannedCode.startsWith("CHECKIN_")) {
-                    String eventId = scannedCode.replace("CHECKIN_", ""); // Extract the event ID
+                    String eventId = scannedCode.replace("CHECKIN_", "");
                     navigateToEventDetail(eventId);
                 } else {
                     Toast.makeText(this, "This QR code is not for event check-in.", Toast.LENGTH_LONG).show();
