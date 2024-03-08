@@ -49,6 +49,10 @@
         <activity
             android:name=".MainActivity"
 
+            android:exported="true" />
+        <activity
+            android:name=".DashboardActivity"
+            android:parentActivityName=".MainActivity"
             android:exported="true" >
 
             <intent-filter>
@@ -58,10 +62,6 @@
             </intent-filter>
 
         </activity>
-        <activity
-            android:name=".DashboardActivity"
-            android:parentActivityName=".MainActivity"
-            />
 
         <activity android:name=".AddEventDetailActivity"/>
         <activity android:name=".AddEventLocationActivity"/>
