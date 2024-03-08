@@ -14,6 +14,7 @@ public class EventBrief {
 
     private String location;
 
+    private String eventID;
 
 
     /**
@@ -143,7 +144,13 @@ public class EventBrief {
     public void setLocation(String location) {
         this.location = location;
     }
+    public String getEventID() {
+        return eventID;
+    }
 
+    public void setEventID(String eventID) {
+        this.eventID = eventID;
+    }
     // You may add a toString() method for easy logging/debugging
     @Override
     public String toString() {
