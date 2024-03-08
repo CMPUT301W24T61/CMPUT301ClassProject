@@ -1,99 +1,109 @@
 package com.example.eventwiz;
 
+
+import java.io.Serializable;
+import java.util.UUID;
+
 /**
  * This class stores all the data for Events made in the app
  * @see EventAdapter
- * @author Hunaid
+ * @author Hunaid,Junkai
  */
-public class Event {
-    private String eventName;
-    private String eventDate;
-    private String eventTime;
-    private String posterUrl; // URL to the image stored in Firebase
-    private String venue;
-    private String eventID;
+
+public class Event implements Serializable {
+    private String id;
+    private String name;
+    private String description;
+    private String date;
+    private String startTime;
+    private String endTime;
+    private String location;
+    private int maxAttendees;
+    private String posterUrl;
+    private String checkInQRCode;
+    private String promotionQRCode;
+    private String organizerId;
 
 
-    /**
-     * This method initializes the events information.
-     * @param eventName
-     * @param eventDate
-     * @param eventTime
-     * @param posterUrl
-     * @param venue
-     */
-    public Event(String eventName, String eventDate, String eventTime, String posterUrl, String venue, String eventID) {
-        this.eventName = eventName;
-        this.eventDate = eventDate;
-        this.eventTime = eventTime;
+    public Event(String name, String description, String date, String startTime, String endTime, String location, int maxAttendees, String checkInQRCode, String promotionQRCode, String posterUrl) {
+        this.id = UUID.randomUUID().toString();
+        this.name = name;
+        this.description = description;
+        this.date = date;
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.location = location;
+        this.maxAttendees = maxAttendees;
+        this.checkInQRCode = checkInQRCode;
+        this.promotionQRCode = promotionQRCode;
+
         this.posterUrl = posterUrl;
-        this.venue = venue;
-        this.eventID = eventID;
     }
 
-    // Getters and Setters
 
-    /**
-     * @return venue name as a string
-     */
-    public String getVenue() {
-        return venue;
+    public String getId() {
+        return id;
     }
 
-    /**
-     * Sets venue name
-     * @param venue
-     */
-    public void setVenue(String venue) {
-        this.venue = venue;
+    public void setId(String id) {
+        this.id = id;
     }
 
-    /**
-     *
-     * @return event name as a string
-     */
-    public String getEventName() {
-        return eventName;
+    public String getName() {
+        return name;
     }
 
-    /**
-     * Sets the event name
-     * @param eventName
-     */
-    public void setEventName(String eventName) {
-        this.eventName = eventName;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    /**
-     *
-     * @return event date as a string
-     */
-    public String getEventDate() {
-        return eventDate;
+    public String getDescription() {
+        return description;
     }
 
-    /**
-     * Sets event date
-     * @param eventDate
-     */
-    public void setEventDate(String eventDate) {
-        this.eventDate = eventDate;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
-    /**
-     *
-     * @return event time as a string
-     */
-    public String getEventTime() {
-        return eventTime;
+    public String getDate() {
+        return date;
     }
 
-    /**
-     * Sets event time
-     * @param eventTime
-     */
-    public void setEventTime(String eventTime) {
-        this.eventTime = eventTime;
+    public void setDate(String date) {
+        this.date = date;
+    }
+
+    public String getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(String startTime) {
+        this.startTime = startTime;
+    }
+
+    public String getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(String endTime) {
+        this.endTime = endTime;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
+    }
+
+    public int getMaxAttendees() {
+        return maxAttendees;
+    }
+
+    public void setMaxAttendees(int maxAttendees) {
+        this.maxAttendees = maxAttendees;
+
     }
 
     /**
@@ -112,26 +122,30 @@ public class Event {
         this.posterUrl = posterUrl;
     }
 
-    public String getEventID() {
-        return eventID;
+
+    public String getCheckInQRCode() {
+        return checkInQRCode;
     }
 
-    public void setEventID(String eventID) {
-        this.eventID = eventID;
+    public void setCheckInQRCode(String checkInQRCode) {
+        this.checkInQRCode = checkInQRCode;
     }
 
-    /**
-     *
-     * @return all the details of an event in string format
-     */
-    // You may add a toString() method for easy logging/debugging
-    @Override
-    public String toString() {
-        return "Event{" +
-                "eventName='" + eventName + '\'' +
-                ", eventDate='" + eventDate + '\'' +
-                ", eventTime='" + eventTime + '\'' +
-                ", posterUrl='" + posterUrl + '\'' +
-                '}';
+    public String getPromotionQRCode() {
+        return promotionQRCode;
     }
+
+    public void setPromotionQRCode(String promotionQRCode) {
+        this.promotionQRCode = promotionQRCode;
+    }
+
+    public String getOrganizerId() {
+        return organizerId;
+    }
+
+    public void setOrganizerId(String organizerId) {
+        this.organizerId = organizerId;
+    }
+
+
 }

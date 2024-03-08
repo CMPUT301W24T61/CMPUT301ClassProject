@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/white">
+
+    <TextView
+        android:id="@+id/tvHeader"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Location"
+        android:gravity="center"
+        android:textSize="24sp"
+        android:textColor="@android:color/white"
+        android:textStyle="bold"
+        android:background="@color/turqoise"
+        android:padding="16dp"/>
+
+
+    <ImageButton xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/BackArrow"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingTop="20dp"
+        android:paddingLeft="14dp"
+        android:src="@drawable/ic_back_arrow"
+        android:contentDescription="go back to previous page"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true"
+        android:background="@android:color/transparent"/>
+
+    <TextView
+        android:id="@+id/tvAddressLine1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tvHeader"
+        android:paddingLeft="14dp"
+        android:text="Address Line 1 *"
+        android:textColor="@android:color/black"
+        android:layout_marginTop="16dp"
+        android:textAppearance="@android:style/TextAppearance.Medium"/>
+
+
+    <EditText
+        android:id="@+id/etAddressLine1"
+        android:layout_width="350dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tvAddressLine1"
+        android:paddingLeft="14dp"
+        android:inputType="text"
+        android:background="#D3D3D3"
+        android:hint="Type here..."/>
+
+
+    <TextView
+        android:id="@+id/tvAddressLine2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/etAddressLine1"
+        android:paddingLeft="14dp"
+        android:text="Address Line 2 *"
+        android:textColor="@android:color/black"
+        android:textAppearance="@android:style/TextAppearance.Medium"
+        android:layout_marginTop="16dp"/>
+
+
+    <EditText
+        android:id="@+id/etAddressLine2"
+        android:layout_width="350dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tvAddressLine2"
+        android:paddingLeft="14dp"
+        android:inputType="text"
+        android:background="#D3D3D3"
+        android:hint="Type here..."/>
+
+
+    <TextView
+        android:id="@+id/tvAddressLine3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/etAddressLine2"
+        android:paddingLeft="14dp"
+        android:text="Address Line 3: *"
+        android:textColor="@android:color/black"
+        android:textAppearance="@android:style/TextAppearance.Medium"
+        android:layout_marginTop="16dp"/>
+
+
+    <EditText
+        android:id="@+id/etAddressLine3"
+        android:layout_width="350dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tvAddressLine3"
+        android:hint="Type here..."
+        android:inputType="text"
+        android:background="#D3D3D3"
+        android:paddingLeft="14dp" />
+
+    <TextView
+        android:id="@+id/tvCityLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/etAddressLine3"
+        android:paddingLeft="16dp"
+        android:text="City: *"
+        android:textColor="@android:color/black"
+        android:textAppearance="@android:style/TextAppearance.Medium"
+        android:layout_marginTop="16dp"/>
+    <EditText
+        android:id="@+id/etCity"
+        android:layout_width="120dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tvCityLabel"
+        android:paddingLeft="14dp"
+        android:inputType="text"
+        android:background="#D3D3D3"
+        android:hint="Type here..."/>
+
+    <!-- Add State/Province TextView -->
+    <TextView
+        android:id="@+id/tvStateProvinceLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/etAddressLine3"
+        android:layout_toEndOf="@id/etCity"
+        android:layout_marginStart="110dp"
+        android:text="State/Province: *"
+        android:textColor="@android:color/black"
+        android:textAppearance="@android:style/TextAppearance.Medium"
+        android:layout_marginTop="16dp"/>
+
+    <EditText
+        android:id="@+id/etStateProvince"
+        android:layout_width="135dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tvStateProvinceLabel"
+        android:layout_marginStart="110dp"
+        android:layout_marginTop="10dp"
+        android:background="#D3D3D3"
+        android:layout_toEndOf="@id/etCity" />
+
+    <TextView
+        android:id="@+id/tvCountryLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/etCity"
+        android:paddingLeft="16dp"
+        android:text="Country: *"
+        android:textColor="@android:color/black"
+        android:textAppearance="@android:style/TextAppearance.Medium"
+        android:layout_marginTop="16dp"/>
+
+    <EditText
+        android:id="@+id/etCountry"
+        android:layout_width="120dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tvCountryLabel"
+        android:background="#D3D3D3"
+        android:layout_marginTop="21dp" />
+
+
+    <TextView
+        android:id="@+id/tvAreaCodeLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/etStateProvince"
+        android:layout_marginStart="67dp"
+        android:layout_marginTop="27dp"
+        android:layout_toEndOf="@id/tvCountryLabel"
+        android:text="Area Code/Postal code: *"
+        android:textAppearance="@android:style/TextAppearance.Medium"
+        android:textColor="@android:color/black" />
+
+    <EditText
+        android:id="@+id/etAreaCodePostalCode"
+        android:layout_width="135dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tvAreaCodeLabel"
+        android:layout_marginStart="110dp"
+        android:layout_marginTop="10dp"
+        android:layout_toEndOf="@id/etCountry"
+        android:background="#D3D3D3"
+        android:hint="Type here..."
+        android:inputType="text" />
+
+    <Button
+        android:id="@+id/btnNext"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="NEXT"
+        android:backgroundTint="@android:color/holo_orange_dark"
+        android:textColor="@android:color/white"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginBottom="16dp"
+        android:layout_marginEnd="16dp"/>
+
+</RelativeLayout>

@@ -1,4 +1,5 @@
 
+
 package com.example.eventwiz;
 
 import android.app.Activity;
@@ -39,8 +40,8 @@ import com.google.firebase.storage.UploadTask;
 import java.io.IOException;
 
 /**
- * This class is responsible for Saving data to the user profile
- * Works with FireBase to store data for each user
+ * The SaveUserProfileActivity class handles the user profile creation process, including
+ * uploading user information and profile picture to Firebase Firestore and Storage.
  * @author Yesith
  */
 public class SaveUserProfileActivity extends AppCompatActivity {
@@ -113,6 +114,7 @@ public class SaveUserProfileActivity extends AppCompatActivity {
             }
         });
 
+
         SaveProfileButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -124,7 +126,10 @@ public class SaveUserProfileActivity extends AppCompatActivity {
 
 
 
+
     }
+
+
     /*
     private void CheckStoragePermission(){
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
@@ -147,33 +152,33 @@ public class SaveUserProfileActivity extends AppCompatActivity {
 
     ActivityResultLauncher<Intent> launcher
             =registerForActivityResult(
-                    new ActivityResultContracts.StartActivityForResult(),
+            new ActivityResultContracts.StartActivityForResult(),
             result -> {
-                        if(result.getResultCode() == Activity.RESULT_OK){
-                            Intent data = result.getData();
-                            if (data != null && data.getData() != null) {
-                                imageUri = data.getData();
+                if(result.getResultCode() == Activity.RESULT_OK){
+                    Intent data = result.getData();
+                    if (data != null && data.getData() != null) {
+                        imageUri = data.getData();
 
-                                // convert Image into BitMap
-                                try {
-                                    bitmap = MediaStore.Images.Media.getBitmap(
-                                            this.getContentResolver(),
-                                            imageUri
-                                    );
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                }
-
-                            }
-                            //we set image into imageview
-                            if (imageUri != null){
-                                selectPhoto.setImageBitmap(bitmap);
-
-                            }
-
-
+                        // convert Image into BitMap
+                        try {
+                            bitmap = MediaStore.Images.Media.getBitmap(
+                                    this.getContentResolver(),
+                                    imageUri
+                            );
+                        } catch (IOException e) {
+                            e.printStackTrace();
                         }
+
                     }
+                    //we set image into imageview
+                    if (imageUri != null){
+                        selectPhoto.setImageBitmap(bitmap);
+
+                    }
+
+
+                }
+            }
     );
 
     // upload image to firebase

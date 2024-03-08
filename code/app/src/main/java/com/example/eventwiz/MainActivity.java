@@ -1,6 +1,24 @@
 package com.example.eventwiz;
 
 
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+
+import static android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.location.LocationManager;
+import android.os.Bundle;
+import android.provider.Settings;
+import android.view.View;
+import android.widget.TextView;
+
+
+import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -11,25 +29,27 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+
+
 /**
  * This class will handle button presses from the main screen and will call other classes
  * and activities as necessary
- * @author Hunaid
  *
+ * Will need to update this with @see for classes as they are created.
  */
 public class MainActivity extends AppCompatActivity {
     private FirebaseAuth userAuth;
     SharedPreferences sp;
     String uid;
+
+    private TextView gpsStatus;
+    private LocationManager locationManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,9 +57,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
 
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setTitle("EventWiz");
-        }
 
 
         userAuth = FirebaseAuth.getInstance();
@@ -47,30 +64,23 @@ public class MainActivity extends AppCompatActivity {
         sp = getSharedPreferences("MyPrefs", MODE_PRIVATE);
         SharedPreferences.Editor editor = sp.edit();
         editor.putString("anonymousUserId", uid);
-        editor.commit();
+        editor.apply();
         Log.d("SharedPreferences", "Saved Anonymous User ID: " + uid);
 
+        gpsStatus = findViewById(R.id.gps_status);
+        locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
 
-        Button buttonBrowseEvents = findViewById(R.id.button_browse_events);
-        buttonBrowseEvents.setOnClickListener(new View.OnClickListener() {
+
+
+        Button buttonGetStarted = findViewById(R.id.button_get_started);
+        buttonGetStarted.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this, BrowseEventsActivity.class);
+                Intent intent = new Intent(MainActivity.this, DashboardActivity.class);
                 startActivity(intent);
 
             }
         });
-
-//        Button buttonRegister = findViewById(R.id.button_register);
-
-//        buttonBrowseEvents.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Intent intent = new Intent(MainActivity.this, BrowseEventsActivity.class);
-//                startActivity(intent);
-//
-//            }
-//        });
 
         Button buttonRegister = findViewById(R.id.button_register);
 
@@ -81,7 +91,7 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
 
             }
-       });
+        });
 
 
         Button buttonScanQR = findViewById(R.id.button_scan_qr);
@@ -93,7 +103,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-
+        /*
         // Find the camera button (ImageView) by ID
         ImageView cameraButton = findViewById(R.id.button_open_camera);
 
@@ -117,11 +127,12 @@ public class MainActivity extends AppCompatActivity {
         } else {
             Toast.makeText(this, "No camera app found", Toast.LENGTH_SHORT).show();
         }
+    */
+
     }
 
-    /**
-     * This is the on start function when the app is loaded. Handles loading the main page and connecting to FireBase
-     */
+
+
     @Override
     public void onStart() {
         super.onStart();
@@ -136,6 +147,13 @@ public class MainActivity extends AppCompatActivity {
             // If the user is already signed in, update UI
             Log.d("Authentication", "User is already signed in. UID: " + currentUser.getUid());
             updateUI(currentUser);
+        }
+
+        if(locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)){
+            gpsStatus.setText("GPS is ON");
+
+        }else{
+            gpsStatus.setText("GPS is OFF");
         }
     }
 
@@ -171,16 +189,58 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    // Method to save anonymous user's UID to SharedPreferences
 
 
+    public void buttonSwitchGPS(View view) {
+        if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+            // GPS is currently ON, turn it OFF
+            turnOffGPS();
+        } else {
+            // GPS is currently OFF, turn it ON
+            turnOnGPS();
+        }
+    }
 
+    private void turnOnGPS() {
 
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+        alertDialogBuilder.setMessage("GPS is disabled. Would you like to enable it?")
+                .setCancelable(true)
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+                    }
+                })
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.cancel();
+                    }
+                });
+        AlertDialog alertDialog = alertDialogBuilder.create();
+        alertDialog.show();
+    }
 
-
-
-
-
-
+    private void turnOffGPS() {
+        // Check if the user wants to enable GPS
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+        alertDialogBuilder.setMessage("GPS is enabled. Would you like to disable it?")
+                .setCancelable(true)
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+                    }
+                })
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.cancel();
+                    }
+                });
+        AlertDialog alertDialog = alertDialogBuilder.create();
+        alertDialog.show();
+    }
 
 }

@@ -1,17 +1,11 @@
 package com.example.eventwiz;
 
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
-import android.app.AlertDialog;
 import android.graphics.drawable.ColorDrawable;
-
-
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.ImageButton;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
@@ -19,14 +13,6 @@ import androidx.core.content.ContextCompat;
 
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
-
-import java.util.ArrayList;
-import java.util.List;
-import androidx.appcompat.app.ActionBar;
-import androidx.core.content.ContextCompat;
-
-import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,14 +26,45 @@ import java.util.List;
 public class BrowseEventsActivity extends AppCompatActivity {
     private ListView listView;
     private EventAdapter adapter;
-    private List<Event> events; // You should populate this list with actual event data
+
+    private List<EventBrief> events;
+
+
 
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_browse_events);
+
+
+        ImageButton backButton = findViewById(R.id.BackArrow);
+        backButton.setOnClickListener(view -> onBackPressed());
+
+
+        listView = findViewById(R.id.lvEvents);
+        events = new ArrayList<>();
+
+        // Example: Fetch events asynchronously from Firebase or any other source
+        // Async data fetching code goes here...
+
+        // After fetching data, update the events list and notify the adapter
+        // events.addAll(fetchedEvents);
+        // adapter.notifyDataSetChanged();
+
+        // For now, add sample data
+        EventBrief newEventBrief = new EventBrief("IDK", "DS", "SDSD", "URL_TO_IMAGE", "SDS","LOC");
+        events.add(newEventBrief);
+
+        adapter = new EventAdapter(this, events);
+        listView.setAdapter(adapter);
+
+        // Add click listener to handle item clicks
+        listView.setOnItemClickListener((parent, view, position, id) -> {
+            // Handle item click, e.g., navigate to detail view
+        });
 
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
@@ -66,34 +83,6 @@ public class BrowseEventsActivity extends AppCompatActivity {
         adapter = new EventAdapter(this, events);
         listView.setAdapter(adapter);
         fetchEvents();
-
-       // code to remove event if admin detected
-        AdminService adminService = new AdminService();
-        if(QRCodeScannerActivity.isUserAdmin()){
-            listView.setOnItemClickListener((parent, view, position, id) -> {
-                if (QRCodeScannerActivity.isUserAdmin()) {
-                    Event selectedEvent = adapter.getItem(position);
-                    new AlertDialog.Builder(BrowseEventsActivity.this)
-                            .setTitle("Remove Event")
-                            .setMessage("Are you sure you want to remove this event?")
-                            .setPositiveButton("Yes", (dialog, which) -> removeEvent(selectedEvent))
-                            .setNegativeButton("No", null)
-                            .show();
-                }
-            });
-        }
-    }
-
-    private void removeEvent(Event event) { //only remove if user is admin
-        // Remove event from Firebase
-        db.collection("events").document(event.getEventID()) // Ensure your Event class has an id field
-                .delete()
-                .addOnSuccessListener(aVoid -> {
-                    events.remove(event);
-                    adapter.notifyDataSetChanged();
-                    Toast.makeText(BrowseEventsActivity.this, "Event removed successfully", Toast.LENGTH_SHORT).show();
-                })
-                .addOnFailureListener(e -> Toast.makeText(BrowseEventsActivity.this, "Error removing event", Toast.LENGTH_SHORT).show());
     }
 
     private void fetchEvents() {
@@ -108,10 +97,9 @@ public class BrowseEventsActivity extends AppCompatActivity {
                             String eventTimeStart = document.contains("startTime") ? document.getString("startTime") : ""; // Assuming 'startTime' in your Firestore
                             String posterUrl = document.getString("posterUrl");
                             String venue = document.getString("location");
-                            String eventID = document.getString("id");
 
-                            Event newEvent = new Event(eventName, eventDate +"  " + eventTimeStart + " to " + eventTimeEnd, eventTimeStart, posterUrl, venue, eventID);
-                            events.add(newEvent);
+                            EventBrief newEventBrief = new EventBrief(eventName, eventDate,eventTimeStart, eventTimeEnd,posterUrl,venue);
+                            events.add(newEventBrief);
                         }
                         adapter.notifyDataSetChanged(); // Notify the adapter that the data set has changed
                     } else {
@@ -119,5 +107,8 @@ public class BrowseEventsActivity extends AppCompatActivity {
                         Log.d("error", "This is firebase error");
                     }
                 });
+
     }
+
+
 }

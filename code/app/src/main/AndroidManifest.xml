@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
@@ -7,6 +8,7 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.INTERNET" />
+
 
     <uses-feature android:name="android.hardware.camera" />
     <uses-feature android:name="android.hardware.camera.autofocus" />
@@ -26,6 +28,10 @@
             android:parentActivityName=".AdminDashboard"
             android:exported="false" />
         <activity
+            android:name=".QRCodeScannerActivity"
+            android:parentActivityName=".MainActivity"
+            android:exported="false" />
+        <activity
             android:name=".AdminDashboard"
             android:exported="false"
             android:parentActivityName=".MainActivity" />
@@ -42,19 +48,42 @@
             android:exported="false"
             android:parentActivityName=".MainActivity" />
         <activity
-            android:name=".QRCodeScannerActivity"
-            android:exported="false"
-            android:parentActivityName=".MainActivity" />
-        <activity
             android:name=".MainActivity"
-            android:exported="true"
-            android:parentActivityName=".MainActivity">
+
+            android:exported="true" >
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
         </activity>
+        <activity
+            android:name=".DashboardActivity"
+            android:parentActivityName=".MainActivity"
+            />
+        <activity
+            android:name=".BrowseEventsActivity"
+            android:parentActivityName=".DashboardActivity"
+            />
+        <activity android:name=".AddEventDetailActivity"/>
+        <activity android:name=".AddEventLocationActivity"/>
+        <activity android:name=".CreateEventActivity" />
+        <activity android:name=".EventCreationSuccessActivity"/>
+        <activity
+
+            android:name=".ViewEventDetailsActivity"
+            android:parentActivityName=".BrowseEventsActivity"
+        />
+        <activity android:name=".PortraitCaptureActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat.Light.DarkActionBar"
+            android:stateNotNeeded="true"
+            android:windowSoftInputMode="stateAlwaysHidden"
+            android:configChanges="orientation|keyboardHidden|screenSize">
+        </activity>
+        <activity android:name=".ScanQRActivity" />
     </application>
 
 </manifest>
