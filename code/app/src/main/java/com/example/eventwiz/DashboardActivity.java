@@ -26,10 +26,10 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-
 /**
  * Activity for the user dashboard, providing options to create events, browse events, and scan QR codes.
- * @author Junkai
+ *
+ * @author Junkai,yesith
  */
 public class DashboardActivity extends AppCompatActivity {
 
@@ -49,7 +49,12 @@ public class DashboardActivity extends AppCompatActivity {
 
 
 
-
+    /**
+     * Called when the activity is first created. Responsible for initializing the UI components,
+     * setting up click listeners, and handling various actions within the dashboard.
+     *
+     * @param savedInstanceState A Bundle containing the activity's previously saved state, if any.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -138,6 +143,10 @@ public class DashboardActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Method called when the activity is starting. Responsible for loading the user's profile information
+     * and displaying a welcome message along with the profile picture.
+     */
     public void onStart() {
 
         super.onStart();
@@ -168,8 +177,6 @@ public class DashboardActivity extends AppCompatActivity {
                                 // Only name is available
                                 tvwelcomeText.setText("Welcome " + user);
                                 // Handle the case when no profile picture is available
-
-
                                 // Create a Bitmap with ARGB_8888 configuration
                                 Paint paint = new Paint();
                                 int desiredSizeInDp = 10;  // Adjust this to your desired size in dp
@@ -194,7 +201,7 @@ public class DashboardActivity extends AppCompatActivity {
 
                                 String initials = initialsBuilder.toString().toUpperCase();
 
-// Draw the initials on the Canvas at the center
+                                // Draw the initials on the Canvas at the center
                                 float x = (b.getWidth() - paint.measureText(initials)) / 2;
                                 float y = (b.getHeight() / 2) - ((paint.descent() + paint.ascent()) / 2);
                                 c.drawText(initials, x, y, paint);
@@ -214,6 +221,10 @@ public class DashboardActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+    /**
+     * Method to handle the deletion of the user's profile image. If the image exists, it is deleted,
+     * and a default profile image is set. If the image is already null, appropriate messages are displayed.
+     */
     private void deleteProfileImage() {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         String currentID = user.getUid();

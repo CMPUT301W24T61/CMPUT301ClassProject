@@ -15,5 +15,4 @@ public abstract class User {
         return name;
     }
 
-    public abstract void setGeolocationTrackingEnabled(boolean isEnabled);
 }

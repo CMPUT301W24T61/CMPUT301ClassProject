@@ -5,9 +5,10 @@ import java.io.Serializable;
 import java.util.UUID;
 
 /**
- * This class stores all the data for Events made in the app
- * @see EventAdapter
- * @author Hunaid,Junkai
+ * This class represents an event in the app with relevant details.
+ *
+ * @see EventAdapter Used for adapting events to UI elements.
+ * @author Hunaid, Junkai
  */
 
 public class Event implements Serializable {
@@ -24,9 +25,29 @@ public class Event implements Serializable {
     private String promotionQRCode;
     private String organizerId;
 
+
+    /**
+     * Default constructor required for calls to DataSnapshot.getValue(Event.class).
+     * This constructor should be used for deserialization purposes.
+     */
     public Event() {
         // Default constructor required for calls to DataSnapshot.getValue(Event.class)
     }
+
+    /**
+     * Constructs a new Event object with specified details.
+     *
+     * @param name           The name of the event.
+     * @param description    A description of the event.
+     * @param date           The date of the event.
+     * @param startTime      The start time of the event.
+     * @param endTime        The end time of the event.
+     * @param location       The location of the event.
+     * @param maxAttendees   The maximum number of attendees allowed for the event.
+     * @param checkInQRCode  The QR code for event check-in.
+     * @param promotionQRCode The QR code for event promotions.
+     * @param posterUrl      The URL of the event poster.
+     */
     public Event(String name, String description, String date, String startTime, String endTime, String location, int maxAttendees, String checkInQRCode, String promotionQRCode, String posterUrl) {
         this.id = UUID.randomUUID().toString();
         this.name = name;

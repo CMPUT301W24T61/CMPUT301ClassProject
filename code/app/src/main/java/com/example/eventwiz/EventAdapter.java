@@ -18,7 +18,7 @@ import java.util.List;
 /**
  * This class is responsible for handling the adapter for events.
  * @see EventBrief
- * @author Hunaid
+ * @author Hunaid,Yesith
  */
 public class EventAdapter extends ArrayAdapter<Event> {
     public EventAdapter(Context context, List<Event> events) {

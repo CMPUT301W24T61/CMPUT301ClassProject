@@ -29,7 +29,15 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
-
+/**
+ * ViewProfileActivity displays the user profile information, allowing users to view their details.
+ * Users can edit their profile by navigating to the SaveUserProfileActivity.
+ * The profile information is retrieved from the Firestore database and displayed on the screen.
+ *
+ * @author yesith
+ * @version 1.0
+ * @since 2024-03-08
+ */
 public class ViewProfileActivity extends AppCompatActivity {
 
     private TextView tvUserName, tvUserEmail, tvUserMobile, tvUserHomepage;
@@ -44,6 +52,13 @@ public class ViewProfileActivity extends AppCompatActivity {
 
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
 
+    /**
+     * Called when the activity is first created. Responsible for initializing the UI components
+     * and setting up the click listener for the edit profile button.
+     *
+     * @param savedInstanceState Bundle containing the activity's previously saved state, or null
+     *                           if there was no saved state.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -72,6 +87,10 @@ public class ViewProfileActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Called when the activity is becoming visible to the user. Retrieves user profile information
+     * from Firestore and updates the UI accordingly.
+     */
     @Override
     public void onStart() {
 

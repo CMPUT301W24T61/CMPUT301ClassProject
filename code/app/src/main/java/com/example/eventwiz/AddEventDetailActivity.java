@@ -23,7 +23,18 @@ import java.util.List;
 
 /**
  * Activity for adding event details.
- * @author Junkai
+ *
+ * This activity allows the user to input various details for a new event, such as event name,
+ * description, date, time, and maximum attendees. The entered information is used to create an
+ * Event object, which is then stored in Firestore. After entering the details, the user can proceed
+ * to the next step in adding event information.
+ *
+ * The class also initializes and handles UI components, populates spinners with relevant data, and
+ * provides navigation to the next activity in the event creation process.
+ *
+ * @author Junkai,Yesith
+ * @version 1.0
+ * @since 2024-03-08
  */
 public class AddEventDetailActivity extends AppCompatActivity {
 
@@ -51,7 +62,10 @@ public class AddEventDetailActivity extends AppCompatActivity {
         populateSpinners();
     }
 
-
+    /**
+     * Initializes the user interface components, sets up the action bar, and assigns listeners
+     * to buttons and spinners.
+     */
     private void initializeUI() {
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
@@ -85,7 +99,9 @@ public class AddEventDetailActivity extends AppCompatActivity {
         backArrow.setOnClickListener(v -> finish());
     }
 
-
+    /**
+     * Populates various spinners with data such as months, days, years, hours, and minutes.
+     */
     private void populateSpinners() {
         ArrayAdapter<String> monthAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, getMonths());
         spinnerMonth.setAdapter(monthAdapter);
@@ -103,12 +119,23 @@ public class AddEventDetailActivity extends AppCompatActivity {
         fromAmPM.setAdapter(amPmAdapter);
         toAmPM.setAdapter(amPmAdapter);
     }
+
+    /**
+     * Retrieves a list of months.
+     *
+     * @return List of month names.
+     */
     private List<String> getMonths() {
         return Arrays.asList("January", "February", "March", "April", "May", "June", "July",
                 "August", "September", "October", "November", "December");
     }
 
-
+    /**
+     * Retrieves a list of days based on the provided number of days.
+     *
+     * @param days The number of days in the month.
+     * @return List of day values as strings.
+     */
     private List<String> getDays(int days) {
         List<String> dayList = new ArrayList<>();
         for (int i = 1; i <= days; i++) {
@@ -117,6 +144,12 @@ public class AddEventDetailActivity extends AppCompatActivity {
         return dayList;
     }
 
+    /**
+     * Retrieves a list of years
+     *
+     *
+     * @return List of years as strings.
+     */
 
     private List<String> getYears() {
         List<String> yearList = new ArrayList<>();
@@ -148,6 +181,10 @@ public class AddEventDetailActivity extends AppCompatActivity {
 
 
 
+
+    /**
+     * Navigates to the next activity after gathering event details and saving them to Firestore.
+     */
     private void goToNextActivity() {
         String eventName = etEventName.getText().toString();
         String eventDescription = etEventDescription.getText().toString();
@@ -181,11 +218,20 @@ public class AddEventDetailActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+    /**
+     * Saves the provided event details to Firestore.
+     *
+     * @param event The {@code Event} object to be stored in Firestore.
+     */
     private void saveEventToFirestore(Event event) {
         db.collection("events").document(event.getId()).set(event);
     }
 
-
+    /**
+     * Handles the "Up" button press in the action bar.
+     *
+     * @return {@code true} if the navigation was handled successfully.
+     */
     @Override
     public boolean onSupportNavigateUp() {
         onBackPressed();

@@ -1,19 +1,35 @@
 package com.example.eventwiz;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+
 
 /**
  * Activity to display the details of a successfully created event.
+ * This activity includes information about the event such as name, date, time, location,
+ * maximum attendees, event poster, check-in QR code, and promotion QR code.
+ *
+ * This class extends AppCompatActivity and is used to handle the UI and navigation logic
+ * for the event creation success screen.
+ *
+ * The event details are passed to this activity through an Intent with the key "event".
+ *
  * @author Junkai
  */
 public class EventCreationSuccessActivity extends AppCompatActivity {
@@ -22,7 +38,15 @@ public class EventCreationSuccessActivity extends AppCompatActivity {
     private ImageView ivEventPoster, ivCheckInQRCode, ivPromotionQRCode;
     private Event event;
 
-
+    /**
+     * Called when the activity is starting. Responsible for initializing the UI,
+     * retrieving the event details from the Intent, and loading the event details.
+     *
+     * @param savedInstanceState If the activity is being re-initialized after
+     *                           previously being shut down, this Bundle contains
+     *                           the data it most recently supplied in onSaveInstanceState(Bundle).
+     *                           Otherwise, it is null.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -32,7 +56,12 @@ public class EventCreationSuccessActivity extends AppCompatActivity {
 
         initializeUI();
         loadEventDetails();
+
     }
+
+    /**
+     * Initializes the UI elements by finding and assigning views to their respective variables.
+     */
 
     private void initializeUI() {
         tvEventName = findViewById(R.id.tvEventName);
@@ -49,6 +78,10 @@ public class EventCreationSuccessActivity extends AppCompatActivity {
         btnGoToDashboard.setOnClickListener(v -> goToDashboardActivity());
     }
 
+    /**
+     * Loads and displays the event details on the UI elements.
+     * If the event has associated images (poster, QR codes), they are loaded using Glide.
+     */
     private void loadEventDetails() {
         if (event != null) {
             tvEventName.setText(event.getName());
@@ -82,9 +115,14 @@ public class EventCreationSuccessActivity extends AppCompatActivity {
         return true;
     }
 
+    /**
+     * Navigates to the DashboardActivity when the "Go to Dashboard" button is clicked.
+     */
     private void goToDashboardActivity() {
         Intent intent = new Intent(EventCreationSuccessActivity.this, DashboardActivity.class);
         startActivity(intent);
     }
+
+
 }
 

@@ -17,7 +17,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * BrowseEventsActivity is responsible for displaying events in a list from the firebase database
+ * The BrowseEventsActivity class is responsible for displaying events in a list
+ * retrieved from the Firebase database. It extends the AppCompatActivity and
+ * utilizes a custom EventAdapter for displaying events in a ListView.
+ *
  * @see Event
  * @author Hunaid
  */
@@ -30,6 +33,13 @@ public class BrowseEventsActivity extends AppCompatActivity {
     private List<Event> events;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
 
+    /**
+     * Called when the activity is first created. This method sets up the user interface,
+     * initializes the ActionBar, configures the ListView and adapter, sets up item click
+     * listeners, and fetches events from the Firestore database.
+     *
+     * @param savedInstanceState A Bundle containing the activity's previously saved state, if any.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,6 +73,10 @@ public class BrowseEventsActivity extends AppCompatActivity {
         fetchEvents();
     }
 
+    /**
+     * Fetches events from the Firestore database and populates the events list.
+     * Notifies the adapter when the data set changes.
+     */
     private void fetchEvents() {
         db.collection("events")
                 .get()

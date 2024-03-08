@@ -41,6 +41,11 @@ import java.io.IOException;
 /**
  * The SaveUserProfileActivity class handles the user profile creation process, including
  * uploading user information and profile picture to Firebase Firestore and Storage.
+ *
+ * This activity allows the user to enter personal information and upload a profile picture.
+ * The information is then stored in Firebase Firestore, and the profile picture is uploaded
+ * to Firebase Storage.
+ *
  * @author Yesith
  */
 public class SaveUserProfileActivity extends AppCompatActivity {
@@ -68,7 +73,12 @@ public class SaveUserProfileActivity extends AppCompatActivity {
     SharedPreferences sp;
 
 
-
+    /**
+     * Called when the activity is first created. Initializes UI components,
+     * Firebase instances, and sets up click listeners.
+     *
+     * @param savedInstanceState A Bundle containing the activity's previously saved state.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -128,7 +138,9 @@ public class SaveUserProfileActivity extends AppCompatActivity {
     }
 
 
-    // get picture from gallery
+    /**
+     * Launches the gallery to allow the user to pick an image for their profile.
+     */
     private void PickImageFromGallery() {
         Intent intent = new Intent();
         intent.setType("image/*");
@@ -168,9 +180,10 @@ public class SaveUserProfileActivity extends AppCompatActivity {
             }
     );
 
-    // upload image to firebase
-
-    //make a method to upload Image into firebase storage
+    /**
+     * Uploads the selected image to Firebase Storage and retrieves the download URL.
+     * Once the URL is obtained, it is used to update the user's profile information.
+     */
 
     private void uploadImage(){
         //chekc imageuri
@@ -202,6 +215,10 @@ public class SaveUserProfileActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Uploads user information, including name, email, homepage, mobile, and profile picture URL,
+     * to Firebase Firestore.
+     */
     private void uploadUserInfo(){
         //get text from text edit
         String name=eduserName.getText().toString();
@@ -259,6 +276,10 @@ public class SaveUserProfileActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Retrieves the anonymous user ID from SharedPreferences.
+     * This ID is used to uniquely identify the anonymous user in the Firestore database.
+     */
     private void retrieveAnonymousUserId() {
         sp = getSharedPreferences("MyPrefs", MODE_PRIVATE);
         CurrentUserID = sp.getString("anonymousUserId", null);
