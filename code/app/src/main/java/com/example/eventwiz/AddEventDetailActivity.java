@@ -12,13 +12,17 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -36,6 +40,7 @@ public class AddEventDetailActivity extends AppCompatActivity {
     private ImageButton backArrow;
     public Organizer organizer;
     public FirebaseFirestore db;
+    public FirebaseUser user;
 
 
     @Override
@@ -43,7 +48,7 @@ public class AddEventDetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_event_detail);
         db = FirebaseFirestore.getInstance();
-
+        user = FirebaseAuth.getInstance().getCurrentUser();
         organizer = new Organizer();
 
 
@@ -170,11 +175,11 @@ public class AddEventDetailActivity extends AppCompatActivity {
         String checkInQRCodePath = "";
         String promotionQRCodePath = "";
         String posterUrl = "";
+        String organizerId = user.getUid();
 
+        Event event = new Event(eventName, eventDescription, date, startTime, endTime, "", maxAttendees, checkInQRCodePath, promotionQRCodePath, posterUrl, organizerId);
 
-        Event event = new Event(eventName, eventDescription, date, startTime, endTime, "", maxAttendees, checkInQRCodePath, promotionQRCodePath, posterUrl);
         saveEventToFirestore(event);
-
         Intent intent = new Intent(AddEventDetailActivity.this, AddEventLocationActivity.class);
         intent.putExtra("event", event);
         intent.putExtra("organizer", organizer);

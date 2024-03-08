@@ -31,6 +31,10 @@
             android:parentActivityName=".MainActivity"
             android:exported="false" />
         <activity
+            android:name=".BrowseHostedEvents"
+            android:parentActivityName=".DashboardActivity"
+            android:exported="false" />
+        <activity
             android:name=".AdminDashboard"
             android:exported="false"
             android:parentActivityName=".MainActivity" />

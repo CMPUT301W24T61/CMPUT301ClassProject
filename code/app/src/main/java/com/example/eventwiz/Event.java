@@ -27,7 +27,7 @@ public class Event implements Serializable {
     public Event() {
         // Default constructor required for calls to DataSnapshot.getValue(Event.class)
     }
-    public Event(String name, String description, String date, String startTime, String endTime, String location, int maxAttendees, String checkInQRCode, String promotionQRCode, String posterUrl) {
+    public Event(String name, String description, String date, String startTime, String endTime, String location, int maxAttendees, String checkInQRCode, String promotionQRCode, String posterUrl, String organizerId) {
         this.id = UUID.randomUUID().toString();
         this.name = name;
         this.description = description;
@@ -38,7 +38,7 @@ public class Event implements Serializable {
         this.maxAttendees = maxAttendees;
         this.checkInQRCode = checkInQRCode;
         this.promotionQRCode = promotionQRCode;
-
+        this.organizerId = organizerId;
         this.posterUrl = posterUrl;
     }
 
