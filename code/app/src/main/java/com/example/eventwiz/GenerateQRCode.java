@@ -44,11 +44,11 @@ public class GenerateQRCode {
         return generateQRCodeBitmap(hashedString);
     }
 
-    private static String generateUniqueString() {
+    public static String generateUniqueString() {
         return UUID.randomUUID().toString();
     }
 
-    private static String hashString(String input) {
+    public static String hashString(String input) {
         try {
             MessageDigest digest = MessageDigest.getInstance("SHA-256");
             byte[] encodedhash = digest.digest(input.getBytes(StandardCharsets.UTF_8));
@@ -71,7 +71,7 @@ public class GenerateQRCode {
         return hexString.toString();
     }
 
-    private static Bitmap generateQRCodeBitmap(String content) {
+    public static Bitmap generateQRCodeBitmap(String content) {
         QRCodeWriter writer = new QRCodeWriter();
         try {
             BitMatrix bitMatrix = writer.encode(content, BarcodeFormat.QR_CODE, 200, 200);

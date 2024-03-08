@@ -45,6 +45,14 @@ public class AdminDashboard extends AppCompatActivity {
             actionBar.setTitle("Organizer Dashboard");
             actionBar.setDisplayHomeAsUpEnabled(true); // Enable the Up button
         }
+        FloatingActionButton scanQRButton = findViewById(R.id.fabCamera);
+        scanQRButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(AdminDashboard.this, QRCodeScannerActivity.class);
+                startActivity(intent);
+            }
+        });
 
         // Initialize UI components
         browseEventsButton = findViewById(R.id.events);

@@ -128,10 +128,13 @@ public class CreateEventActivity extends AppCompatActivity {
         // Conditional logic for generating/uploading QR codes
         if (checkboxGenerateCheckInQR.isChecked()) {
             try {
-                Bitmap checkInQRCodeBitmap = organizer.generateCheckInQRCode("Sample Check-In Data");
+                String uniqueString = GenerateQRCode.generateUniqueString();
+                String hashedString = GenerateQRCode.hashString(uniqueString);
+                Bitmap checkInQRCodeBitmap = organizer.generateCheckInQRCode(hashedString);
                 String checkInQRFileName = "checkInQRCode_" + System.currentTimeMillis() + ".png";
                 uploadBitmapAndGetUrl(checkInQRCodeBitmap, checkInQRFileName, checkInQRUrl -> {
                     event.setCheckInQRCode(checkInQRUrl);
+                    event.setHashCode(hashedString);
                     completeEventCreation();
                 });
             } catch (WriterException e) {
@@ -146,10 +149,13 @@ public class CreateEventActivity extends AppCompatActivity {
 
         if (checkboxGeneratePromotionQR.isChecked()) {
             try {
-                Bitmap promotionQRCodeBitmap = organizer.generatePromotionQRCode("Sample Promotion Data");
+                String uniqueString = GenerateQRCode.generateUniqueString();
+                String hashedString = GenerateQRCode.hashString(uniqueString);
+                Bitmap promotionQRCodeBitmap = organizer.generateCheckInQRCode(hashedString);
                 String promotionQRFileName = "promotionQRCode_" + System.currentTimeMillis() + ".png";
                 uploadBitmapAndGetUrl(promotionQRCodeBitmap, promotionQRFileName, promotionQRUrl -> {
                     event.setPromotionQRCode(promotionQRUrl);
+                    event.setHashCode(hashedString);
                     completeEventCreation();
                 });
             } catch (WriterException e) {
