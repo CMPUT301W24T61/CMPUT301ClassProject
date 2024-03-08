@@ -3,14 +3,19 @@ package com.example.eventwiz;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 import androidx.appcompat.app.AppCompatActivity;
+
 import com.bumptech.glide.Glide;
 
 
+/**
+ * Activity to display the details of a successfully created event.
+ * @author Junkai
+ */
 public class EventCreationSuccessActivity extends AppCompatActivity {
 
     private TextView tvEventName, tvEventDate, tvEventStartTime, tvEventEndTime, tvEventLocation, tvMaxAttendees;

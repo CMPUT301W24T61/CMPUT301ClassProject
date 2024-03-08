@@ -2,18 +2,16 @@ package com.example.eventwiz;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
+
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
 
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
@@ -23,6 +21,10 @@ import com.google.zxing.WriterException;
 
 import java.io.ByteArrayOutputStream;
 
+/**
+ * Activity for creating an event by uploading event details and poster.
+ * @author Junkai
+ */
 public class CreateEventActivity extends AppCompatActivity {
     private FirebaseStorage storage = FirebaseStorage.getInstance();
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -63,6 +65,9 @@ public class CreateEventActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Generates QR codes and uploads event data to Firestore.
+     */
     private void generateAndUploadData() {
         try {
             Bitmap checkInQRCodeBitmap = organizer.generateCheckInQRCode("Sample Check-In Data");
@@ -86,6 +91,13 @@ public class CreateEventActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Uploads a bitmap image to Firebase Storage and retrieves its download URL.
+     *
+     * @param bitmap   The bitmap image to upload.
+     * @param fileName The file name for the uploaded image.
+     * @param listener Listener to handle the upload completion and retrieve the URL.
+     */
     private void uploadBitmapAndGetUrl(Bitmap bitmap, String fileName, OnUploadCompleteListener listener) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
@@ -105,6 +117,12 @@ public class CreateEventActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Uploads the event poster image to Firebase Storage and retrieves its download URL.
+     *
+     * @param posterUri The URI of the poster image.
+     * @param listener  Listener to handle the upload completion and retrieve the URL.
+     */
     private void uploadPosterAndGetUrl(Uri posterUri, OnUploadCompleteListener listener) {
         final StorageReference posterRef = storage.getReference().child("event_posters/" + System.currentTimeMillis() + "_poster.jpg");
         posterRef.putFile(posterUri).continueWithTask(task -> {
@@ -119,6 +137,11 @@ public class CreateEventActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Saves the event to Firestore.
+     *
+     * @param event The event to save.
+     */
     private void saveEventToFirestore(Event event) {
         db.collection("events").document(event.getId()).set(event).addOnSuccessListener(documentReference -> {
             Toast.makeText(CreateEventActivity.this, "Event created successfully.", Toast.LENGTH_SHORT).show();
@@ -128,6 +151,10 @@ public class CreateEventActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Navigates to selected event
+     * @param event
+     */
     private void navigateToSuccessActivity(Event event) {
         Intent intent = new Intent(CreateEventActivity.this, EventCreationSuccessActivity.class);
         intent.putExtra("event", event);

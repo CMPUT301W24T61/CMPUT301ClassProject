@@ -11,6 +11,10 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+/**
+ * Activity for the user dashboard, providing options to create events, browse events, and scan QR codes.
+ * @author Junkai
+ */
 public class DashboardActivity extends AppCompatActivity {
 
     // Declare UI components

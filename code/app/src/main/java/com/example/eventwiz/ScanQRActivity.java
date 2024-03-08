@@ -1,14 +1,23 @@
 package com.example.eventwiz;
 
-import androidx.appcompat.app.AppCompatActivity;
-import android.os.Bundle;
 import android.content.Intent;
-import com.google.zxing.integration.android.IntentIntegrator;
-import com.google.zxing.integration.android.IntentResult;
+import android.os.Bundle;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+
+import com.google.zxing.integration.android.IntentIntegrator;
+import com.google.zxing.integration.android.IntentResult;
+
+/**
+ * The ScanQRActivity class is responsible for scanning QR codes using the device's camera.
+ * @author Junkai
+ */
 public class ScanQRActivity extends AppCompatActivity {
 
+    /**
+     * This method handles the result of the QR code scanning process.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

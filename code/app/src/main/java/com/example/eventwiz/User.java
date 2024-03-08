@@ -1,5 +1,9 @@
 package com.example.eventwiz;
 
+/**
+ * The User class represents a generic user in the system.
+ * @author Junkai
+ */
 public abstract class User {
     private String name;
 

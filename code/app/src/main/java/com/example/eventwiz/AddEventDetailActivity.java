@@ -21,6 +21,10 @@ import java.util.Calendar;
 import java.util.List;
 
 
+/**
+ * Activity for adding event details.
+ * @author Junkai
+ */
 public class AddEventDetailActivity extends AppCompatActivity {
 
 

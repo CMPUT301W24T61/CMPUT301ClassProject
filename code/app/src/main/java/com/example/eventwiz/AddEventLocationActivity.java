@@ -10,6 +10,10 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.firestore.FirebaseFirestore;
 
+/**
+ * Activity for adding event location details.
+ * @author Junkai
+ */
 public class AddEventLocationActivity extends AppCompatActivity {
 
     private EditText etAddressLine1, etAddressLine2, etAddressLine3, etCity, etAreaCodePostalCode, etStateProvince, etCountry;

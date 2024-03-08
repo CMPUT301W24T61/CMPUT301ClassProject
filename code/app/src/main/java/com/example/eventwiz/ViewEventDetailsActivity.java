@@ -1,6 +1,5 @@
 package com.example.eventwiz;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -8,15 +7,20 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-import androidx.appcompat.app.AppCompatActivity;
-import com.bumptech.glide.Glide;
-import android.widget.Button;
-import androidx.core.content.ContextCompat;
+
 import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
+
+import com.bumptech.glide.Glide;
 import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+/**
+ * ViewEventDetailsActivity displays the details of a specific event.
+ * It retrieves event details from Firestore and populates the UI accordingly.
+ * @author Junkai
+ */
 public class ViewEventDetailsActivity extends AppCompatActivity {
 
     private TextView tvEventName, tvEventDate, tvEventStartTime, tvEventEndTime, tvEventLocation, tvMaxAttendees;

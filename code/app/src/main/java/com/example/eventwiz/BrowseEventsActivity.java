@@ -1,19 +1,10 @@
 package com.example.eventwiz;
 
 
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
-
-import android.graphics.drawable.ColorDrawable;
-import android.os.Bundle;
-import android.widget.ImageButton;
-
-
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.Log;
-
+import android.widget.ImageButton;
 import android.widget.ListView;
 
 import androidx.appcompat.app.ActionBar;
