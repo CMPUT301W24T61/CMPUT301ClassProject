@@ -23,7 +23,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 public class AddEventLocationActivity extends AppCompatActivity {
 
     private EditText etAddressLine1, etAddressLine2, etAddressLine3, etCity, etAreaCodePostalCode, etStateProvince, etCountry;
-    private Button btnNext1;
+    private Button btnNext;
     private Event event;
     public Organizer organizer;
     private FirebaseFirestore db;
@@ -60,7 +60,7 @@ public class AddEventLocationActivity extends AppCompatActivity {
         etAreaCodePostalCode = findViewById(R.id.etAreaCodePostalCode);
         etStateProvince = findViewById(R.id.etStateProvince);
         etCountry = findViewById(R.id.etCountry);
-        btnNext1 = findViewById(R.id.btnNext1);
+        btnNext = findViewById(R.id.btnNext);
         ImageButton backButton = findViewById(R.id.BackArrow);
 
         ActionBar actionBar = getSupportActionBar();
@@ -69,7 +69,7 @@ public class AddEventLocationActivity extends AppCompatActivity {
             actionBar.setTitle("Location Details");
         }
 
-        btnNext1.setOnClickListener(v -> processEventLocation());
+        btnNext.setOnClickListener(v -> processEventLocation());
         backButton.setOnClickListener(view -> onBackPressed());
     }
 

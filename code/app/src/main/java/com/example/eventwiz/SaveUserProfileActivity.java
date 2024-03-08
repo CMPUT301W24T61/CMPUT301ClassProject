@@ -54,10 +54,7 @@ public class SaveUserProfileActivity extends AppCompatActivity {
 
 
 
-
-
     private Button SaveProfileButton;
-
 
     private ImageView selectPhoto;
     public Uri imageUri;
@@ -94,7 +91,7 @@ public class SaveUserProfileActivity extends AppCompatActivity {
         eduserHomepage = findViewById(R.id.editText_homepage);
         eduserMobile = findViewById(R.id.editText_mobile);
         selectPhoto = findViewById(R.id.profile_pic_button);
-        Button saveProfileButton = findViewById(R.id.button_register1);
+        SaveProfileButton = findViewById(R.id.button_register);
 
 
 
@@ -121,7 +118,7 @@ public class SaveUserProfileActivity extends AppCompatActivity {
         });
 
 
-        saveProfileButton.setOnClickListener(new View.OnClickListener() {
+        SaveProfileButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 uploadImage();
