@@ -22,7 +22,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
  */
 public class ViewEventDetailsActivity extends AppCompatActivity {
 
-    private TextView tvEventName, tvEventDate, tvEventStartTime, tvEventEndTime, tvEventLocation, tvMaxAttendees;
+    private TextView tvEventName, tvEventDate, tvEventStartTime, tvEventEndTime, tvEventLocation, tvMaxAttendees, tvEventDescription;
     private ImageView ivEventPoster, ivCheckInQRCode, ivPromotionQRCode;
     private FirebaseFirestore db;
 
@@ -57,6 +57,7 @@ public class ViewEventDetailsActivity extends AppCompatActivity {
         ivPromotionQRCode = findViewById(R.id.ivPromotionQRCode);
         tvEventStartTime = findViewById(R.id.tvEventStartTime);
         tvEventEndTime = findViewById(R.id.tvEventEndTime);
+        tvEventDescription = findViewById(R.id.tvEventDescription);
     }
 
     private void loadEventFromFirestore(String eventId) {
@@ -77,6 +78,7 @@ public class ViewEventDetailsActivity extends AppCompatActivity {
             tvEventEndTime.setText(String.format("End Time: %s", event.getEndTime()));
             tvEventLocation.setText(String.format("Location: %s", event.getLocation()));
             tvMaxAttendees.setText(String.format("Max Attendees: %d", event.getMaxAttendees()));
+            tvEventDescription.setText(String.format("Event Description: %s", event.getDescription()));
 
             Glide.with(this).load(event.getPosterUrl()).placeholder(R.drawable.image_placeholder_background).into(ivEventPoster);
             Glide.with(this).load(event.getCheckInQRCode()).placeholder(R.drawable.image_placeholder_background).into(ivCheckInQRCode);

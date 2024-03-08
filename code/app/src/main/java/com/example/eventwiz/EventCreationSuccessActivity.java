@@ -18,7 +18,7 @@ import com.bumptech.glide.Glide;
  */
 public class EventCreationSuccessActivity extends AppCompatActivity {
 
-    private TextView tvEventName, tvEventDate, tvEventStartTime, tvEventEndTime, tvEventLocation, tvMaxAttendees;
+    private TextView tvEventName, tvEventDate, tvEventStartTime, tvEventEndTime, tvEventLocation, tvMaxAttendees, tvEventDescription;
     private ImageView ivEventPoster, ivCheckInQRCode, ivPromotionQRCode;
     private Event event;
 
@@ -44,6 +44,7 @@ public class EventCreationSuccessActivity extends AppCompatActivity {
         ivPromotionQRCode = findViewById(R.id.ivPromotionQRCode);
         tvEventStartTime = findViewById((R.id.tvEventStartTime));
         tvEventEndTime = findViewById((R.id.tvEventEndTime));
+        tvEventDescription = findViewById(R.id.tvEventDescription);
 
         ImageButton btnGoToDashboard = findViewById(R.id.gotodasboard);
         btnGoToDashboard.setOnClickListener(v -> goToDashboardActivity());
@@ -57,6 +58,7 @@ public class EventCreationSuccessActivity extends AppCompatActivity {
             tvEventEndTime.setText(event.getEndTime());
             tvEventLocation.setText("Location: " + event.getLocation());
             tvMaxAttendees.setText("Max Attendees: " + event.getMaxAttendees());
+            tvEventDescription.setText(("Event Description: " + event.getDescription()));
 
             if (event.getPosterUrl() != null && !event.getPosterUrl().isEmpty()) {
                 Glide.with(this).load(event.getPosterUrl()).into(ivEventPoster);
