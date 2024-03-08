@@ -44,6 +44,8 @@ public class DashboardActivity extends AppCompatActivity {
 
     private ImageView savedPic;
 
+    ImageButton backButton;
+
 
 
 
@@ -66,9 +68,22 @@ public class DashboardActivity extends AppCompatActivity {
         browseEventsButton = findViewById(R.id.browseEvents);
         profileButton = findViewById(R.id.myProfile);
         scanQRButton = findViewById(R.id.fabCamera);
-        ImageButton backButton = findViewById(R.id.BackArrow);
+        backButton = findViewById(R.id.BackArrow);
+
         tvwelcomeText = findViewById(R.id.Welcome);
         savedPic = findViewById(R.id.ivProfile);
+
+        // Add this line to your onCreate method
+        ImageButton deleteProfileButton = findViewById(R.id.delete_button);
+
+        deleteProfileButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // Call a method to delete the profile picture
+                deleteProfileImage();
+            }
+        });
+
 
 
 
@@ -126,6 +141,7 @@ public class DashboardActivity extends AppCompatActivity {
     public void onStart() {
 
         super.onStart();
+        Toast.makeText(DashboardActivity.this,"Loading Current Profile!", Toast.LENGTH_SHORT).show();
 
 
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
@@ -193,11 +209,60 @@ public class DashboardActivity extends AppCompatActivity {
     }
 
     @Override
-    public boolean onSupportNavigateUp() {
-        onBackPressed();
-        return true;
+    public void onBackPressed() {
+        Intent intent = new Intent(DashboardActivity.this, MainActivity.class);
+        startActivity(intent);
     }
-    
-    
-    
+
+    private void deleteProfileImage() {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        String currentID = user.getUid();
+        DocumentReference ref;
+        FirebaseFirestore firestore = FirebaseFirestore.getInstance();
+
+        ref = firestore.collection("Users").document(currentID);
+        ref.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
+                        String profilePicUrl = document.getString("profilePicImage");
+
+                        if (profilePicUrl != null) {
+                            // The profile image URL exists, proceed with deletion
+                            ref.update("profilePicImage", null)
+                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<Void> task) {
+                                            if (task.isSuccessful()) {
+                                                // Image deleted successfully
+                                                Toast.makeText(DashboardActivity.this, "Profile image deleted", Toast.LENGTH_SHORT).show();
+                                                // Set a default image or handle the absence of an image
+                                                // For example, you can set the default image as you did in the onStart method
+                                                // or load a placeholder image.
+                                                // ...
+                                                savedPic.setImageResource(R.drawable.ic_default_profile_icon);
+                                                Toast.makeText(DashboardActivity.this, "Go to My Profile to Add picture", Toast.LENGTH_SHORT).show();
+                                            } else {
+                                                // Failed to delete image
+                                                Toast.makeText(DashboardActivity.this, "Failed to delete profile image", Toast.LENGTH_SHORT).show();
+                                            }
+                                        }
+                                    });
+                        } else {
+                            // The profile image URL is already null
+                            Toast.makeText(DashboardActivity.this, "Profile image already deleted", Toast.LENGTH_SHORT).show();
+                            // You may want to handle this case accordingly
+                            Toast.makeText(DashboardActivity.this, "Go to My Profile to Add picture", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+
+
+
 }
