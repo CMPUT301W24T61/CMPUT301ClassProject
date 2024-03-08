@@ -15,6 +15,8 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
@@ -28,6 +30,16 @@ import com.google.zxing.integration.android.IntentResult;
  * @see GenerateQRCode
  */
 public class QRCodeScannerActivity extends AppCompatActivity{
+    private static boolean userAdmin = false;
+    public static boolean isUserAdmin() {
+        return userAdmin;
+    }
+
+    public void setUserAdmin(boolean status) {
+        userAdmin= status;
+    }
+
+
 
     private static final int PERMISSION_REQUEST_CAMERA = 1;
 
@@ -95,8 +107,37 @@ public class QRCodeScannerActivity extends AppCompatActivity{
                     //this is an admin so redirect to admin activity
                     //set this user as admin
                     Toast.makeText(this, "Welcome Admin", Toast.LENGTH_LONG).show();
-                    Intent intent = new Intent(QRCodeScannerActivity.this, BrowseEventsActivity.class);
+                    this.setUserAdmin(true);
+                    Intent intent = new Intent(QRCodeScannerActivity.this, AdminDashboard.class);
                     startActivity(intent);
+                }
+                else{
+                    Toast.makeText(this, scannedCode, Toast.LENGTH_LONG).show();
+                    //querying events for hashCode
+                    FirebaseFirestore db = FirebaseFirestore.getInstance();
+                    db.collection("events")
+                            .whereEqualTo("hashCode", scannedCode)
+                            .get()
+                            .addOnCompleteListener(task -> {
+                                if (task.isSuccessful() && task.getResult() != null) {
+                                    if (!task.getResult().isEmpty()) {
+                                        Toast.makeText(QRCodeScannerActivity.this, "FOUND THE EVENT", Toast.LENGTH_LONG).show();
+                                        // Event with the matching hash code found
+                                        DocumentSnapshot eventDocument = task.getResult().getDocuments().get(0);
+                                        // Assuming 'Event' is your model class
+                                        Event event = eventDocument.toObject(Event.class);
+                                        Intent intent = new Intent(QRCodeScannerActivity.this, ViewEventDetailsActivity.class);
+                                        intent.putExtra("eventId", eventDocument.getId()); // Pass the event ID
+                                        startActivity(intent);
+                                    } else {
+                                        // No matching event found
+                                        Toast.makeText(QRCodeScannerActivity.this, "Event not found.", Toast.LENGTH_LONG).show();
+                                    }
+                                } else {
+                                    // Task failed with an exception
+                                    Toast.makeText(QRCodeScannerActivity.this, "Error searching for event.", Toast.LENGTH_LONG).show();
+                                }
+                            });
                 }
 
             }

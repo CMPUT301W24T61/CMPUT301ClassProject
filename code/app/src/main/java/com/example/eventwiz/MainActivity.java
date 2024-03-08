@@ -30,10 +30,9 @@ import com.google.firebase.auth.FirebaseUser;
 
 
 /**
- * This class will handle button presses from the main screen and will call other classes
- * and activities as necessary
- *
- * Will need to update this with @see for classes as they are created.
+ * MainActivity class handles button presses from the main screen and calls other classes and activities.
+ * It also manages user authentication and GPS status.
+ * @author yesith
  */
 public class MainActivity extends AppCompatActivity {
     private FirebaseAuth userAuth;
@@ -43,6 +42,11 @@ public class MainActivity extends AppCompatActivity {
     private TextView gpsStatus;
     private LocationManager locationManager;
 
+    /**
+     * Called when the activity is first created.
+     *
+     * @param savedInstanceState Bundle that contains data most recently supplied if the activity is being re-initialized.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -95,36 +99,11 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        /*
-        // Find the camera button (ImageView) by ID
-        ImageView cameraButton = findViewById(R.id.button_open_camera);
-
-        // Set an OnClickListener for the camera button (ImageView)
-        cameraButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                // Handle camera button click by opening the camera
-                openCamera();
-            }
-        });
     }
 
-    // Method to open the camera
-    private void openCamera() {
-        Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-
-        // Check if there is a camera app available
-        if (cameraIntent.resolveActivity(getPackageManager()) != null) {
-            startActivity(cameraIntent);
-        } else {
-            Toast.makeText(this, "No camera app found", Toast.LENGTH_SHORT).show();
-        }
-    */
-
-    }
-
-
-
+    /**
+     * Called when the activity is about to become visible to the user.
+     */
     @Override
     public void onStart() {
         super.onStart();
@@ -148,7 +127,9 @@ public class MainActivity extends AppCompatActivity {
             gpsStatus.setText("GPS is OFF");
         }
     }
-
+    /**
+     * Attempt anonymous authentication using Firebase.
+     */
     private void attemptAnonymousAuthentication() {
         userAuth.signInAnonymously().addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
             @Override
@@ -168,6 +149,11 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Update UI based on the current user's status.
+     *
+     * @param user FirebaseUser object representing the current user.
+     */
     private void updateUI(FirebaseUser user) {
         if (user != null) {
             // Update UI for a signed-in user
@@ -182,7 +168,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-
+    /**
+     * Called when the user clicks the switch GPS button.
+     *
+     * @param view The view that was clicked.
+     */
     public void buttonSwitchGPS(View view) {
         if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
             // GPS is currently ON, turn it OFF
@@ -193,6 +183,9 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Show a dialog to enable GPS when it is currently disabled.
+     */
     private void turnOnGPS() {
 
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
@@ -213,7 +206,9 @@ public class MainActivity extends AppCompatActivity {
         AlertDialog alertDialog = alertDialogBuilder.create();
         alertDialog.show();
     }
-
+    /**
+     * Show a dialog to disable GPS when it is currently enabled.
+     */
     private void turnOffGPS() {
         // Check if the user wants to enable GPS
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);

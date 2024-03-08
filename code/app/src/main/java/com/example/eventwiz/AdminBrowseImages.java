@@ -1,14 +1,15 @@
 package com.example.eventwiz;
 
-import android.app.AlertDialog;
-import android.os.Bundle;
-import android.view.View;
-import android.widget.ProgressBar;
-import android.widget.Toast;
-
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import android.app.AlertDialog;
+import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.google.firebase.storage.StorageReference;
 
@@ -18,7 +19,7 @@ import java.util.ArrayList;
  * AdminBrowseEventPosters is an activity that allows administrators to browse event posters stored in Firebase Storage.
  * @author Hunaid
  */
-public class AdminBrowseEventPosters extends AppCompatActivity {
+public class AdminBrowseImages extends AppCompatActivity {
     private ArrayList<String> imagelist;
     private RecyclerView recyclerView;
     private StorageReference root;
@@ -63,12 +64,12 @@ public class AdminBrowseEventPosters extends AppCompatActivity {
                 // Remove the image from the list and notify the adapter
                 imagelist.remove(imageUrl);
                 adapter.notifyDataSetChanged();
-                Toast.makeText(AdminBrowseEventPosters.this, "Poster deleted", Toast.LENGTH_SHORT).show();
+                Toast.makeText(AdminBrowseImages.this, "Poster deleted", Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void onDeletionFailed(Exception e) {
-                Toast.makeText(AdminBrowseEventPosters.this, "Failed to delete poster", Toast.LENGTH_SHORT).show();
+                Toast.makeText(AdminBrowseImages.this, "Failed to delete poster", Toast.LENGTH_SHORT).show();
             }
         });
     }

@@ -1,6 +1,5 @@
 package com.example.eventwiz;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -8,71 +7,57 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-import androidx.appcompat.app.AppCompatActivity;
-import com.bumptech.glide.Glide;
-import android.widget.Button;
-import androidx.core.content.ContextCompat;
+
 import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
+
+import com.bumptech.glide.Glide;
 import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+/**
+ * ViewEventDetailsActivity displays the details of a specific event.
+ * It retrieves event details from Firestore and populates the UI accordingly.
+ */
 public class ViewEventDetailsActivity extends AppCompatActivity {
 
     private TextView tvEventName, tvEventDate, tvEventStartTime, tvEventEndTime, tvEventLocation, tvMaxAttendees;
     private ImageView ivEventPoster, ivCheckInQRCode, ivPromotionQRCode;
-    private Event event;
-
     private FirebaseFirestore db;
-    private DocumentReference eventDocument;
 
-
+    /**
+     * Called when the activity is first created.
+     *
+     * @param savedInstanceState If the activity is being re-initialized after previously being shut down,
+     *                           this Bundle contains the data it most recently supplied in
+     *                           onSaveInstanceState(Bundle).
+     *                           Otherwise, it is null.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.view_event_details);
-
-        // Insitantiate top support action bar
         ActionBar actionBar = getSupportActionBar();
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setTitle("Event Details");
+        if (actionBar != null) {
+            actionBar.setTitle("Event Details");
             int color = ContextCompat.getColor(this, R.color.turqoise);
-
-            // Set the background color of the ActionBar
             actionBar.setBackgroundDrawable(new ColorDrawable(color));
+        }
+        db = FirebaseFirestore.getInstance();
+        initializeUI();
+        String eventId = getIntent().getStringExtra("eventId");
+        if (eventId != null && !eventId.isEmpty()) {
+            loadEventFromFirestore(eventId);
         }
 
         ImageButton btnGoToDashboard = findViewById(R.id.gotodasboard);
         btnGoToDashboard.setOnClickListener(v -> goToDashboardActivity());
-
-
-        event = (Event) getIntent().getSerializableExtra("event");
-
-        String eventId = getIntent().getStringExtra("eventId");
-        if (eventId != null) {
-            // Get a reference to the event document
-            eventDocument = db.collection("events").document(eventId);
-
-            // Attach a listener to the document
-            eventDocument.addSnapshotListener((documentSnapshot, e) -> {
-                if (e != null) {
-                    // Handle errors
-                    return;
-                }
-
-                if (documentSnapshot != null && documentSnapshot.exists()) {
-                    // Convert document to Event object
-                    event = documentSnapshot.toObject(Event.class);
-                    initializeUI();
-                    loadEventDetails();
-                }
-            });
-
-
-
-        }
     }
 
+    /**
+     * Initializes UI elements by finding their respective views in the layout.
+     */
     private void initializeUI() {
         tvEventName = findViewById(R.id.tvEventName);
         tvEventDate = findViewById(R.id.tvEventDate);
@@ -81,42 +66,49 @@ public class ViewEventDetailsActivity extends AppCompatActivity {
         ivEventPoster = findViewById(R.id.ivEventPoster);
         ivCheckInQRCode = findViewById(R.id.ivCheckInQRCode);
         ivPromotionQRCode = findViewById(R.id.ivPromotionQRCode);
-        tvEventStartTime = findViewById((R.id.tvEventStartTime));
-        tvEventEndTime = findViewById((R.id.tvEventEndTime));
+        tvEventStartTime = findViewById(R.id.tvEventStartTime);
+        tvEventEndTime = findViewById(R.id.tvEventEndTime);
     }
 
-    private void loadEventDetails() {
+    /**
+     * Retrieves event details from Firestore using the provided eventId.
+     *
+     * @param eventId The unique identifier of the event to be loaded.
+     */
+    private void loadEventFromFirestore(String eventId) {
+        DocumentReference eventDocument = db.collection("events").document(eventId);
+        eventDocument.get().addOnSuccessListener(documentSnapshot -> {
+            if (documentSnapshot.exists()) {
+                Event event = documentSnapshot.toObject(Event.class);
+                loadEventDetails(event);
+            }
+        });
+    }
+
+    /**
+     * Populates the UI with details of the given event.
+     *
+     * @param event The event object containing details to be displayed.
+     */
+    private void loadEventDetails(Event event) {
         if (event != null) {
             tvEventName.setText(event.getName());
-            tvEventDate.setText("Date: " + event.getDate());
-            tvEventStartTime.setText(event.getStartTime());
-            tvEventEndTime.setText(event.getEndTime());
-            tvEventLocation.setText("Location: " + event.getLocation());
-            tvMaxAttendees.setText("Max Attendees: " + event.getMaxAttendees());
+            tvEventDate.setText(String.format("Date: %s", event.getDate()));
+            tvEventStartTime.setText(String.format("Start Time: %s", event.getStartTime()));
+            tvEventEndTime.setText(String.format("End Time: %s", event.getEndTime()));
+            tvEventLocation.setText(String.format("Location: %s", event.getLocation()));
+            tvMaxAttendees.setText(String.format("Max Attendees: %d", event.getMaxAttendees()));
 
-            if (event.getPosterUrl() != null && !event.getPosterUrl().isEmpty()) {
-                Glide.with(this).load(event.getPosterUrl()).into(ivEventPoster);
-            } else {
-                ivEventPoster.setImageResource(R.drawable.image_placeholder_background);
-            }
-            if (event.getCheckInQRCode() != null && !event.getCheckInQRCode().isEmpty()) {
-                Glide.with(this).load(event.getCheckInQRCode()).into(ivCheckInQRCode);
-            } else {
-                ivCheckInQRCode.setVisibility(View.GONE);
-            }
-
-            if (event.getPromotionQRCode() != null && !event.getPromotionQRCode().isEmpty()) {
-                Glide.with(this).load(event.getPromotionQRCode()).into(ivPromotionQRCode);
-            } else {
-                ivPromotionQRCode.setVisibility(View.GONE);
-            }
+            Glide.with(this).load(event.getPosterUrl()).placeholder(R.drawable.image_placeholder_background).into(ivEventPoster);
+            Glide.with(this).load(event.getCheckInQRCode()).placeholder(R.drawable.image_placeholder_background).into(ivCheckInQRCode);
+            Glide.with(this).load(event.getPromotionQRCode()).placeholder(R.drawable.image_placeholder_background).into(ivPromotionQRCode);
         }
     }
-
+    /**
+     * Navigates to the DashboardActivity when the "Go to Dashboard" button is clicked.
+     */
     private void goToDashboardActivity() {
         Intent intent = new Intent(ViewEventDetailsActivity.this, DashboardActivity.class);
-        // You may need to adjust the class (DashboardActivity) based on your actual dashboard activity class
         startActivity(intent);
     }
-
 }

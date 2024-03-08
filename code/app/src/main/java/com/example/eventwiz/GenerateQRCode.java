@@ -17,14 +17,15 @@ import java.util.UUID;
 
 /**
  * This class is responsible for generating the QR Code for each event.
+ * It provides methods to generate a unique string, hash the string, and create a QR code bitmap.
  * @author Hunaid
  * @see QRCodeScannerActivity
  */
 public class GenerateQRCode {
 
     /**
-     * Generates the QR code.
-     * @return Bitmap
+     * Generates the QR code bitmap for the event.
+     * @return Bitmap representing the QR code
      */
     public static Bitmap generateEventQRCode() {
         //call this function to generate QR code:
@@ -44,11 +45,20 @@ public class GenerateQRCode {
         return generateQRCodeBitmap(hashedString);
     }
 
-    private static String generateUniqueString() {
+    /**
+     * Creates and returns a unique user ID as a string
+     * @return String unique User ID
+     */
+    public static String generateUniqueString() {
         return UUID.randomUUID().toString();
     }
 
-    private static String hashString(String input) {
+    /**
+     * Hashes the input string using SHA-256 algorithm.
+     * @param input String to be hashed
+     * @return String representing the hashed value
+     */
+    public static String hashString(String input) {
         try {
             MessageDigest digest = MessageDigest.getInstance("SHA-256");
             byte[] encodedhash = digest.digest(input.getBytes(StandardCharsets.UTF_8));
@@ -71,7 +81,12 @@ public class GenerateQRCode {
         return hexString.toString();
     }
 
-    private static Bitmap generateQRCodeBitmap(String content) {
+    /**
+     * Generates a QR code bitmap from the content string.
+     * @param content String to be encoded into the QR code
+     * @return Bitmap representing the QR code
+     */
+    public static Bitmap generateQRCodeBitmap(String content) {
         QRCodeWriter writer = new QRCodeWriter();
         try {
             BitMatrix bitMatrix = writer.encode(content, BarcodeFormat.QR_CODE, 200, 200);

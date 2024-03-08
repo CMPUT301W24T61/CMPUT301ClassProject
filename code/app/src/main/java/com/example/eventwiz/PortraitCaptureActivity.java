@@ -9,6 +9,11 @@ import android.widget.FrameLayout;
 
 import com.journeyapps.barcodescanner.CaptureActivity;
 
+/**
+ * The PortraitCaptureActivity class extends CaptureActivity and provides additional functionality
+ * for capturing QR codes in portrait orientation.
+ * @author Junkai
+ */
 public class PortraitCaptureActivity extends CaptureActivity {
 
     @Override
