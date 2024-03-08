@@ -53,6 +53,7 @@ public class EventAdapter extends ArrayAdapter<Event> {
         TextView tvEventDateTime = convertView.findViewById(R.id.tvEventDateTime);
         ImageView imgEventPoster = convertView.findViewById(R.id.ivEventPoster);
 
+
         // Populate the data into the template view using the data object
         tvEventName.setText(event.getName());
         tvEventDateTime.setText(String.format("Date: %s Time: %s - %s", event.getDate(), event.getStartTime(), event.getEndTime()));

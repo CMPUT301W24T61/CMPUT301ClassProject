@@ -43,11 +43,12 @@
             android:layout_centerHorizontal="true"
             android:layout_width="180dp"
             android:layout_height="180dp"
-            android:layout_marginTop="50dp"
+            android:layout_marginTop="70dp"
             android:src ="@drawable/ic_default_profile_icon"
             android:background="@drawable/circle"
             android:scaleType="fitCenter"
             android:elevation="4dp"/>
+
 
         <TextView
             android:id="@+id/textView_register_name"
@@ -142,9 +143,8 @@
             android:layout_below="@id/editText_mobile"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="30dp"
-            android:background="@drawable/rounded_button"
-            android:backgroundTint="@color/amber"
-            android:text="Save Profile"
+            android:backgroundTint="#FFAE42"
+            android:text="Done"
             android:textColor="@color/black"
             app:cornerRadius="20dp" />
 
