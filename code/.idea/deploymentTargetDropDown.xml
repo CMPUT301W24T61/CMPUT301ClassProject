@@ -2,19 +2,7 @@
 <project version="4">
   <component name="deploymentTargetDropDown">
     <value>
-      <entry key="AddEventLocationActivityTest">
-        <State />
-      </entry>
-      <entry key="BrowseEventsActivityTest">
-        <State />
-      </entry>
-      <entry key="MainActivityTest">
-        <State />
-      </entry>
-      <entry key="SaveUserProfileActivityTest">
-        <State />
-      </entry>
-      <entry key="TestProfileCreation()">
+      <entry key="MainActivity">
         <State />
       </entry>
       <entry key="app">
