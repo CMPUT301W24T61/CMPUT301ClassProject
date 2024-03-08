@@ -24,7 +24,9 @@ public class Event implements Serializable {
     private String promotionQRCode;
     private String organizerId;
 
-
+    public Event() {
+        // Default constructor required for calls to DataSnapshot.getValue(Event.class)
+    }
     public Event(String name, String description, String date, String startTime, String endTime, String location, int maxAttendees, String checkInQRCode, String promotionQRCode, String posterUrl) {
         this.id = UUID.randomUUID().toString();
         this.name = name;

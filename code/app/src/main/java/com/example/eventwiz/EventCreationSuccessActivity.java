@@ -84,7 +84,6 @@ public class EventCreationSuccessActivity extends AppCompatActivity {
 
     private void goToDashboardActivity() {
         Intent intent = new Intent(EventCreationSuccessActivity.this, DashboardActivity.class);
-        // You may need to adjust the class (DashboardActivity) based on your actual dashboard activity class
         startActivity(intent);
     }
 }

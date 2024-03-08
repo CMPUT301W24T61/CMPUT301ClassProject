@@ -4,9 +4,13 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -14,12 +18,15 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.google.zxing.WriterException;
 
 import java.io.ByteArrayOutputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Activity for creating an event by uploading event details and poster.
@@ -32,21 +39,32 @@ public class CreateEventActivity extends AppCompatActivity {
     private Uri imageUri = null;
     private Event event;
     private ImageView posterImageView;
+    private CheckBox checkboxGenerateCheckInQR, checkboxGeneratePromotionQR, checkboxReuseQRCode;
+    private Spinner qrCodeSpinner;
+    private ArrayAdapter<String> qrCodeAdapter;
+    private List<String> qrCodeUrls;
 
-    // ActivityResultLauncher for the user to pick an image from the gallery
     private final ActivityResultLauncher<String> mGetContent = registerForActivityResult(
             new ActivityResultContracts.GetContent(),
             result -> {
                 imageUri = result;
-                posterImageView.setImageURI(imageUri); // Assuming you have an ImageView to display the selected image
+                posterImageView.setImageURI(imageUri);
             });
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_event_add_info); // Adjust this layout file name as necessary
+        setContentView(R.layout.activity_event_add_info);
 
 
+        checkboxGenerateCheckInQR = findViewById(R.id.generateNewQRCode);
+        checkboxGeneratePromotionQR = findViewById(R.id.generatePromotionQRCode);
+        checkboxReuseQRCode = findViewById(R.id.reuseQRCode);
+        qrCodeSpinner = findViewById(R.id.qrCodeSpinner);
+        qrCodeUrls = new ArrayList<>();
+        qrCodeAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, qrCodeUrls);
+        qrCodeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        qrCodeSpinner.setAdapter(qrCodeAdapter);
 
         posterImageView = findViewById(R.id.poster);
         Button uploadButton = findViewById(R.id.uploadButton);
@@ -63,31 +81,94 @@ public class CreateEventActivity extends AppCompatActivity {
                 generateAndUploadData();
             }
         });
+        checkboxReuseQRCode.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            qrCodeSpinner.setVisibility(isChecked ? View.VISIBLE : View.GONE);
+            if (isChecked) {
+                // Fetch and populate QR codes here
+                fetchAndPopulateQRCodes();
+            }
+        });
+    }
+    private void fetchAndPopulateQRCodes() {
+        StorageReference storageRef = storage.getReference().child("qr_codes/");
+        storageRef.listAll()
+                .addOnSuccessListener(listResult -> {
+                    if (listResult.getItems().isEmpty()) {
+                        Toast.makeText(CreateEventActivity.this, "No QR codes available.", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                    // Iterate over each item and get download URLs
+                    for (StorageReference itemRef : listResult.getItems()) {
+                        itemRef.getDownloadUrl().addOnSuccessListener(uri -> {
+                            qrCodeUrls.add(uri.toString());
+                            // Notify the adapter that the data set has changed to update the Spinner
+                            qrCodeAdapter.notifyDataSetChanged();
+                        }).addOnFailureListener(e -> {
+                            Toast.makeText(CreateEventActivity.this, "Failed to fetch QR code URL.", Toast.LENGTH_SHORT).show();
+                        });
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(CreateEventActivity.this, "Failed to list QR codes.", Toast.LENGTH_SHORT).show();
+                });
     }
 
     /**
      * Generates QR codes and uploads event data to Firestore.
      */
     private void generateAndUploadData() {
-        try {
-            Bitmap checkInQRCodeBitmap = organizer.generateCheckInQRCode("Sample Check-In Data");
-            Bitmap promotionQRCodeBitmap = organizer.generatePromotionQRCode("Sample Promotion Data");
+        // Ensure at least one QR code generation option is selected
+        if (!checkboxGenerateCheckInQR.isChecked() && !checkboxGeneratePromotionQR.isChecked() && !checkboxReuseQRCode.isChecked()) {
+            Toast.makeText(CreateEventActivity.this, "At least one QR code option is required.", Toast.LENGTH_LONG).show();
+            return; // Exit if no option is selected
+        }
 
-            uploadBitmapAndGetUrl(checkInQRCodeBitmap, "checkInQRCode.png", checkInQRUrl -> {
-                uploadBitmapAndGetUrl(promotionQRCodeBitmap, "promotionQRCode.png", promotionQRUrl -> {
-                    uploadPosterAndGetUrl(imageUri, posterUrl -> {
-                        event = (Event) getIntent().getSerializableExtra("event");
-                        // Set QR code URLs and poster URL
-                        event.setCheckInQRCode(checkInQRUrl);
-                        event.setPromotionQRCode(promotionQRUrl);
-                        event.setPosterUrl(posterUrl);
+        event = (Event) getIntent().getSerializableExtra("event"); // Assume event object is prepared
 
-                        saveEventToFirestore(event);
-                    });
+        // Conditional logic for generating/uploading QR codes
+        if (checkboxGenerateCheckInQR.isChecked()) {
+            try {
+                Bitmap checkInQRCodeBitmap = organizer.generateCheckInQRCode("Sample Check-In Data");
+                String checkInQRFileName = "checkInQRCode_" + System.currentTimeMillis() + ".png";
+                uploadBitmapAndGetUrl(checkInQRCodeBitmap, checkInQRFileName, checkInQRUrl -> {
+                    event.setCheckInQRCode(checkInQRUrl);
+                    completeEventCreation();
                 });
+            } catch (WriterException e) {
+                Toast.makeText(this, "Check-In QR Code generation failed: " + e.getMessage(), Toast.LENGTH_LONG).show();
+            }
+        } else if (checkboxReuseQRCode.isChecked()) {
+            // Reuse selected QR code
+            String selectedQRCodeUrl = (String) qrCodeSpinner.getSelectedItem();
+            event.setCheckInQRCode(selectedQRCodeUrl);
+            completeEventCreation();
+        }
+
+        if (checkboxGeneratePromotionQR.isChecked()) {
+            try {
+                Bitmap promotionQRCodeBitmap = organizer.generatePromotionQRCode("Sample Promotion Data");
+                String promotionQRFileName = "promotionQRCode_" + System.currentTimeMillis() + ".png";
+                uploadBitmapAndGetUrl(promotionQRCodeBitmap, promotionQRFileName, promotionQRUrl -> {
+                    event.setPromotionQRCode(promotionQRUrl);
+                    completeEventCreation();
+                });
+            } catch (WriterException e) {
+                Toast.makeText(this, "Promotion QR Code generation failed: " + e.getMessage(), Toast.LENGTH_LONG).show();
+            }
+        }
+    }
+
+    private void completeEventCreation() {
+        // Ensure at least one QR code URL is set if required
+        if ((checkboxGenerateCheckInQR.isChecked() || checkboxReuseQRCode.isChecked() || checkboxGeneratePromotionQR.isChecked()) &&
+                (event.getCheckInQRCode() != null || event.getPromotionQRCode() != null)) {
+            uploadPosterAndGetUrl(imageUri, posterUrl -> {
+                event.setPosterUrl(posterUrl);
+                saveEventToFirestore(event);
             });
-        } catch (WriterException e) {
-            Toast.makeText(this, "QR Code generation failed: " + e.getMessage(), Toast.LENGTH_LONG).show();
+        } else if (!checkboxGenerateCheckInQR.isChecked() && !checkboxGeneratePromotionQR.isChecked() && !checkboxReuseQRCode.isChecked()) {
+            // Handle the case where no QR code options are selected but event creation is triggered
+            Toast.makeText(this, "No QR code option selected.", Toast.LENGTH_LONG).show();
         }
     }
 

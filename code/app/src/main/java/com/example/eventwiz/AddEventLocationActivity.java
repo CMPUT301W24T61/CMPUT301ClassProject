@@ -67,7 +67,6 @@ public class AddEventLocationActivity extends AppCompatActivity {
         appendLocationPart(etStateProvince, locationBuilder);
         appendLocationPart(etCountry, locationBuilder);
 
-        // Remove trailing comma and space
         String location = locationBuilder.toString().replaceAll(", $", "");
 
         event.setLocation(location);

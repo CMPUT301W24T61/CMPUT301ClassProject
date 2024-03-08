@@ -104,7 +104,6 @@ public class AddEventDetailActivity extends AppCompatActivity {
         toAmPM.setAdapter(amPmAdapter);
     }
     private List<String> getMonths() {
-        // This is a simple implementation. You might want to localize month names.
         return Arrays.asList("January", "February", "March", "April", "May", "June", "July",
                 "August", "September", "October", "November", "December");
     }
@@ -131,7 +130,7 @@ public class AddEventDetailActivity extends AppCompatActivity {
 
     private List<String> getHours() {
         List<String> hours = new ArrayList<>();
-        for (int i = 1; i <= 12; i++) { // Assuming 12-hour format
+        for (int i = 1; i <= 12; i++) {
             hours.add(String.format("%02d", i));
         }
         return hours;
@@ -167,15 +166,14 @@ public class AddEventDetailActivity extends AppCompatActivity {
                 toAmPM.getSelectedItem().toString();
 
 
-        // Placeholder or dynamically generated values for QR codes and poster URL
+
         String checkInQRCodePath = "";
         String promotionQRCodePath = "";
         String posterUrl = "";
 
 
-        // Adjusting this call to match the updated Event constructor
         Event event = new Event(eventName, eventDescription, date, startTime, endTime, "", maxAttendees, checkInQRCodePath, promotionQRCodePath, posterUrl);
-
+        saveEventToFirestore(event);
 
         Intent intent = new Intent(AddEventDetailActivity.this, AddEventLocationActivity.class);
         intent.putExtra("event", event);

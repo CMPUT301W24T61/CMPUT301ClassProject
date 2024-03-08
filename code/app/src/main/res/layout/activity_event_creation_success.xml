@@ -158,7 +158,7 @@
             android:id="@+id/tvMaxAttendees"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/tvPromotionQRLabel"
+            android:layout_below="@id/tvEventLocation"
             android:text="Max Attendees: TBD"
             android:textColor="@android:color/black"
             android:gravity="center_horizontal"

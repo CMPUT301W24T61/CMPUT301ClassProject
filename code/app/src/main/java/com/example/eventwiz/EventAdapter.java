@@ -20,9 +20,8 @@ import java.util.List;
  * @see EventBrief
  * @author Hunaid
  */
-public class EventAdapter extends ArrayAdapter<EventBrief> {
-    public EventAdapter(Context context, List<EventBrief> events) {
-
+public class EventAdapter extends ArrayAdapter<Event> {
+    public EventAdapter(Context context, List<Event> events) {
         super(context, 0, events);
     }
 
@@ -47,43 +46,29 @@ public class EventAdapter extends ArrayAdapter<EventBrief> {
         }
 
         // Get the data item for this position
-        EventBrief eventBrief = getItem(position);
+        Event event = getItem(position);
 
         // Lookup view for data population
         TextView tvEventName = convertView.findViewById(R.id.tvEventName);
         TextView tvEventDateTime = convertView.findViewById(R.id.tvEventDateTime);
         ImageView imgEventPoster = convertView.findViewById(R.id.ivEventPoster);
-        //TextView tvEventTimeRange = convertView.findViewById(R.id.tvEventTimeRange);
-
-        //TextView tvEventVenue = convertView.findViewById(R.id.tvEventVenue);
 
         // Populate the data into the template view using the data object
-        tvEventName.setText(eventBrief.getEventName());
-        tvEventDateTime.setText("Date: " + eventBrief.getEventDate());
-        //tvEventTimeRange.setText("Time: " + eventBrief.getEventTime());
-        //tvEventVenue.setText("Venue: " + eventBrief.getVenue());
-        Toast.makeText(this.getContext(), "Scanned: " + eventBrief.getPosterUrl(), Toast.LENGTH_LONG).show();
-        Glide.with(getContext())
-                .load(eventBrief.getPosterUrl())
-                .into(imgEventPoster);
+        tvEventName.setText(event.getName());
+        tvEventDateTime.setText(String.format("Date: %s Time: %s - %s", event.getDate(), event.getStartTime(), event.getEndTime()));
+        Glide.with(getContext()).load(event.getPosterUrl()).into(imgEventPoster);
 
-        //Button to go to event details
-
-        convertView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                // Handle item click, e.g., navigate to another activity
-                EventBrief clickedEvent = getItem(position);
-                Intent intent = new Intent(EventAdapter.this.getContext(), ViewEventDetailsActivity.class);
-                EventAdapter.this.getContext().startActivity(intent);
-            }
+        // Click listener to navigate to event details
+        convertView.setOnClickListener(view -> {
+            Intent intent = new Intent(getContext(), ViewEventDetailsActivity.class);
+            intent.putExtra("eventId", event.getId()); // Pass the event ID to the details activity
+            getContext().startActivity(intent);
         });
 
         // Return the completed view to render on screen
         return convertView;
-
-
     }
+
 
     private void setImageFromFirebaseUrl(ImageView imgEventPoster, String imageUrl) {
         // Using Glide to load the image into the ImageView
