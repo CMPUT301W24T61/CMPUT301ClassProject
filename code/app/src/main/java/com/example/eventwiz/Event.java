@@ -1,7 +1,14 @@
 package com.example.eventwiz;
 
+
 import java.io.Serializable;
 import java.util.UUID;
+
+/**
+ * This class stores all the data for Events made in the app
+ * @see EventAdapter
+ * @author Hunaid,Junkai
+ */
 
 public class Event implements Serializable {
     private String id;
@@ -17,6 +24,7 @@ public class Event implements Serializable {
     private String promotionQRCode;
     private String organizerId;
 
+
     public Event(String name, String description, String date, String startTime, String endTime, String location, int maxAttendees, String checkInQRCode, String promotionQRCode, String posterUrl) {
         this.id = UUID.randomUUID().toString();
         this.name = name;
@@ -28,8 +36,10 @@ public class Event implements Serializable {
         this.maxAttendees = maxAttendees;
         this.checkInQRCode = checkInQRCode;
         this.promotionQRCode = promotionQRCode;
+
         this.posterUrl = posterUrl;
     }
+
 
     public String getId() {
         return id;
@@ -93,15 +103,25 @@ public class Event implements Serializable {
 
     public void setMaxAttendees(int maxAttendees) {
         this.maxAttendees = maxAttendees;
+
     }
 
+    /**
+     *
+     * @return poster URL as a string
+     */
     public String getPosterUrl() {
         return posterUrl;
     }
 
+    /**
+     * Sets poster URL
+     * @param posterUrl
+     */
     public void setPosterUrl(String posterUrl) {
         this.posterUrl = posterUrl;
     }
+
 
     public String getCheckInQRCode() {
         return checkInQRCode;
@@ -126,4 +146,6 @@ public class Event implements Serializable {
     public void setOrganizerId(String organizerId) {
         this.organizerId = organizerId;
     }
+
+
 }

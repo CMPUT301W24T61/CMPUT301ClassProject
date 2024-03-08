@@ -3,25 +3,44 @@ package com.example.eventwiz;
 public class EventBrief {
     private String eventName;
     private String eventDate;
-    private String eventTime;
+    private String eventStartTime;
+    private String eventEndTime;
     private String posterUrl; // URL to the image stored in Firebase
-    private String venue;
+    //private String venue;
 
     private String location;
 
 
 
-    public EventBrief(String eventName, String eventDate, String eventTime, String posterUrl, String venue,String location
-    ) {
+    public EventBrief(String eventName, String eventDate,String eventStartTime,String eventEndTime, String posterUrl,String location) {
         this.eventName = eventName;
         this.eventDate = eventDate;
-        this.eventTime = eventTime;
+        this.eventStartTime = eventStartTime;
+        this.eventEndTime = eventEndTime;
         this.posterUrl = posterUrl;
-        this.venue = venue;
+        //this.venue = venue;
         this.location = location;
     }
 
+    public String getEventStartTime() {
+        return eventStartTime;
+    }
+
+    public void setEventStartTime(String eventStartTime) {
+        this.eventStartTime = eventStartTime;
+    }
+
+    public String getEventEndTime() {
+        return eventEndTime;
+    }
+
+    public void setEventEndTime(String eventEndTime) {
+        this.eventEndTime = eventEndTime;
+    }
+
     // Getters and Setters
+
+    /*
     public String getVenue() {
         return venue;
     }
@@ -29,6 +48,8 @@ public class EventBrief {
     public void setVenue(String venue) {
         this.venue = venue;
     }
+    */
+
     public String getEventName() {
         return eventName;
     }
@@ -43,14 +64,6 @@ public class EventBrief {
 
     public void setEventDate(String eventDate) {
         this.eventDate = eventDate;
-    }
-
-    public String getEventTime() {
-        return eventTime;
-    }
-
-    public void setEventTime(String eventTime) {
-        this.eventTime = eventTime;
     }
 
     public String getPosterUrl() {
@@ -75,7 +88,8 @@ public class EventBrief {
         return "Event{" +
                 "eventName='" + eventName + '\'' +
                 ", eventDate='" + eventDate + '\'' +
-                ", eventTime='" + eventTime + '\'' +
+                ", eventStartTime='" + eventStartTime + '\'' +
+                ", eventEndTime='" + eventEndTime + '\'' +
                 ", posterUrl='" + posterUrl + '\'' +
                 ", location='" + location + '\'' +
                 '}';

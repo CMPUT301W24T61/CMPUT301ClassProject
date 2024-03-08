@@ -1,4 +1,5 @@
 
+
 package com.example.eventwiz;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -149,33 +150,33 @@ public class SaveUserProfileActivity extends AppCompatActivity {
 
     ActivityResultLauncher<Intent> launcher
             =registerForActivityResult(
-                    new ActivityResultContracts.StartActivityForResult(),
+            new ActivityResultContracts.StartActivityForResult(),
             result -> {
-                        if(result.getResultCode() == Activity.RESULT_OK){
-                            Intent data = result.getData();
-                            if (data != null && data.getData() != null) {
-                                imageUri = data.getData();
+                if(result.getResultCode() == Activity.RESULT_OK){
+                    Intent data = result.getData();
+                    if (data != null && data.getData() != null) {
+                        imageUri = data.getData();
 
-                                // convert Image into BitMap
-                                try {
-                                    bitmap = MediaStore.Images.Media.getBitmap(
-                                            this.getContentResolver(),
-                                            imageUri
-                                    );
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                }
-
-                            }
-                            //we set image into imageview
-                            if (imageUri != null){
-                                selectPhoto.setImageBitmap(bitmap);
-
-                            }
-
-
+                        // convert Image into BitMap
+                        try {
+                            bitmap = MediaStore.Images.Media.getBitmap(
+                                    this.getContentResolver(),
+                                    imageUri
+                            );
+                        } catch (IOException e) {
+                            e.printStackTrace();
                         }
+
                     }
+                    //we set image into imageview
+                    if (imageUri != null){
+                        selectPhoto.setImageBitmap(bitmap);
+
+                    }
+
+
+                }
+            }
     );
 
     // upload image to firebase
