@@ -31,7 +31,8 @@ public class AdminService {
      * Constructs an instance of AdminService and initializes the storage reference.
      */
     public AdminService() {
-        storageRef = FirebaseStorage.getInstance().getReference().child("event_posters");
+        storageRef = FirebaseStorage .getInstance().getReference().child("event_posters");
+        firestoreDb = FirebaseFirestore.getInstance();
     }
 
     /**
