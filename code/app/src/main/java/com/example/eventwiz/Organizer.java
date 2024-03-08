@@ -36,7 +36,7 @@ public class Organizer implements Serializable {
      * @throws WriterException If an error occurs during QR code generation.
      */
     public Bitmap generateCheckInQRCode(String data) throws WriterException {
-        return generateQRCodeBitmap("CHECKIN_" + data);
+        return generateQRCodeBitmap("" + data);
     }
 
     /**
@@ -47,7 +47,7 @@ public class Organizer implements Serializable {
      * @throws WriterException If an error occurs during QR code generation.
      */
     public Bitmap generatePromotionQRCode(String data) throws WriterException {
-        return generateQRCodeBitmap("PROMO_" + data);
+        return generateQRCodeBitmap("" + data);
     }
 
     private Bitmap generateQRCodeBitmap(String data) throws WriterException {
