@@ -10,7 +10,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-//import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Picasso;
 import android.graphics.Paint;
 
 import androidx.annotation.NonNull;
