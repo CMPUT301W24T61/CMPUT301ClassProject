@@ -1,5 +1,3 @@
-
-
 package com.example.eventwiz;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -46,6 +44,8 @@ public class SaveUserProfileActivity extends AppCompatActivity {
 
     private EditText eduserName, eduserEmail, eduserHomepage, eduserMobile;
 
+    private String showName,showEmail,showMobile,showHomepage;
+
     private Button SaveProfileButton;
     private ImageView selectPhoto;
     public Uri imageUri;
@@ -58,7 +58,6 @@ public class SaveUserProfileActivity extends AppCompatActivity {
     private String photoUrl;
 
     private FirebaseAuth userAuth;
-
     private String CurrentUserID;
     private String docID;
 
@@ -70,6 +69,8 @@ public class SaveUserProfileActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_save_user_profile);
+
+
 
         // Insitantiate top support action bar
         ActionBar actionBar = getSupportActionBar();
@@ -99,6 +100,8 @@ public class SaveUserProfileActivity extends AppCompatActivity {
 
         userAuth = FirebaseAuth.getInstance();
 
+
+
         selectPhoto.setOnClickListener(new View.OnClickListener() {
 
             //check storage permission
@@ -106,7 +109,7 @@ public class SaveUserProfileActivity extends AppCompatActivity {
 
             @Override
             public void onClick(View view) {
-                //CheckStoragePermission();
+
 
                 PickImageFromGallery();
             }
@@ -240,7 +243,7 @@ public class SaveUserProfileActivity extends AppCompatActivity {
                                 @Override
                                 public void onComplete(@NonNull Task<Void> task) {
                                     if(task.isSuccessful()){
-                                        Toast.makeText(SaveUserProfileActivity.this,"uploaded Successfully!",Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(SaveUserProfileActivity.this,"Profile Created Successfully!",Toast.LENGTH_SHORT).show();
 
                                     }
 
@@ -280,9 +283,6 @@ public class SaveUserProfileActivity extends AppCompatActivity {
             Log.e("SharedPreferences", "Failed to retrieve Anonymous User ID");
         }
     }
-
-
-
 
 
 

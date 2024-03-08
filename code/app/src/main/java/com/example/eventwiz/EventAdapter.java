@@ -55,7 +55,7 @@ public class EventAdapter extends ArrayAdapter<EventBrief> {
         ImageView imgEventPoster = convertView.findViewById(R.id.ivEventPoster);
         //TextView tvEventTimeRange = convertView.findViewById(R.id.tvEventTimeRange);
 
-        //TextView tvEventVenue = convertView.findViewById(R.id.tvEventVenue);
+        TextView tvEventVenue = convertView.findViewById(R.id.tvEventVenue);
 
         // Populate the data into the template view using the data object
         tvEventName.setText(eventBrief.getEventName());
