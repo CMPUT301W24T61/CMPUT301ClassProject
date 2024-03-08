@@ -10,7 +10,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-import com.squareup.picasso.Picasso;
+//import com.squareup.picasso.Picasso;
 import android.graphics.Paint;
 
 import androidx.annotation.NonNull;
@@ -110,7 +110,7 @@ public class DashboardActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 // Start the QRCodeScannerActivity
-                Intent intent = new Intent(DashboardActivity.this, ScanQRActivity.class);
+                Intent intent = new Intent(DashboardActivity.this, QRCodeScannerActivity.class);
                 startActivity(intent);
             }
         });
@@ -163,7 +163,7 @@ public class DashboardActivity extends AppCompatActivity {
                             if (user != null && url != null) {
                                 // Both name and URL are available
                                 tvwelcomeText.setText("Welcome " + user);
-                                Picasso.get().load(url).into(savedPic);
+//                                Picasso.get().load(url).into(savedPic);
                             } else if (user != null && url == null) {
                                 // Only name is available
                                 tvwelcomeText.setText("Welcome " + user);
@@ -208,11 +208,11 @@ public class DashboardActivity extends AppCompatActivity {
 
     }
 
-    @Override
-    public void onBackPressed() {
-        Intent intent = new Intent(DashboardActivity.this, MainActivity.class);
-        startActivity(intent);
-    }
+//    @Override
+//    public void onBackPressed() {
+//        Intent intent = new Intent(DashboardActivity.this, MainActivity.class);
+//        startActivity(intent);
+//    }
 
     private void deleteProfileImage() {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
