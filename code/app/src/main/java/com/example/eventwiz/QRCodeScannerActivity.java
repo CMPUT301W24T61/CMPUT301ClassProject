@@ -95,11 +95,18 @@ public class QRCodeScannerActivity extends AppCompatActivity{
             if (result.getContents() == null) {
                 Toast.makeText(this, "Scan cancelled", Toast.LENGTH_LONG).show();
             } else {
+                String scannedCode = result.getContents();
                 Toast.makeText(this, "Scanned: " + result.getContents(), Toast.LENGTH_LONG).show();
                 //validate firebase authentication
 //                Intent intent = new Intent(QRCodeScannerActivity.this, SaveUserProfileActivity.class);
 //                startActivity(intent);
-                String scannedCode = result.getContents();
+                if (scannedCode.startsWith("CHECKIN_")) {
+                    String eventId = scannedCode.replace("CHECKIN_", ""); // Extract the event ID
+                    navigateToEventDetail(eventId);
+                } else {
+                    Toast.makeText(this, "This QR code is not for event check-in.", Toast.LENGTH_LONG).show();
+                }
+
                 Log.d("SCannedContent", scannedCode);
                 if(scannedCode.equals(ADMIN_QR_CODE_HASH)) {
                     //this is an admin so redirect to admin activity
@@ -117,6 +124,13 @@ public class QRCodeScannerActivity extends AppCompatActivity{
         } else {
             super.onActivityResult(requestCode, resultCode, data);
         }
+    }
+
+    private void navigateToEventDetail(String eventId) {
+        // Start ViewEventDetailsActivity with the eventId
+        Intent intent = new Intent(QRCodeScannerActivity.this, ViewEventDetailsActivity.class);
+        intent.putExtra("eventId", eventId);
+        startActivity(intent);
     }
 
     /**

@@ -31,28 +31,28 @@ public class Organizer implements Serializable {
     /**
      * Generates a QR code for event check-in with the provided data.
      *
-     * @param data The data to be encoded in the QR code.
+     * @param eventId The eventId to be encoded in the QR code.
      * @return The generated QR code bitmap.
      * @throws WriterException If an error occurs during QR code generation.
      */
-    public Bitmap generateCheckInQRCode(String data) throws WriterException {
-        return generateQRCodeBitmap("CHECKIN_" + data);
+    public Bitmap generateCheckInQRCode(String eventId) throws WriterException {
+        return generateQRCodeBitmap("CHECKIN_" + eventId);
     }
 
     /**
      * Generates a QR code for event promotion with the provided data.
      *
-     * @param data The data to be encoded in the QR code.
+     * @param eventId The eventId to be encoded in the QR code.
      * @return The generated QR code bitmap.
      * @throws WriterException If an error occurs during QR code generation.
      */
-    public Bitmap generatePromotionQRCode(String data) throws WriterException {
-        return generateQRCodeBitmap("PROMO_" + data);
+    public Bitmap generatePromotionQRCode(String eventId) throws WriterException {
+        return generateQRCodeBitmap("PROMO_" + eventId);
     }
 
-    private Bitmap generateQRCodeBitmap(String data) throws WriterException {
+    private Bitmap generateQRCodeBitmap(String eventId) throws WriterException {
         QRCodeWriter writer = new QRCodeWriter();
-        BitMatrix bitMatrix = writer.encode(data, BarcodeFormat.QR_CODE, 512, 512);
+        BitMatrix bitMatrix = writer.encode(eventId, BarcodeFormat.QR_CODE, 512, 512);
         return createBitmapFromBitMatrix(bitMatrix);
     }
 

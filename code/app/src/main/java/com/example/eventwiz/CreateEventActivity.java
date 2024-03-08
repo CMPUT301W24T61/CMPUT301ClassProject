@@ -55,8 +55,7 @@ public class CreateEventActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_event_add_info);
-
-
+        event = (Event) getIntent().getSerializableExtra("event");
         checkboxGenerateCheckInQR = findViewById(R.id.generateNewQRCode);
         checkboxGeneratePromotionQR = findViewById(R.id.generatePromotionQRCode);
         checkboxReuseQRCode = findViewById(R.id.reuseQRCode);
@@ -123,12 +122,11 @@ public class CreateEventActivity extends AppCompatActivity {
             return; // Exit if no option is selected
         }
 
-        event = (Event) getIntent().getSerializableExtra("event"); // Assume event object is prepared
 
         // Conditional logic for generating/uploading QR codes
         if (checkboxGenerateCheckInQR.isChecked()) {
             try {
-                Bitmap checkInQRCodeBitmap = organizer.generateCheckInQRCode("Sample Check-In Data");
+                Bitmap checkInQRCodeBitmap = organizer.generateCheckInQRCode(event.getId());
                 String checkInQRFileName = "checkInQRCode_" + System.currentTimeMillis() + ".png";
                 uploadBitmapAndGetUrl(checkInQRCodeBitmap, checkInQRFileName, checkInQRUrl -> {
                     event.setCheckInQRCode(checkInQRUrl);
@@ -146,7 +144,7 @@ public class CreateEventActivity extends AppCompatActivity {
 
         if (checkboxGeneratePromotionQR.isChecked()) {
             try {
-                Bitmap promotionQRCodeBitmap = organizer.generatePromotionQRCode("Sample Promotion Data");
+                Bitmap promotionQRCodeBitmap = organizer.generatePromotionQRCode(event.getId());
                 String promotionQRFileName = "promotionQRCode_" + System.currentTimeMillis() + ".png";
                 uploadBitmapAndGetUrl(promotionQRCodeBitmap, promotionQRFileName, promotionQRUrl -> {
                     event.setPromotionQRCode(promotionQRUrl);
