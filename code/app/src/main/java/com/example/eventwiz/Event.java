@@ -11,6 +11,7 @@ public class Event {
     private String eventTime;
     private String posterUrl; // URL to the image stored in Firebase
     private String venue;
+    private String eventID;
 
 
     /**
@@ -21,12 +22,13 @@ public class Event {
      * @param posterUrl
      * @param venue
      */
-    public Event(String eventName, String eventDate, String eventTime, String posterUrl, String venue) {
+    public Event(String eventName, String eventDate, String eventTime, String posterUrl, String venue, String eventID) {
         this.eventName = eventName;
         this.eventDate = eventDate;
         this.eventTime = eventTime;
         this.posterUrl = posterUrl;
         this.venue = venue;
+        this.eventID = eventID;
     }
 
     // Getters and Setters
@@ -108,6 +110,14 @@ public class Event {
      */
     public void setPosterUrl(String posterUrl) {
         this.posterUrl = posterUrl;
+    }
+
+    public String getEventID() {
+        return eventID;
+    }
+
+    public void setEventID(String eventID) {
+        this.eventID = eventID;
     }
 
     /**

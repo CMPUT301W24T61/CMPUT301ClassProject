@@ -73,16 +73,16 @@ public class SaveUserProfileActivity extends AppCompatActivity {
         setContentView(R.layout.activity_save_user_profile);
 
         // Insitantiate top support action bar
-        ActionBar actionBar = getSupportActionBar();
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setTitle("EventWiz");
-            int color = ContextCompat.getColor(this, R.color.turqoise);
+//        ActionBar actionBar = getSupportActionBar();
+//        if (getSupportActionBar() != null) {
+//            getSupportActionBar().setTitle("EventWiz");
+//            int color = ContextCompat.getColor(this, R.color.turqoise);
+//
+//            // Set the background color of the ActionBar
+////            actionBar.setBackgroundDrawable(new ColorDrawable(color));
+//        }
 
-            // Set the background color of the ActionBar
-            actionBar.setBackgroundDrawable(new ColorDrawable(color));
-        }
-
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         retrieveAnonymousUserId();
 
         eduserName = findViewById(R.id.editText_register_name);

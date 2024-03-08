@@ -2,12 +2,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
-
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.INTERNET" />
-
 
     <uses-feature android:name="android.hardware.camera" />
     <uses-feature android:name="android.hardware.camera.autofocus" />
@@ -23,17 +21,16 @@
         android:theme="@style/Theme.EventWiz"
         tools:targetApi="31">
         <activity
-            android:name=".QRCodeScannerActivity"
-            android:parentActivityName=".MainActivity"
+            android:name=".AdminBrowseUsersActivity"
             android:exported="false" />
         <activity
-            android:name=".SaveUserProfileActivity"
-            android:theme="@style/Theme.AppCompat.Light.DarkActionBar"
-            android:parentActivityName=".MainActivity"
-            android:exported="false" />
+            android:name=".AdminDashboard"
+            android:exported="false"
+            android:parentActivityName=".MainActivity" />
         <activity
-            android:name=".MainActivity2"
-            android:exported="false" />
+            android:name=".AdminBrowseImages"
+            android:exported="false"
+            android:parentActivityName=".MainActivity" />
         <activity
             android:name=".SaveUserProfileActivity"
             android:exported="false"

@@ -63,7 +63,6 @@ public class MainActivity extends AppCompatActivity {
 
 //        Button buttonRegister = findViewById(R.id.button_register);
 
-//        Button buttonBrowseEvents = findViewById(R.id.button_browse_events);
 //        buttonBrowseEvents.setOnClickListener(new View.OnClickListener() {
 //            @Override
 //            public void onClick(View view) {

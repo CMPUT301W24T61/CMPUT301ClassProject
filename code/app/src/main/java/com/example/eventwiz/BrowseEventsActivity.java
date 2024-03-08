@@ -1,10 +1,17 @@
 package com.example.eventwiz;
 
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+
+import android.app.AlertDialog;
 import android.graphics.drawable.ColorDrawable;
+
+
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
@@ -12,6 +19,14 @@ import androidx.core.content.ContextCompat;
 
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
+
+import java.util.ArrayList;
+import java.util.List;
+import androidx.appcompat.app.ActionBar;
+import androidx.core.content.ContextCompat;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,6 +66,34 @@ public class BrowseEventsActivity extends AppCompatActivity {
         adapter = new EventAdapter(this, events);
         listView.setAdapter(adapter);
         fetchEvents();
+
+       // code to remove event if admin detected
+        AdminService adminService = new AdminService();
+        if(QRCodeScannerActivity.isUserAdmin()){
+            listView.setOnItemClickListener((parent, view, position, id) -> {
+                if (QRCodeScannerActivity.isUserAdmin()) {
+                    Event selectedEvent = adapter.getItem(position);
+                    new AlertDialog.Builder(BrowseEventsActivity.this)
+                            .setTitle("Remove Event")
+                            .setMessage("Are you sure you want to remove this event?")
+                            .setPositiveButton("Yes", (dialog, which) -> removeEvent(selectedEvent))
+                            .setNegativeButton("No", null)
+                            .show();
+                }
+            });
+        }
+    }
+
+    private void removeEvent(Event event) { //only remove if user is admin
+        // Remove event from Firebase
+        db.collection("events").document(event.getEventID()) // Ensure your Event class has an id field
+                .delete()
+                .addOnSuccessListener(aVoid -> {
+                    events.remove(event);
+                    adapter.notifyDataSetChanged();
+                    Toast.makeText(BrowseEventsActivity.this, "Event removed successfully", Toast.LENGTH_SHORT).show();
+                })
+                .addOnFailureListener(e -> Toast.makeText(BrowseEventsActivity.this, "Error removing event", Toast.LENGTH_SHORT).show());
     }
 
     private void fetchEvents() {
@@ -65,8 +108,9 @@ public class BrowseEventsActivity extends AppCompatActivity {
                             String eventTimeStart = document.contains("startTime") ? document.getString("startTime") : ""; // Assuming 'startTime' in your Firestore
                             String posterUrl = document.getString("posterUrl");
                             String venue = document.getString("location");
+                            String eventID = document.getString("id");
 
-                            Event newEvent = new Event(eventName, eventDate +"  " + eventTimeStart + " to " + eventTimeEnd, eventTimeStart, posterUrl, venue);
+                            Event newEvent = new Event(eventName, eventDate +"  " + eventTimeStart + " to " + eventTimeEnd, eventTimeStart, posterUrl, venue, eventID);
                             events.add(newEvent);
                         }
                         adapter.notifyDataSetChanged(); // Notify the adapter that the data set has changed

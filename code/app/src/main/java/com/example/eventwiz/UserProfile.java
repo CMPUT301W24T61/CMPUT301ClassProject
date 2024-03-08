@@ -8,6 +8,10 @@ public class UserProfile {
     private String UserName, UserEmail, UserHomepage, UserMobile,UserDocID,CurrentUserID,ProfilePicImage;
 
 
+    public UserProfile() {
+        // Default constructor required for calls to DataSnapshot.getValue(UserProfile.class)
+    }
+
     /**
      * Initializes the parameters used in the UserProfile class
      * @param userName

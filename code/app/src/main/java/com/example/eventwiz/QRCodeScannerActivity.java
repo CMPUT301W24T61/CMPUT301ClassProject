@@ -28,6 +28,16 @@ import com.google.zxing.integration.android.IntentResult;
  * @see GenerateQRCode
  */
 public class QRCodeScannerActivity extends AppCompatActivity{
+    private static boolean userAdmin = false;
+    public static boolean isUserAdmin() {
+        return userAdmin;
+    }
+
+    public void setUserAdmin(boolean status) {
+        userAdmin= status;
+    }
+
+
 
     private static final int PERMISSION_REQUEST_CAMERA = 1;
 
@@ -95,8 +105,12 @@ public class QRCodeScannerActivity extends AppCompatActivity{
                     //this is an admin so redirect to admin activity
                     //set this user as admin
                     Toast.makeText(this, "Welcome Admin", Toast.LENGTH_LONG).show();
-                    Intent intent = new Intent(QRCodeScannerActivity.this, BrowseEventsActivity.class);
+                    this.setUserAdmin(true);
+                    Intent intent = new Intent(QRCodeScannerActivity.this, AdminDashboard.class);
                     startActivity(intent);
+                }
+                else{
+                    Toast.makeText(this, scannedCode, Toast.LENGTH_LONG).show();
                 }
 
             }
