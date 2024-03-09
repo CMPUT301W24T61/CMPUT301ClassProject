@@ -173,7 +173,7 @@ public class DashboardActivity extends AppCompatActivity {
                             if (user != null && url != null) {
                                 // Both name and URL are available
                                 tvwelcomeText.setText("Welcome " + user);
-//                                Picasso.get().load(url).into(savedPic);
+                                Picasso.get().load(url).into(savedPic);
                             } else if (user != null && url == null) {
                                 // Only name is available
                                 tvwelcomeText.setText("Welcome " + user);
@@ -228,7 +228,10 @@ public class DashboardActivity extends AppCompatActivity {
      */
     private void deleteProfileImage() {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        String currentID = user.getUid();
+        String currentID = null;
+        if (user != null) {
+            currentID = user.getUid();
+        }
         DocumentReference ref;
         FirebaseFirestore firestore = FirebaseFirestore.getInstance();
 
