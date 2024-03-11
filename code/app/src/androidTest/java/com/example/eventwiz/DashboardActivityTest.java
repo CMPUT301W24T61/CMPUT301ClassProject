@@ -1,57 +1,61 @@
-/*Testing still in progress
-
 package com.example.eventwiz;
-import androidx.test.espresso.Espresso;
-import androidx.test.espresso.action.ViewActions;
-import androidx.test.espresso.assertion.ViewAssertions;
-import androidx.test.espresso.matcher.ViewMatchers;
-import androidx.test.ext.junit.rules.ActivityScenarioRule;
-import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner;
+import static androidx.test.espresso.Espresso.onView;
+import static androidx.test.espresso.action.ViewActions.click;
+import static androidx.test.espresso.assertion.ViewAssertions.matches;
+import static androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent;
+import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
+import static androidx.test.espresso.matcher.ViewMatchers.withId;
+import static androidx.test.espresso.matcher.ViewMatchers.withText;
 
-import com.example.eventwiz.DashboardActivity;
+import static org.hamcrest.CoreMatchers.is;
+
+import androidx.test.espresso.intent.Intents;
+import androidx.test.espresso.intent.rule.IntentsTestRule;
+import androidx.test.ext.junit.rules.ActivityScenarioRule;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
+import androidx.test.filters.LargeTest;
 
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-@RunWith(AndroidJUnit4ClassRunner.class)
+@RunWith(AndroidJUnit4.class)
+@LargeTest
+/**
+ * Test Class that aims to test the functioning of DashboardActivity
+ *
+ * @See: DashboardActivity, BrowseEventsActivity, CreateEventActivity
+ */
 public class DashboardActivityTest {
-
     @Rule
-    public ActivityScenarioRule<DashboardActivity> activityRule =
-            new ActivityScenarioRule<>(DashboardActivity.class);
+    public ActivityScenarioRule<DashboardActivity> scenario = new ActivityScenarioRule<>(DashboardActivity.class);@Rule
+    public IntentsTestRule<DashboardActivity> intentsTestRule = new IntentsTestRule<>(DashboardActivity.class);
 
     @Test
-    public void testCreateEventButton() {
-        // Click on the createEventButton
-        Espresso.onView(ViewMatchers.withId(R.id.createEvent)).perform(ViewActions.click());
-
-        // Check if the AddEventDetailActivity is launched
-        Espresso.onView(ViewMatchers.withId(R.id.addEventDetailLayout))
-                .check(ViewAssertions.matches(ViewMatchers.isDisplayed()));
+    /**
+     * Test function that aims to test the navigation to the create event page
+     */
+    public void TestCreateEventButton() {
+        //Click on the Create Event Button
+        onView(withId(R.id.createEvent)).perform(click());
+        //Check for presence of the Event Details page
+        onView(withId(R.id.tvEventNameLabel)).check(matches(isDisplayed()));
+        onView(withId(R.id.tvSetDateLabel)).check(matches(isDisplayed()));
+        Intents.intended(hasComponent(AddEventDetailActivity.class.getName()));
+//        onView(withId(R.id.btnNext1)).check(matches(isDisplayed()));
     }
 
     @Test
-    public void testProfileButton() {
-        // Click on the profileButton
-        Espresso.onView(ViewMatchers.withId(R.id.myProfile)).perform(ViewActions.click());
-
-        // Check if the ViewProfileActivity is launched
-        Espresso.onView(ViewMatchers.withId(R.id.view_profile))
-                .check(ViewAssertions.matches(ViewMatchers.isDisplayed()));
+    /**
+     * Test function that aims to test the navigation to the browse events page
+     */
+    public void TestBrowseEventsButton() {
+        //Click on the Browse Events Button
+        onView(withId(R.id.browseEvents)).perform(click());
+        //Check for Views present in the browse events page
+        //We are going to pick the ListView
+        onView(withId(R.id.lvEvents)).check(matches(isDisplayed()));
+        Intents.intended(hasComponent(BrowseEventsActivity.class.getName()));
     }
-
-    @Test
-    public void testScanQRButton() {
-        // Click on the scanQRButton
-        Espresso.onView(ViewMatchers.withId(R.id.fabCamera)).perform(ViewActions.click());
-
-        // Check if the QRCodeScannerActivity is launched
-        Espresso.onView(ViewMatchers.withId(R.id.activity_qrcode_scanner))
-                .check(ViewAssertions.matches(ViewMatchers.isDisplayed()));
-    }
-
-    // Add more tests for other UI components as needed
 
 }
-*/

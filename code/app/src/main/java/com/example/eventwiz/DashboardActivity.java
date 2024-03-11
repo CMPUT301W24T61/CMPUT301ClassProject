@@ -147,7 +147,13 @@ public class DashboardActivity extends AppCompatActivity {
             //}
         //});
 
-        backButton.setOnClickListener(view -> onBackPressed());
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(DashboardActivity.this, MainActivity.class);
+                startActivity(intent);
+            }
+        });
 
 
     }
