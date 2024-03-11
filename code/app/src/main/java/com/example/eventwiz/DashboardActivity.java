@@ -154,8 +154,10 @@ public class DashboardActivity extends AppCompatActivity {
 
 
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        assert user != null;
-        String currentID = user.getUid();
+        String currentID = null;
+        if (user != null) {
+            currentID = user.getUid();
+        }
         DocumentReference ref;
         FirebaseFirestore firestore = FirebaseFirestore.getInstance();
 
