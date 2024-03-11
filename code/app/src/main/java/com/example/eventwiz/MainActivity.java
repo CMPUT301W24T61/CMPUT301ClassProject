@@ -64,12 +64,10 @@ public class MainActivity extends AppCompatActivity {
 
 
         userAuth = FirebaseAuth.getInstance();
-        uid = userAuth.getUid();
+
         sp = getSharedPreferences("MyPrefs", MODE_PRIVATE);
-        SharedPreferences.Editor editor = sp.edit();
-        editor.putString("anonymousUserId", uid);
-        editor.apply();
-        Log.d("SharedPreferences", "Saved Anonymous User ID: " + uid);
+
+
 
         gpsStatus = findViewById(R.id.gps_status);
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
@@ -145,8 +143,14 @@ public class MainActivity extends AppCompatActivity {
                 if (task.isSuccessful()) {
                     // If anonymous authentication is successful, get the current user
                     FirebaseUser user = userAuth.getCurrentUser();
+                    uid = userAuth.getUid();
+                    SharedPreferences.Editor editor = sp.edit();
+                    editor.putString("anonymousUserId", uid);
+                    editor.apply();
                     Log.d("Authentication", "Anonymous authentication successful. UID: " + user.getUid());
                     updateUI(user);
+                    Log.d("SharedPreferences", "Saved Anonymous User ID: " + uid);
+
                 } else {
                     // If anonymous authentication fails, update UI accordingly and show a toast
                     Log.e("Authentication", "Anonymous authentication failed: " + task.getException());

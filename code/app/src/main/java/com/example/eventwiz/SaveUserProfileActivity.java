@@ -105,6 +105,8 @@ public class SaveUserProfileActivity extends AppCompatActivity {
         retrieveAnonymousUserId();
 
 
+
+
         selectPhoto.setOnClickListener(new View.OnClickListener() {
 
 

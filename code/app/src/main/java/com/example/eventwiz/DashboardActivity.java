@@ -1,9 +1,11 @@
 package com.example.eventwiz;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -45,6 +47,9 @@ public class DashboardActivity extends AppCompatActivity {
     private ImageView savedPic;
 
     ImageButton backButton;
+    SharedPreferences sp;
+
+    private String currentID;
 
 
 
@@ -66,6 +71,7 @@ public class DashboardActivity extends AppCompatActivity {
             actionBar.setTitle("User Dashboard");
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
+        retrieveAnonymousUserId();
 
         // Initialize UI components
         createEventButton = findViewById(R.id.createEvent);
@@ -80,6 +86,7 @@ public class DashboardActivity extends AppCompatActivity {
 
         // Add this line to your onCreate method
         ImageButton deleteProfileButton = findViewById(R.id.delete_button);
+
 
         deleteProfileButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -129,6 +136,8 @@ public class DashboardActivity extends AppCompatActivity {
             }
         });
 
+
+
         //manageEventsButton.setOnClickListener(new View.OnClickListener() {
             //@Override
             //public void onClick(View view) {
@@ -149,73 +158,74 @@ public class DashboardActivity extends AppCompatActivity {
      */
     public void onStart() {
 
+
         super.onStart();
         Toast.makeText(DashboardActivity.this,"Loading Current Profile!", Toast.LENGTH_SHORT).show();
 
 
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        String currentID = null;
+
         if (user != null) {
             currentID = user.getUid();
-        }
-        DocumentReference ref;
-        FirebaseFirestore firestore = FirebaseFirestore.getInstance();
 
-        ref = firestore.collection("Users").document(currentID);
-        ref.get()
-                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>(){
+            DocumentReference ref;
+            FirebaseFirestore firestore = FirebaseFirestore.getInstance();
 
-                    @Override
-                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                        if (task.getResult().exists()){
-                            String user = task.getResult().getString("userName");
-                            String url = task.getResult().getString("profilePicImage");
+            ref = firestore.collection("Users").document(currentID);
+            ref.get()
+                    .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+
+                        @Override
+                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                            if (task.getResult().exists()) {
+                                String user = task.getResult().getString("userName");
+                                String url = task.getResult().getString("profilePicImage");
 
 
-                            if (user != null && url != null) {
-                                // Both name and URL are available
-                                tvwelcomeText.setText("Welcome " + user);
-                                Picasso.get().load(url).into(savedPic);
-                            } else if (user != null && url == null) {
-                                // Only name is available
-                                tvwelcomeText.setText("Welcome " + user);
-                                // Handle the case when no profile picture is available
-                                // Create a Bitmap with ARGB_8888 configuration
-                                Paint paint = new Paint();
-                                int desiredSizeInDp = 10;  // Adjust this to your desired size in dp
+                                if (user != null && url != null) {
+                                    // Both name and URL are available
+                                    tvwelcomeText.setText("Welcome " + user);
+                                    Picasso.get().load(url).into(savedPic);
+                                } else if (user != null && url == null) {
+                                    // Only name is available
+                                    tvwelcomeText.setText("Welcome " + user);
+                                    // Handle the case when no profile picture is available
+                                    // Create a Bitmap with ARGB_8888 configuration
+                                    Paint paint = new Paint();
+                                    int desiredSizeInDp = 10;  // Adjust this to your desired size in dp
 
 // Convert dp to pixels
-                                float scale = getResources().getDisplayMetrics().density;
-                                int desiredSizeInPixels = (int) (desiredSizeInDp * scale + 0.5f);
+                                    float scale = getResources().getDisplayMetrics().density;
+                                    int desiredSizeInPixels = (int) (desiredSizeInDp * scale + 0.5f);
 
-                                Bitmap b = Bitmap.createBitmap(desiredSizeInPixels, desiredSizeInPixels, Bitmap.Config.ARGB_8888);
-                                Canvas c = new Canvas(b);
-                                c.drawColor(ContextCompat.getColor(DashboardActivity.this, R.color.coral));
-                                paint.setAntiAlias(true);
-                                // Calculate initials
-                                String[] strArray = user.split(" ");
-                                StringBuilder initialsBuilder = new StringBuilder();
+                                    Bitmap b = Bitmap.createBitmap(desiredSizeInPixels, desiredSizeInPixels, Bitmap.Config.ARGB_8888);
+                                    Canvas c = new Canvas(b);
+                                    c.drawColor(ContextCompat.getColor(DashboardActivity.this, R.color.coral));
+                                    paint.setAntiAlias(true);
+                                    // Calculate initials
+                                    String[] strArray = user.split(" ");
+                                    StringBuilder initialsBuilder = new StringBuilder();
 
-                                for (String str : strArray) {
-                                    if (!str.isEmpty()) {
-                                        initialsBuilder.append(str.charAt(0));
+                                    for (String str : strArray) {
+                                        if (!str.isEmpty()) {
+                                            initialsBuilder.append(str.charAt(0));
+                                        }
                                     }
+
+                                    String initials = initialsBuilder.toString().toUpperCase();
+
+                                    // Draw the initials on the Canvas at the center
+                                    float x = (b.getWidth() - paint.measureText(initials)) / 2;
+                                    float y = (b.getHeight() / 2) - ((paint.descent() + paint.ascent()) / 2);
+                                    c.drawText(initials, x, y, paint);
+                                    savedPic.setImageBitmap(b);
                                 }
-
-                                String initials = initialsBuilder.toString().toUpperCase();
-
-                                // Draw the initials on the Canvas at the center
-                                float x = (b.getWidth() - paint.measureText(initials)) / 2;
-                                float y = (b.getHeight() / 2) - ((paint.descent() + paint.ascent()) / 2);
-                                c.drawText(initials, x, y, paint);
-                                savedPic.setImageBitmap(b);
+                            } else {
+                                Toast.makeText(DashboardActivity.this, "Create a Profile", Toast.LENGTH_SHORT).show();
                             }
-                        } else {
-                            Toast.makeText(DashboardActivity.this, "Create a Profile",Toast.LENGTH_SHORT).show();
                         }
-                    }
-                });
-
+                    });
+        }
     }
 
 //    @Override
@@ -230,7 +240,6 @@ public class DashboardActivity extends AppCompatActivity {
      */
     private void deleteProfileImage() {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        String currentID = null;
         if (user != null) {
             currentID = user.getUid();
         }
@@ -278,6 +287,23 @@ public class DashboardActivity extends AppCompatActivity {
             }
         });
     }
+
+    private void retrieveAnonymousUserId() {
+        sp = getSharedPreferences("MyPrefs", MODE_PRIVATE);
+        currentID = sp.getString("anonymousUserId", null);
+
+        if (currentID != null) {
+            // Now, 'anonymousUserId' variable contains the anonymous user's ID
+            Log.d("SharedPreferences", "Retrieved Anonymous User ID: " + currentID);
+        } else {
+            Log.e("SharedPreferences", "Failed to retrieve Anonymous User ID");
+        }
+    }
+
+
+
+
+
 
 
 
