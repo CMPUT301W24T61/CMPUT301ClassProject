@@ -2,17 +2,48 @@ package com.example.eventwiz;
 
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class AttendeeService {
     private static boolean checkIn = false;
+    private static FirebaseFirestore db = FirebaseFirestore.getInstance();
     public interface EventQueryListener {
         void onEventFound(DocumentSnapshot eventDocument);
         void onEventNotFound();
         void onEventQueryError();
+    }
+
+    public interface EventsFetchListener {
+        void onEventsFetched(List<Event> events);
+        void onFetchError(Exception e);
+    }
+    /**
+     * Fetches events from the Firestore database and populates the events list.
+     * Notifies the adapter when the data set changes.
+     */
+    public static void fetchEvents(EventsFetchListener listener) {
+        db.collection("events").get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                List<Event> events = new ArrayList<>();
+                for (QueryDocumentSnapshot document : task.getResult()) {
+                    Event event = document.toObject(Event.class);
+                    event.setId(document.getId());
+                    events.add(event);
+                }
+                listener.onEventsFetched(events);
+            } else {
+                Log.e("AttendeeService", "Error getting documents: ", task.getException());
+                listener.onFetchError(task.getException());
+            }
+        });
     }
 
     public static void checkInOrPromotion(Context context, String scannedCode) {
@@ -79,5 +110,18 @@ public class AttendeeService {
                         Toast.makeText(context, "Error searching for event with Promotion Code.", Toast.LENGTH_LONG).show();
                     }
                 });
+    }
+
+    public static void removeEvent(String eventId, Callback<Boolean> callback) {
+        db.collection("events").document(eventId)
+                .delete()
+                .addOnSuccessListener(aVoid -> callback.onComplete(true))
+                .addOnFailureListener(e -> callback.onComplete(false));
+    }
+
+    // Other methods...
+
+    public interface Callback<T> {
+        void onComplete(T result);
     }
 }

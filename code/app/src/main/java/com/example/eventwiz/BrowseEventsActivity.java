@@ -31,7 +31,7 @@ public class BrowseEventsActivity extends AppCompatActivity {
 
     // This should be a list of Event objects now
     private List<Event> events;
-    private FirebaseFirestore db = FirebaseFirestore.getInstance();
+
 
     /**
      * Called when the activity is first created. This method sets up the user interface,
@@ -73,26 +73,20 @@ public class BrowseEventsActivity extends AppCompatActivity {
         fetchEvents();
     }
 
-    /**
-     * Fetches events from the Firestore database and populates the events list.
-     * Notifies the adapter when the data set changes.
-     */
+
+
     private void fetchEvents() {
-        db.collection("events")
-                .get()
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        for (QueryDocumentSnapshot document : task.getResult()) {
-                            // Use toObject to convert the document to an Event object directly
-                            Event event = document.toObject(Event.class);
-                            // Ensure that the ID is set from the document
-                            event.setId(document.getId());
-                            events.add(event);
-                        }
-                        adapter.notifyDataSetChanged(); // Notify the adapter that the data set has changed
-                    } else {
-                        Log.e("BrowseEventsActivity", "Error getting documents: ", task.getException());
-                    }
-                });
+        AttendeeService.fetchEvents(new AttendeeService.EventsFetchListener() {
+            @Override
+            public void onEventsFetched(List<Event> fetchedEvents) {
+                events.addAll(fetchedEvents);
+                adapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onFetchError(Exception e) {
+                Log.e("BrowseEventsActivity", "Error fetching events: ", e);
+            }
+        });
     }
 }
