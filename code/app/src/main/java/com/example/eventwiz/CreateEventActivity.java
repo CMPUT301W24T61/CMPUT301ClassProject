@@ -128,8 +128,8 @@ public class CreateEventActivity extends AppCompatActivity {
         // Conditional logic for generating/uploading QR codes
         if (checkboxGenerateCheckInQR.isChecked()) {
             try {
-                String uniqueString = GenerateQRCode.generateUniqueString();
-                String hashedString = GenerateQRCode.hashString(uniqueString);
+                String uniqueString = organizer.generateUniqueString();
+                String hashedString = organizer.hashString(uniqueString);
                 Bitmap checkInQRCodeBitmap = organizer.generateCheckInQRCode(hashedString);
                 String checkInQRFileName = "checkInQRCode_" + System.currentTimeMillis() + ".png";
                 uploadBitmapAndGetUrl(checkInQRCodeBitmap, checkInQRFileName, checkInQRUrl -> {
@@ -149,13 +149,13 @@ public class CreateEventActivity extends AppCompatActivity {
 
         if (checkboxGeneratePromotionQR.isChecked()) {
             try {
-                String uniqueString = GenerateQRCode.generateUniqueString();
-                String hashedString = GenerateQRCode.hashString(uniqueString);
+                String uniqueString = organizer.generateUniqueString();
+                String hashedString = organizer.hashString(uniqueString);
                 Bitmap promotionQRCodeBitmap = organizer.generateCheckInQRCode(hashedString);
                 String promotionQRFileName = "promotionQRCode_" + System.currentTimeMillis() + ".png";
                 uploadBitmapAndGetUrl(promotionQRCodeBitmap, promotionQRFileName, promotionQRUrl -> {
                     event.setPromotionQRCode(promotionQRUrl);
-                    event.setHashCode(hashedString);
+                    event.setPromotionHashCode(hashedString);
                     completeEventCreation();
                 });
             } catch (WriterException e) {
