@@ -5,11 +5,15 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -36,7 +40,8 @@ public class EventCreationSuccessActivity extends AppCompatActivity {
 
     private TextView tvEventName, tvEventDate, tvEventStartTime, tvEventEndTime, tvEventLocation, tvMaxAttendees, tvEventDescription;
     private ImageView ivEventPoster, ivCheckInQRCode, ivPromotionQRCode;
-    private Event event;
+    private FirebaseFirestore db = FirebaseFirestore.getInstance();
+
 
     /**
      * Called when the activity is starting. Responsible for initializing the UI,
@@ -52,13 +57,27 @@ public class EventCreationSuccessActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_event_creation_success);
 
-        event = (Event) getIntent().getSerializableExtra("event");
-
         initializeUI();
-        loadEventDetails();
 
+        // Retrieve the event ID passed from the previous activity
+        String eventId = getIntent().getStringExtra("eventId");
+        if (eventId != null) {
+            fetchEventDetails(eventId);
+        } else {
+            Log.e("EventCreationSuccess", "Event ID is null.");
+            // Handle the case when eventId is null
+        }
     }
 
+    private void fetchEventDetails(String eventId) {
+        DocumentReference eventDocument = db.collection("events").document(eventId);
+        eventDocument.get().addOnSuccessListener(documentSnapshot -> {
+            if (documentSnapshot.exists()) {
+                Event event = documentSnapshot.toObject(Event.class);
+                loadEventDetails(event);
+            }
+        });
+    }
     /**
      * Initializes the UI elements by finding and assigning views to their respective variables.
      */
@@ -66,49 +85,49 @@ public class EventCreationSuccessActivity extends AppCompatActivity {
     private void initializeUI() {
         tvEventName = findViewById(R.id.tvEventName);
         tvEventDate = findViewById(R.id.tvEventDate);
+        tvEventStartTime = findViewById(R.id.tvEventStartTime);
+        tvEventEndTime = findViewById(R.id.tvEventEndTime);
         tvEventLocation = findViewById(R.id.tvEventLocation);
         tvMaxAttendees = findViewById(R.id.tvMaxAttendees);
+        tvEventDescription = findViewById(R.id.tvEventDescription);
         ivEventPoster = findViewById(R.id.ivEventPoster);
         ivCheckInQRCode = findViewById(R.id.ivCheckInQRCode);
         ivPromotionQRCode = findViewById(R.id.ivPromotionQRCode);
-        tvEventStartTime = findViewById((R.id.tvEventStartTime));
-        tvEventEndTime = findViewById((R.id.tvEventEndTime));
-        tvEventDescription = findViewById(R.id.tvEventDescription);
 
         ImageButton btnGoToDashboard = findViewById(R.id.gotodasboard);
         btnGoToDashboard.setOnClickListener(v -> goToDashboardActivity());
     }
-
     /**
      * Loads and displays the event details on the UI elements.
      * If the event has associated images (poster, QR codes), they are loaded using Glide.
      */
-    private void loadEventDetails() {
-        if (event != null) {
-            tvEventName.setText(event.getName());
-            tvEventDate.setText("Date: " + event.getDate());
-            tvEventStartTime.setText(event.getStartTime());
-            tvEventEndTime.setText(event.getEndTime());
-            tvEventLocation.setText("Location: " + event.getLocation());
-            tvMaxAttendees.setText("Max Attendees: " + event.getMaxAttendees());
-            tvEventDescription.setText(("Event Description: " + event.getDescription()));
+    private void loadEventDetails(Event event) {
+        if (event == null) {
+            Log.e("EventCreationSuccess", "Event object is null.");
+            return;
+        }
+        tvEventName.setText(event.getName());
+        tvEventDate.setText(String.format("Date: %s", event.getDate()));
+        tvEventStartTime.setText(String.format("Start Time: %s", event.getStartTime()));
+        tvEventEndTime.setText(String.format("End Time: %s", event.getEndTime()));
+        tvEventLocation.setText(String.format("Location: %s", event.getLocation()));
+        tvMaxAttendees.setText(String.format("Max Attendees: %d", event.getMaxAttendees()));
+        tvEventDescription.setText(String.format("Event Description: %s", event.getDescription()));
 
-            if (event.getPosterUrl() != null && !event.getPosterUrl().isEmpty()) {
-                Glide.with(this).load(event.getPosterUrl()).into(ivEventPoster);
-            } else {
-                ivEventPoster.setImageResource(R.drawable.image_placeholder_background);
-            }
-            if (event.getCheckInQRCode() != null && !event.getCheckInQRCode().isEmpty()) {
-                Glide.with(this).load(event.getCheckInQRCode()).into(ivCheckInQRCode);
-            } else {
-                ivCheckInQRCode.setVisibility(View.GONE);
-            }
+        if (event.getPosterUrl() != null && !event.getPosterUrl().isEmpty()) {
+            Glide.with(this).load(event.getPosterUrl()).into(ivEventPoster);
+        }
 
-            if (event.getPromotionQRCode() != null && !event.getPromotionQRCode().isEmpty()) {
-                Glide.with(this).load(event.getPromotionQRCode()).into(ivPromotionQRCode);
-            } else {
-                ivPromotionQRCode.setVisibility(View.GONE);
-            }
+        if (event.getCheckInQRCode() != null && !event.getCheckInQRCode().isEmpty()) {
+            Glide.with(this).load(event.getCheckInQRCode()).into(ivCheckInQRCode);
+        } else {
+            ivCheckInQRCode.setVisibility(View.GONE);
+        }
+
+        if (event.getPromotionQRCode() != null && !event.getPromotionQRCode().isEmpty()) {
+            Glide.with(this).load(event.getPromotionQRCode()).into(ivPromotionQRCode);
+        } else {
+            ivPromotionQRCode.setVisibility(View.GONE);
         }
     }
     @Override

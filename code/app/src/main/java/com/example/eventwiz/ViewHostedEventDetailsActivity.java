@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -21,29 +22,18 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 
-/**
- * ViewEventDetailsActivity displays the details of a specific event.
- * It retrieves event details from Firestore and populates the UI accordingly.
- */
-public class ViewEventDetailsActivity extends AppCompatActivity {
+import java.util.List;
 
+public class ViewHostedEventDetailsActivity extends AppCompatActivity{
     private TextView tvEventName, tvEventDate, tvEventStartTime, tvEventEndTime, tvEventLocation, tvMaxAttendees, tvEventDescription;
-    private Button btnSignUp, btnCheckIn;
+
+    private Button btnSignedUpList, btnCheckedInList;
     private ImageView ivEventPoster, ivCheckInQRCode, ivPromotionQRCode;
     private FirebaseFirestore db;
-
-    /**
-     * Called when the activity is first created.
-     *
-     * @param savedInstanceState If the activity is being re-initialized after previously being shut down,
-     *                           this Bundle contains the data it most recently supplied in
-     *                           onSaveInstanceState(Bundle).
-     *                           Otherwise, it is null.
-     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.view_event_details);
+        setContentView(R.layout.view_hosted_event_details);
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setTitle("Event Details");
@@ -56,32 +46,19 @@ public class ViewEventDetailsActivity extends AppCompatActivity {
         if (eventId != null && !eventId.isEmpty()) {
             loadEventFromFirestore(eventId);
         }
-        btnSignUp = findViewById(R.id.btnSignUp);
-        btnSignUp.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                signUpForEvent();
+        btnSignedUpList = findViewById(R.id.btnSignUpList);
+        btnSignedUpList.setOnClickListener(v -> {
+            if (eventId != null && !eventId.isEmpty()) {
+                Intent intent = new Intent(ViewHostedEventDetailsActivity.this, AttendeeListActivity.class);
+                intent.putExtra("eventId", eventId);
+                startActivity(intent);
+            } else {
+                Toast.makeText(ViewHostedEventDetailsActivity.this, "Event ID is missing", Toast.LENGTH_SHORT).show();
             }
         });
         ImageButton btnGoToDashboard = findViewById(R.id.gotodasboard);
         btnGoToDashboard.setOnClickListener(v -> goToDashboardActivity());
     }
-    private void signUpForEvent() {
-        String eventId = getIntent().getStringExtra("eventId");
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        String UserId = user.getUid();
-        if (eventId != null && !eventId.trim().isEmpty()) {
-            DocumentReference eventRef = db.collection("events").document(eventId);
-            eventRef.update("signups", FieldValue.arrayUnion(UserId))
-                    .addOnSuccessListener(aVoid -> {
-                        Toast.makeText(ViewEventDetailsActivity.this, "Signed up successfully", Toast.LENGTH_SHORT).show();
-                    })
-                    .addOnFailureListener(e -> Toast.makeText(ViewEventDetailsActivity.this, "Sign up failed", Toast.LENGTH_SHORT).show());
-        }
-    }
-    /**
-     * Initializes UI elements by finding their respective views in the layout.
-     */
     private void initializeUI() {
         tvEventName = findViewById(R.id.tvEventName);
         tvEventDate = findViewById(R.id.tvEventDate);
@@ -134,7 +111,8 @@ public class ViewEventDetailsActivity extends AppCompatActivity {
      * Navigates to the DashboardActivity when the "Go to Dashboard" button is clicked.
      */
     private void goToDashboardActivity() {
-        Intent intent = new Intent(ViewEventDetailsActivity.this, DashboardActivity.class);
+        Intent intent = new Intent(ViewHostedEventDetailsActivity.this, DashboardActivity.class);
         startActivity(intent);
     }
 }
+

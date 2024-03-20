@@ -32,8 +32,13 @@
             android:exported="false" />
         <activity
             android:name=".BrowseHostedEvents"
-            android:parentActivityName=".DashboardActivity"
-            android:exported="false" />
+            android:parentActivityName=".DashboardActivity" />
+        <activity
+            android:name=".ViewHostedEventDetailsActivity"
+            android:parentActivityName=".BrowseHostedEvents" />
+        <activity
+            android:name=".AttendeeListActivity"
+            android:parentActivityName=".ViewHostedEventDetailsActivity" />
         <activity
             android:name=".AdminDashboard"
             android:exported="false"

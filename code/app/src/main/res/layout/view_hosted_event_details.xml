@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true">
@@ -9,17 +9,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@android:color/white">
-
-        <TextView
-            android:id="@+id/tvEventHeader"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/turqoise"
-            android:text="EVENTWIZ"
-            android:textAlignment="center"
-            android:textColor="@android:color/black"
-            android:textSize="24sp"
-            android:padding="16dp" />
 
         <ImageButton
             android:id="@+id/gotodasboard"
@@ -34,17 +23,6 @@
             android:paddingTop="18dp"
             android:src="@drawable/ic_home" />
 
-        <TextView
-            android:id="@+id/tvSuccessMessage"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/tvEventHeader"
-            android:text="Success !\nYour New Event is here..."
-            android:textColor="@android:color/black"
-            android:textSize="20sp"
-            android:gravity="center"
-            android:layout_marginTop="16dp"
-            android:layout_marginBottom="16dp" />
 
         <TextView
             android:id="@+id/tvEventName"
@@ -54,8 +32,9 @@
             android:text="Event Name"
             android:textColor="@android:color/black"
             android:gravity="center_horizontal"
-            android:textSize="22sp"
-            android:layout_marginTop="16dp" />
+            android:textSize="30sp"
+            android:layout_marginTop="100dp"
+            tools:ignore="NotSibling" />
 
         <TextView
             android:id="@+id/tvEventDate"
@@ -101,12 +80,23 @@
             android:textSize="18sp"
             android:layout_marginTop="8dp" />
 
+        <TextView
+            android:id="@+id/tvEventDescription"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tvEventLocation"
+            android:text="Event Description: TBD"
+            android:textColor="@android:color/black"
+            android:gravity="center_horizontal"
+            android:textSize="18sp"
+            android:layout_marginTop="8dp" />
+
 
         <ImageView
             android:id="@+id/ivEventPoster"
             android:layout_width="200dp"
             android:layout_height="200dp"
-            android:layout_below="@id/tvEventDescription"
+            android:layout_below="@id/tvMaxAttendees"
             android:layout_centerHorizontal="true"
             android:src="@drawable/image_placeholder_background"
             android:layout_marginTop="32dp"
@@ -118,7 +108,7 @@
             android:layout_height="100dp"
             android:layout_below="@id/ivEventPoster"
             android:layout_alignStart="@id/ivEventPoster"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="16dp"
             android:src="@drawable/image_placeholder_background"
             android:contentDescription="qr code" />
 
@@ -128,7 +118,7 @@
             android:layout_height="100dp"
             android:layout_below="@id/ivEventPoster"
             android:layout_alignEnd="@id/ivEventPoster"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="16dp"
             android:src="@drawable/image_placeholder_background"
             android:contentDescription="promotion_qr_code" />
 
@@ -142,23 +132,6 @@
             android:textColor="@android:color/black"
             android:textSize="16sp"
             android:gravity="center" />
-
-
-
-        <ImageButton
-            android:id="@+id/btn_share_qr_code"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_marginLeft="5dp"
-            android:src="@drawable/ic_share"
-            android:layout_below="@id/tvCheckInQRLabel"
-            android:layout_centerHorizontal="true"
-            android:scaleType="fitCenter"
-            android:text="Share QR Code"
-            android:background="@drawable/rounded_button"
-            android:elevation="4dp"
-            android:layout_marginTop="0dp" />
-
 
         <TextView
             android:id="@+id/tvPromotionQRLabel"
@@ -175,22 +148,35 @@
             android:id="@+id/tvMaxAttendees"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/tvEventLocation"
+            android:layout_below="@id/tvEventDescription"
             android:text="Max Attendees: TBD"
             android:textColor="@android:color/black"
             android:gravity="center_horizontal"
             android:textSize="18sp"
             android:layout_marginTop="8dp" />
-        <TextView
-            android:id="@+id/tvEventDescription"
-            android:layout_width="match_parent"
+
+        <LinearLayout
+            android:id="@+id/buttonContainer"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/tvMaxAttendees"
-            android:text="Event Description: "
-            android:textColor="@android:color/black"
-            android:gravity="center_horizontal"
-            android:textSize="18sp"
-            android:layout_marginTop="8dp" />
+            android:layout_below="@id/tvPromotionQRLabel"
+            android:layout_centerHorizontal="true"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btnCheckInList"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:text="Checked In List" />
+
+            <Button
+                android:id="@+id/btnSignUpList"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:text="Signed Up List" />
+        </LinearLayout>
 
     </RelativeLayout>
 </ScrollView>

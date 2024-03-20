@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -238,18 +239,18 @@ public class CreateEventActivity extends AppCompatActivity {
         });
     }
 
+    interface OnUploadCompleteListener {
+        void onUploadComplete(String url);
+    }
     /**
      * Navigates to selected event
      * @param event
      */
     private void navigateToSuccessActivity(Event event) {
+        Log.d("CreateEventActivity", "Navigating to Success Activity with event: " + event);
         Intent intent = new Intent(CreateEventActivity.this, EventCreationSuccessActivity.class);
-        intent.putExtra("event", event);
+        intent.putExtra("eventId", event.getId());
         startActivity(intent);
-    }
-
-    interface OnUploadCompleteListener {
-        void onUploadComplete(String url);
     }
 
     @Override

@@ -2,6 +2,7 @@ package com.example.eventwiz;
 
 
 import java.io.Serializable;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -23,6 +24,9 @@ public class Event implements Serializable {
     private String checkInQRCode;
     private String promotionQRCode;
     private String organizerId;
+    private List<String> signups;
+
+    private List<String> checkins;
 
     private String hashCode;
     private String promotionHashCode;
@@ -30,7 +34,7 @@ public class Event implements Serializable {
     public Event() {
         // Default constructor required for calls to DataSnapshot.getValue(Event.class)
     }
-    public Event(String name, String description, String date, String startTime, String endTime, String location, int maxAttendees, String checkInQRCode, String promotionQRCode, String posterUrl, String hashCode, String promotionHashCode) {
+    public Event(String name, String description, String date, String startTime, String endTime, String location, int maxAttendees, String checkInQRCode, String promotionQRCode, String posterUrl, String hashCode, String promotionHashCode, List<String> signups, List<String> checkins) {
         this.id = UUID.randomUUID().toString();
         this.name = name;
         this.description = description;
@@ -41,7 +45,8 @@ public class Event implements Serializable {
         this.maxAttendees = maxAttendees;
         this.checkInQRCode = checkInQRCode;
         this.promotionQRCode = promotionQRCode;
-
+        this.signups = signups;
+        this.checkins = checkins;
         this.posterUrl = posterUrl;
         this.hashCode= hashCode;
         this.promotionHashCode = promotionHashCode;
@@ -111,6 +116,18 @@ public class Event implements Serializable {
     public void setMaxAttendees(int maxAttendees) {
         this.maxAttendees = maxAttendees;
 
+    }
+
+    public List<String> getSignups() {return signups;}
+
+    public void setSignups(List<String> signups) {this.signups = signups;}
+
+    public List<String> getCheckins() {
+        return checkins;
+    }
+
+    public void setCheckins(List<String> checkins) {
+        this.checkins = checkins;
     }
 
     /**

@@ -10,7 +10,8 @@ import android.widget.ImageButton;
 import android.widget.Spinner;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
-
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -54,10 +55,6 @@ public class AddEventDetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_event_detail);
         db = FirebaseFirestore.getInstance();
-
-        organizer = new Organizer();
-
-
         initializeUI();
         populateSpinners();
     }
@@ -207,9 +204,10 @@ public class AddEventDetailActivity extends AppCompatActivity {
         String checkInQRCodePath = "";
         String promotionQRCodePath = "";
         String posterUrl = "";
-
-
-        Event event = new Event(eventName, eventDescription, date, startTime, endTime, "", maxAttendees, checkInQRCodePath, promotionQRCodePath, posterUrl, "", "");
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        String organizerId = currentUser.getUid();
+        Event event = new Event(eventName, eventDescription, date, startTime, endTime, "", maxAttendees, checkInQRCodePath, promotionQRCodePath, posterUrl, "", "",new ArrayList<String>(),new ArrayList<String>());
+        event.setOrganizerId(organizerId);
         saveEventToFirestore(event);
 
         Intent intent = new Intent(AddEventDetailActivity.this, AddEventLocationActivity.class);
