@@ -18,7 +18,6 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -31,6 +30,7 @@ import java.util.List;
 /**
  * Activity for creating an event by uploading event details and poster.
  * @author Junkai
+ * @see Event
  */
 public class CreateEventActivity extends AppCompatActivity {
     private FirebaseStorage storage = FirebaseStorage.getInstance();
@@ -55,7 +55,8 @@ public class CreateEventActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_event_add_info);
-        event = (Event) getIntent().getSerializableExtra("event");
+
+
         checkboxGenerateCheckInQR = findViewById(R.id.generateNewQRCode);
         checkboxGeneratePromotionQR = findViewById(R.id.generatePromotionQRCode);
         checkboxReuseQRCode = findViewById(R.id.reuseQRCode);
@@ -122,14 +123,18 @@ public class CreateEventActivity extends AppCompatActivity {
             return; // Exit if no option is selected
         }
 
+        event = (Event) getIntent().getSerializableExtra("event"); // Assume event object is prepared
 
         // Conditional logic for generating/uploading QR codes
         if (checkboxGenerateCheckInQR.isChecked()) {
             try {
-                Bitmap checkInQRCodeBitmap = organizer.generateCheckInQRCode(event.getId());
+                String uniqueString = organizer.generateUniqueString();
+                String hashedString = organizer.hashString(uniqueString);
+                Bitmap checkInQRCodeBitmap = organizer.generateCheckInQRCode(hashedString);
                 String checkInQRFileName = "checkInQRCode_" + System.currentTimeMillis() + ".png";
                 uploadBitmapAndGetUrl(checkInQRCodeBitmap, checkInQRFileName, checkInQRUrl -> {
                     event.setCheckInQRCode(checkInQRUrl);
+                    event.setHashCode(hashedString);
                     completeEventCreation();
                 });
             } catch (WriterException e) {
@@ -144,10 +149,13 @@ public class CreateEventActivity extends AppCompatActivity {
 
         if (checkboxGeneratePromotionQR.isChecked()) {
             try {
-                Bitmap promotionQRCodeBitmap = organizer.generatePromotionQRCode(event.getId());
+                String uniqueString = organizer.generateUniqueString();
+                String hashedString = organizer.hashString(uniqueString);
+                Bitmap promotionQRCodeBitmap = organizer.generateCheckInQRCode(hashedString);
                 String promotionQRFileName = "promotionQRCode_" + System.currentTimeMillis() + ".png";
                 uploadBitmapAndGetUrl(promotionQRCodeBitmap, promotionQRFileName, promotionQRUrl -> {
                     event.setPromotionQRCode(promotionQRUrl);
+                    event.setPromotionHashCode(hashedString);
                     completeEventCreation();
                 });
             } catch (WriterException e) {
@@ -249,4 +257,6 @@ public class CreateEventActivity extends AppCompatActivity {
         onBackPressed();
         return true;
     }
+
+
 }

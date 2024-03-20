@@ -26,6 +26,14 @@ public class ViewEventDetailsActivity extends AppCompatActivity {
     private ImageView ivEventPoster, ivCheckInQRCode, ivPromotionQRCode;
     private FirebaseFirestore db;
 
+    /**
+     * Called when the activity is first created.
+     *
+     * @param savedInstanceState If the activity is being re-initialized after previously being shut down,
+     *                           this Bundle contains the data it most recently supplied in
+     *                           onSaveInstanceState(Bundle).
+     *                           Otherwise, it is null.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,6 +55,9 @@ public class ViewEventDetailsActivity extends AppCompatActivity {
         btnGoToDashboard.setOnClickListener(v -> goToDashboardActivity());
     }
 
+    /**
+     * Initializes UI elements by finding their respective views in the layout.
+     */
     private void initializeUI() {
         tvEventName = findViewById(R.id.tvEventName);
         tvEventDate = findViewById(R.id.tvEventDate);
@@ -60,6 +71,11 @@ public class ViewEventDetailsActivity extends AppCompatActivity {
         tvEventDescription = findViewById(R.id.tvEventDescription);
     }
 
+    /**
+     * Retrieves event details from Firestore using the provided eventId.
+     *
+     * @param eventId The unique identifier of the event to be loaded.
+     */
     private void loadEventFromFirestore(String eventId) {
         DocumentReference eventDocument = db.collection("events").document(eventId);
         eventDocument.get().addOnSuccessListener(documentSnapshot -> {
@@ -70,6 +86,11 @@ public class ViewEventDetailsActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Populates the UI with details of the given event.
+     *
+     * @param event The event object containing details to be displayed.
+     */
     private void loadEventDetails(Event event) {
         if (event != null) {
             tvEventName.setText(event.getName());
@@ -85,7 +106,9 @@ public class ViewEventDetailsActivity extends AppCompatActivity {
             Glide.with(this).load(event.getPromotionQRCode()).placeholder(R.drawable.image_placeholder_background).into(ivPromotionQRCode);
         }
     }
-
+    /**
+     * Navigates to the DashboardActivity when the "Go to Dashboard" button is clicked.
+     */
     private void goToDashboardActivity() {
         Intent intent = new Intent(ViewEventDetailsActivity.this, DashboardActivity.class);
         startActivity(intent);

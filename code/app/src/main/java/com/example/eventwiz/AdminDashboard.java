@@ -9,6 +9,15 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+/**
+ * The AdminDashboard class represents the main dashboard for administrators in the EventWiz application.
+ * It provides access to various functionalities such as browsing events, users, and images.
+ * Administrators can perform actions like scanning QR codes and managing the application.
+ *
+ * @author Hunaid
+ * @version 1.0
+ * @since 2024-03-08
+ */
 public class AdminDashboard extends AppCompatActivity {
 
     // Declare UI components
@@ -19,6 +28,12 @@ public class AdminDashboard extends AppCompatActivity {
 
     private FloatingActionButton scanQRButton;
 
+    /**
+     * Called when the activity is first created. This method initializes the UI components,
+     * sets up the ActionBar, and defines onClickListeners for each button.
+     *
+     * @param savedInstanceState A Bundle containing the saved state of the activity (if any).
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -30,6 +45,14 @@ public class AdminDashboard extends AppCompatActivity {
             actionBar.setTitle("Organizer Dashboard");
             actionBar.setDisplayHomeAsUpEnabled(true); // Enable the Up button
         }
+        FloatingActionButton scanQRButton = findViewById(R.id.fabCamera);
+        scanQRButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(AdminDashboard.this, QRCodeScannerActivity.class);
+                startActivity(intent);
+            }
+        });
 
         // Initialize UI components
         browseEventsButton = findViewById(R.id.events);

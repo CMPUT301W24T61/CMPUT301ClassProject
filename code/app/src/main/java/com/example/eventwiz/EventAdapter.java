@@ -1,5 +1,6 @@
 package com.example.eventwiz;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.view.LayoutInflater;
@@ -17,8 +18,8 @@ import java.util.List;
 
 /**
  * This class is responsible for handling the adapter for events.
- * @see EventBrief
- * @author Hunaid
+ * @see Event
+ * @author Hunaid,Yesith
  */
 public class EventAdapter extends ArrayAdapter<Event> {
     public EventAdapter(Context context, List<Event> events) {
@@ -53,20 +54,55 @@ public class EventAdapter extends ArrayAdapter<Event> {
         TextView tvEventDateTime = convertView.findViewById(R.id.tvEventDateTime);
         ImageView imgEventPoster = convertView.findViewById(R.id.ivEventPoster);
 
+
         // Populate the data into the template view using the data object
         tvEventName.setText(event.getName());
         tvEventDateTime.setText(String.format("Date: %s Time: %s - %s", event.getDate(), event.getStartTime(), event.getEndTime()));
         Glide.with(getContext()).load(event.getPosterUrl()).into(imgEventPoster);
 
         // Click listener to navigate to event details
+
         convertView.setOnClickListener(view -> {
-            Intent intent = new Intent(getContext(), ViewEventDetailsActivity.class);
-            intent.putExtra("eventId", event.getId()); // Pass the event ID to the details activity
-            getContext().startActivity(intent);
+            if (QRCodeScannerActivity.isUserAdmin()) {
+                showConfirmationDialog(event);
+            } else {
+                Intent intent = new Intent(getContext(), ViewEventDetailsActivity.class);
+                intent.putExtra("eventId", event.getId());
+                getContext().startActivity(intent);
+            }
         });
 
         // Return the completed view to render on screen
         return convertView;
+    }
+
+
+    private void showConfirmationDialog(Event event) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setTitle("Delete Event")
+                .setMessage("Are you sure you want to delete this event?")
+                .setPositiveButton("Delete", null) // Set to null. We override the onClick later.
+                .setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
+
+        AlertDialog dialog = builder.create();
+
+        dialog.setOnShowListener(dialogInterface -> {
+            Button button = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
+            button.setOnClickListener(view -> {
+                AttendeeService.removeEvent(event.getId(), success -> {
+                    if (success) {
+                        remove(event);
+                        notifyDataSetChanged();
+                        Toast.makeText(getContext(), "Event deleted successfully", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(getContext(), "Error deleting event", Toast.LENGTH_SHORT).show();
+                    }
+                    dialog.dismiss(); // Dismiss the dialog after the operation
+                });
+            });
+        });
+
+        dialog.show();
     }
 
 

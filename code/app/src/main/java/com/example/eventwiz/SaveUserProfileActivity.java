@@ -1,5 +1,3 @@
-
-
 package com.example.eventwiz;
 
 import android.app.Activity;
@@ -15,6 +13,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -42,13 +41,21 @@ import java.io.IOException;
 /**
  * The SaveUserProfileActivity class handles the user profile creation process, including
  * uploading user information and profile picture to Firebase Firestore and Storage.
+ *
+ * This activity allows the user to enter personal information and upload a profile picture.
+ * The information is then stored in Firebase Firestore, and the profile picture is uploaded
+ * to Firebase Storage.
+ *
  * @author Yesith
  */
 public class SaveUserProfileActivity extends AppCompatActivity {
 
     private EditText eduserName, eduserEmail, eduserHomepage, eduserMobile;
 
+
+
     private Button SaveProfileButton;
+
     private ImageView selectPhoto;
     public Uri imageUri;
     private Bitmap bitmap;
@@ -60,31 +67,24 @@ public class SaveUserProfileActivity extends AppCompatActivity {
     private String photoUrl;
 
     private FirebaseAuth userAuth;
-
     private String CurrentUserID;
     private String docID;
 
     SharedPreferences sp;
 
 
-
+    /**
+     * Called when the activity is first created. Initializes UI components,
+     * Firebase instances, and sets up click listeners.
+     *
+     * @param savedInstanceState A Bundle containing the activity's previously saved state.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_save_user_profile);
 
-        // Insitantiate top support action bar
-//        ActionBar actionBar = getSupportActionBar();
-//        if (getSupportActionBar() != null) {
-//            getSupportActionBar().setTitle("EventWiz");
-//            int color = ContextCompat.getColor(this, R.color.turqoise);
-//
-//            // Set the background color of the ActionBar
-////            actionBar.setBackgroundDrawable(new ColorDrawable(color));
-//        }
 
-//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        retrieveAnonymousUserId();
 
         eduserName = findViewById(R.id.editText_register_name);
         eduserEmail = findViewById(R.id.editText_register_email);
@@ -94,6 +94,7 @@ public class SaveUserProfileActivity extends AppCompatActivity {
         SaveProfileButton = findViewById(R.id.button_register);
 
 
+
         // create instances
         firestore = FirebaseFirestore.getInstance();
         storage = FirebaseStorage.getInstance();
@@ -101,14 +102,18 @@ public class SaveUserProfileActivity extends AppCompatActivity {
 
         userAuth = FirebaseAuth.getInstance();
 
+        retrieveAnonymousUserId();
+
+
+
+
         selectPhoto.setOnClickListener(new View.OnClickListener() {
 
-            //check storage permission
 
 
             @Override
             public void onClick(View view) {
-                //CheckStoragePermission();
+
 
                 PickImageFromGallery();
             }
@@ -121,6 +126,11 @@ public class SaveUserProfileActivity extends AppCompatActivity {
                 uploadImage();
                 uploadUserInfo();
 
+
+                Intent intent = new Intent(SaveUserProfileActivity.this, MainActivity.class);
+                startActivity(intent);
+
+
             }
         });
 
@@ -130,18 +140,9 @@ public class SaveUserProfileActivity extends AppCompatActivity {
     }
 
 
-    /*
-    private void CheckStoragePermission(){
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
-            if (ContextCompat.checkSelfPermission(this,
-                    Manifest.permission.READ_EXTERNAL)
-        }
-
-    }
-    */
-
-
-    // get picture from gallery
+    /**
+     * Launches the gallery to allow the user to pick an image for their profile.
+     */
     private void PickImageFromGallery() {
         Intent intent = new Intent();
         intent.setType("image/*");
@@ -181,9 +182,10 @@ public class SaveUserProfileActivity extends AppCompatActivity {
             }
     );
 
-    // upload image to firebase
-
-    //make a method to upload Image into firebase storage
+    /**
+     * Uploads the selected image to Firebase Storage and retrieves the download URL.
+     * Once the URL is obtained, it is used to update the user's profile information.
+     */
 
     private void uploadImage(){
         //chekc imageuri
@@ -215,6 +217,10 @@ public class SaveUserProfileActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Uploads user information, including name, email, homepage, mobile, and profile picture URL,
+     * to Firebase Firestore.
+     */
     private void uploadUserInfo(){
         //get text from text edit
         String name=eduserName.getText().toString();
@@ -224,8 +230,9 @@ public class SaveUserProfileActivity extends AppCompatActivity {
 
         //
         if(TextUtils.isEmpty(name) && TextUtils.isEmpty(email) && TextUtils.isEmpty(homepage) && TextUtils.isEmpty(mobile)){
-            Toast.makeText(SaveUserProfileActivity.this,"Please Fill All Fields ", Toast.LENGTH_SHORT).show();
+            Toast.makeText(SaveUserProfileActivity.this,"Profile Not updated!", Toast.LENGTH_SHORT).show();
         }else{
+
             DocumentReference documentReference = firestore.collection("Users").document(CurrentUserID);
             //set all data into user class>>create class user
             UserProfile userProfile =new UserProfile(name,email,homepage,mobile,"",CurrentUserID,photoUrl);
@@ -242,7 +249,7 @@ public class SaveUserProfileActivity extends AppCompatActivity {
                                 @Override
                                 public void onComplete(@NonNull Task<Void> task) {
                                     if(task.isSuccessful()){
-                                        Toast.makeText(SaveUserProfileActivity.this,"uploaded Successfully!",Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(SaveUserProfileActivity.this,"Profile Created Successfully!",Toast.LENGTH_SHORT).show();
 
                                     }
 
@@ -271,6 +278,10 @@ public class SaveUserProfileActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Retrieves the anonymous user ID from SharedPreferences.
+     * This ID is used to uniquely identify the anonymous user in the Firestore database.
+     */
     private void retrieveAnonymousUserId() {
         sp = getSharedPreferences("MyPrefs", MODE_PRIVATE);
         CurrentUserID = sp.getString("anonymousUserId", null);
@@ -282,12 +293,5 @@ public class SaveUserProfileActivity extends AppCompatActivity {
             Log.e("SharedPreferences", "Failed to retrieve Anonymous User ID");
         }
     }
-
-
-
-
-
-
-
 
 }

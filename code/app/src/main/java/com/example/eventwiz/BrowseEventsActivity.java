@@ -17,7 +17,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * BrowseEventsActivity is responsible for displaying events in a list from the firebase database
+ * The BrowseEventsActivity class is responsible for displaying events in a list
+ * retrieved from the Firebase database. It extends the AppCompatActivity and
+ * utilizes a custom EventAdapter for displaying events in a ListView.
+ *
  * @see Event
  * @author Hunaid
  */
@@ -28,8 +31,15 @@ public class BrowseEventsActivity extends AppCompatActivity {
 
     // This should be a list of Event objects now
     private List<Event> events;
-    private FirebaseFirestore db = FirebaseFirestore.getInstance();
 
+
+    /**
+     * Called when the activity is first created. This method sets up the user interface,
+     * initializes the ActionBar, configures the ListView and adapter, sets up item click
+     * listeners, and fetches events from the Firestore database.
+     *
+     * @param savedInstanceState A Bundle containing the activity's previously saved state, if any.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,22 +73,20 @@ public class BrowseEventsActivity extends AppCompatActivity {
         fetchEvents();
     }
 
+
+
     private void fetchEvents() {
-        db.collection("events")
-                .get()
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        for (QueryDocumentSnapshot document : task.getResult()) {
-                            // Use toObject to convert the document to an Event object directly
-                            Event event = document.toObject(Event.class);
-                            // Ensure that the ID is set from the document
-                            event.setId(document.getId());
-                            events.add(event);
-                        }
-                        adapter.notifyDataSetChanged(); // Notify the adapter that the data set has changed
-                    } else {
-                        Log.e("BrowseEventsActivity", "Error getting documents: ", task.getException());
-                    }
-                });
+        AttendeeService.fetchEvents(new AttendeeService.EventsFetchListener() {
+            @Override
+            public void onEventsFetched(List<Event> fetchedEvents) {
+                events.addAll(fetchedEvents);
+                adapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onFetchError(Exception e) {
+                Log.e("BrowseEventsActivity", "Error fetching events: ", e);
+            }
+        });
     }
 }

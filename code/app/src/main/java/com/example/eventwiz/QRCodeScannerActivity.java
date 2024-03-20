@@ -15,6 +15,8 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
@@ -90,47 +92,85 @@ public class QRCodeScannerActivity extends AppCompatActivity{
      */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+//        IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
+//        if (result != null) {
+//            if (result.getContents() == null) {
+//                Toast.makeText(this, "Scan cancelled", Toast.LENGTH_LONG).show();
+//            } else {
+//                Toast.makeText(this, "Scanned: " + result.getContents(), Toast.LENGTH_LONG).show();
+//                //validate firebase authentication
+////                Intent intent = new Intent(QRCodeScannerActivity.this, SaveUserProfileActivity.class);
+////                startActivity(intent);
+//                String scannedCode = result.getContents();
+//                Log.d("SCannedContent", scannedCode);
+//                if(scannedCode.equals(ADMIN_QR_CODE_HASH)) {
+//                    //this is an admin so redirect to admin activity
+//                    //set this user as admin
+//                    Toast.makeText(this, "Welcome Admin", Toast.LENGTH_LONG).show();
+//                    this.setUserAdmin(true);
+//                    Intent intent = new Intent(QRCodeScannerActivity.this, AdminDashboard.class);
+//                    startActivity(intent);
+//                }
+//                else{
+//                    Toast.makeText(this, scannedCode, Toast.LENGTH_LONG).show();
+//                    //querying events for hashCode
+//                    FirebaseFirestore db = FirebaseFirestore.getInstance();
+//                    db.collection("events")
+//                            .whereEqualTo("hashCode", scannedCode)
+//                            .get()
+//                            .addOnCompleteListener(task -> {
+//                                if (task.isSuccessful() && task.getResult() != null) {
+//                                    if (!task.getResult().isEmpty()) {
+//                                        Toast.makeText(QRCodeScannerActivity.this, "Checked in", Toast.LENGTH_LONG).show();
+//                                        // Event with the matching hash code found
+//                                        DocumentSnapshot eventDocument = task.getResult().getDocuments().get(0);
+//                                        // Assuming 'Event' is your model class
+//                                        Event event = eventDocument.toObject(Event.class);
+//                                        Intent intent = new Intent(QRCodeScannerActivity.this, ViewEventDetailsActivity.class);
+//                                        intent.putExtra("eventId", eventDocument.getId()); // Pass the event ID
+//                                        startActivity(intent);
+//                                    } else {
+//                                        // No matching event found
+//                                        Toast.makeText(QRCodeScannerActivity.this, "Event not found.", Toast.LENGTH_LONG).show();
+//                                    }
+//                                } else {
+//                                    // Task failed with an exception
+//                                    Toast.makeText(QRCodeScannerActivity.this, "Error searching for event.", Toast.LENGTH_LONG).show();
+//                                }
+//                            });
+//                }
+//
+//
+//            }
+//        } else {
+//            super.onActivityResult(requestCode, resultCode, data);
+//        }
+
+
         IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
         if (result != null) {
             if (result.getContents() == null) {
                 Toast.makeText(this, "Scan cancelled", Toast.LENGTH_LONG).show();
             } else {
-                String scannedCode = result.getContents();
-                Toast.makeText(this, "Scanned: " + result.getContents(), Toast.LENGTH_LONG).show();
-                //validate firebase authentication
-//                Intent intent = new Intent(QRCodeScannerActivity.this, SaveUserProfileActivity.class);
-//                startActivity(intent);
-                if (scannedCode.startsWith("CHECKIN_")) {
-                    String eventId = scannedCode.replace("CHECKIN_", "");
-                    navigateToEventDetail(eventId);
-                } else {
-                    Toast.makeText(this, "This QR code is not for event check-in.", Toast.LENGTH_LONG).show();
-                }
-
-                Log.d("SCannedContent", scannedCode);
-                if(scannedCode.equals(ADMIN_QR_CODE_HASH)) {
-                    //this is an admin so redirect to admin activity
-                    //set this user as admin
-                    Toast.makeText(this, "Welcome Admin", Toast.LENGTH_LONG).show();
-                    this.setUserAdmin(true);
-                    Intent intent = new Intent(QRCodeScannerActivity.this, AdminDashboard.class);
-                    startActivity(intent);
-                }
-                else{
-                    Toast.makeText(this, scannedCode, Toast.LENGTH_LONG).show();
-                }
-
+                handleScannedCode(result.getContents());
             }
         } else {
             super.onActivityResult(requestCode, resultCode, data);
         }
     }
 
-    private void navigateToEventDetail(String eventId) {
-        // Start ViewEventDetailsActivity with the eventId
-        Intent intent = new Intent(QRCodeScannerActivity.this, ViewEventDetailsActivity.class);
-        intent.putExtra("eventId", eventId);
-        startActivity(intent);
+    private void handleScannedCode(String scannedCode) {
+        if (scannedCode.equals(ADMIN_QR_CODE_HASH)) {
+            Toast.makeText(this, "Welcome Admin", Toast.LENGTH_LONG).show();
+            // Redirect to admin activity
+
+            this.setUserAdmin(true);
+            Intent intent = new Intent(QRCodeScannerActivity.this, AdminDashboard.class);
+            startActivity(intent);
+        } else {
+
+            AttendeeService.checkInOrPromotion(this, scannedCode);
+        }
     }
 
     /**

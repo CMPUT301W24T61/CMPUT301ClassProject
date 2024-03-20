@@ -1,19 +1,36 @@
 package com.example.eventwiz;
 
+import android.content.DialogInterface;
+import android.os.Bundle;
+
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.content.DialogInterface;
-import android.os.Bundle;
-
 import java.util.ArrayList;
-
+/**
+ * AdminBrowseUsersActivity is responsible for displaying and managing user profiles
+ * in the admin panel.
+ *
+ * This activity allows administrators to browse user profiles, confirm deletions,
+ * and interact with the AdminService to perform user-related actions.
+ * @author Hunaid
+ */
 public class AdminBrowseUsersActivity extends AppCompatActivity {
 
+    /**
+     * RecyclerView to display the list of user profiles.
+     */
     private RecyclerView recyclerView;
+
+    /**
+     * Adapter for managing and displaying user profiles in the RecyclerView.
+     */
     private UserAdapter userAdapter;
+    /**
+     * Service for handling administrative actions related to user profiles.
+     */
     private AdminService adminService;
 
     @Override
@@ -34,6 +51,11 @@ public class AdminBrowseUsersActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Displays a confirmation dialog for user profile deletion.
+     *
+     * @param userProfile The UserProfile object representing the user to be deleted.
+     */
     private void showConfirmationDialog(UserProfile userProfile) {
         new AlertDialog.Builder(this)
                 .setTitle("Confirm Deletion")
@@ -46,6 +68,11 @@ public class AdminBrowseUsersActivity extends AppCompatActivity {
                 .setNegativeButton(android.R.string.no, null).show();
     }
 
+    /**
+     * Deletes the specified user profile using the AdminService.
+     *
+     * @param userProfile The UserProfile object representing the user to be deleted.
+     */
     private void deleteUserProfile(UserProfile userProfile) {
         adminService.removeUserByDocId(userProfile.getUserDocID(), new AdminService.OnDeletionCompleteListener() {
             @Override

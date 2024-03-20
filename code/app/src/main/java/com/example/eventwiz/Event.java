@@ -24,10 +24,13 @@ public class Event implements Serializable {
     private String promotionQRCode;
     private String organizerId;
 
+    private String hashCode;
+    private String promotionHashCode;
+
     public Event() {
         // Default constructor required for calls to DataSnapshot.getValue(Event.class)
     }
-    public Event(String name, String description, String date, String startTime, String endTime, String location, int maxAttendees, String checkInQRCode, String promotionQRCode, String posterUrl, String organizerId) {
+    public Event(String name, String description, String date, String startTime, String endTime, String location, int maxAttendees, String checkInQRCode, String promotionQRCode, String posterUrl, String hashCode, String promotionHashCode) {
         this.id = UUID.randomUUID().toString();
         this.name = name;
         this.description = description;
@@ -38,8 +41,10 @@ public class Event implements Serializable {
         this.maxAttendees = maxAttendees;
         this.checkInQRCode = checkInQRCode;
         this.promotionQRCode = promotionQRCode;
-        this.organizerId = organizerId;
+
         this.posterUrl = posterUrl;
+        this.hashCode= hashCode;
+        this.promotionHashCode = promotionHashCode;
     }
 
 
@@ -149,5 +154,19 @@ public class Event implements Serializable {
         this.organizerId = organizerId;
     }
 
+    public String getHashCode() {
+        return hashCode;
+    }
 
+    public void setHashCode(String hashCode) {
+        this.hashCode = hashCode;
+    }
+
+    public String getPromotionHashCode() {
+        return promotionHashCode;
+    }
+
+    public void setPromotionHashCode(String promotionHashCode) {
+        this.promotionHashCode = promotionHashCode;
+    }
 }

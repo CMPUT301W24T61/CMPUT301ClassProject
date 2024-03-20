@@ -15,7 +15,12 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+
+
     }
+
+
 
 
     buildTypes {
@@ -71,8 +76,15 @@ dependencies {
     implementation("com.google.zxing:core:3.4.0")
     implementation("com.github.bumptech.glide:glide:4.12.0")
     annotationProcessor("com.github.bumptech.glide:compiler:4.12.0")
+    implementation ("com.squareup.picasso:picasso:2.8")
+    androidTestImplementation ("org.mockito:mockito-core:2.28.2")
 
 
 
     annotationProcessor("com.github.bumptech.glide:compiler:4.12.0")
+    androidTestImplementation("androidx.test.espresso:espresso-core:3.4.0")
+    androidTestImplementation("androidx.test.espresso:espresso-contrib:3.4.0")
+    androidTestImplementation("androidx.test.espresso:espresso-intents:3.4.0")
+
+
 }
