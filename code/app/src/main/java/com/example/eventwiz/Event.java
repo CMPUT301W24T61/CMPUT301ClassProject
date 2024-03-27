@@ -2,7 +2,9 @@ package com.example.eventwiz;
 
 
 import java.io.Serializable;
+import java.util.List;
 import java.util.UUID;
+import java.util.Map;
 
 /**
  * This class stores all the data for Events made in the app
@@ -23,6 +25,9 @@ public class Event implements Serializable {
     private String checkInQRCode;
     private String promotionQRCode;
     private String organizerId;
+    private List<String> signups;
+
+    private Map<String, Integer> checkInsCount;
 
     private String hashCode;
     private String promotionHashCode;
@@ -30,7 +35,7 @@ public class Event implements Serializable {
     public Event() {
         // Default constructor required for calls to DataSnapshot.getValue(Event.class)
     }
-    public Event(String name, String description, String date, String startTime, String endTime, String location, int maxAttendees, String checkInQRCode, String promotionQRCode, String posterUrl, String hashCode, String promotionHashCode) {
+    public Event(String name, String description, String date, String startTime, String endTime, String location, int maxAttendees, String checkInQRCode, String promotionQRCode, String posterUrl, String hashCode, String promotionHashCode, List<String> signups, Map<String, Integer> checkInsCount) {
         this.id = UUID.randomUUID().toString();
         this.name = name;
         this.description = description;
@@ -41,7 +46,8 @@ public class Event implements Serializable {
         this.maxAttendees = maxAttendees;
         this.checkInQRCode = checkInQRCode;
         this.promotionQRCode = promotionQRCode;
-
+        this.signups = signups;
+        this.checkInsCount = checkInsCount;
         this.posterUrl = posterUrl;
         this.hashCode= hashCode;
         this.promotionHashCode = promotionHashCode;
@@ -112,6 +118,15 @@ public class Event implements Serializable {
         this.maxAttendees = maxAttendees;
 
     }
+
+    public List<String> getSignups() {return signups;}
+
+    public void setSignups(List<String> signups) {this.signups = signups;}
+
+    public Map<String, Integer> getCheckInsCount() {return checkInsCount;}
+
+    public void setCheckInsCount(Map<String, Integer> checkInsCount) {this.checkInsCount = checkInsCount;}
+
 
     /**
      *

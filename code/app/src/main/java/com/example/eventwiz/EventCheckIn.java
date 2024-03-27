@@ -3,6 +3,7 @@ package com.example.eventwiz;
 import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -18,34 +19,25 @@ import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
-/**
- * ViewEventDetailsActivity displays the details of a specific event.
- * It retrieves event details from Firestore and populates the UI accordingly.
- */
-public class ViewEventDetailsActivity extends AppCompatActivity {
+
+public class EventCheckIn extends AppCompatActivity {
 
     private TextView tvEventName, tvEventDate, tvEventStartTime, tvEventEndTime, tvEventLocation, tvMaxAttendees, tvEventDescription;
     private Button btnSignUp, btnCheckIn;
     private ImageView ivEventPoster, ivCheckInQRCode, ivPromotionQRCode;
     private FirebaseFirestore db;
 
-    /**
-     * Called when the activity is first created.
-     *
-     * @param savedInstanceState If the activity is being re-initialized after previously being shut down,
-     *                           this Bundle contains the data it most recently supplied in
-     *                           onSaveInstanceState(Bundle).
-     *                           Otherwise, it is null.
-     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.view_event_details);
+        setContentView(R.layout.activity_event_checkin);
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setTitle("Event Details");
@@ -58,58 +50,60 @@ public class ViewEventDetailsActivity extends AppCompatActivity {
         if (eventId != null && !eventId.isEmpty()) {
             loadEventFromFirestore(eventId);
         }
-        btnSignUp = findViewById(R.id.btnSignUp);
-        btnSignUp.setOnClickListener(new View.OnClickListener() {
+        btnCheckIn = findViewById(R.id.btnCheckIn);
+        btnCheckIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                signUpForEvent();
+                checkInToEvent();
             }
         });
         ImageButton btnGoToDashboard = findViewById(R.id.gotodasboard);
         btnGoToDashboard.setOnClickListener(v -> goToDashboardActivity());
     }
-    private void signUpForEvent() {
-        String eventId = getIntent().getStringExtra("eventId");
+    private void checkInToEvent() {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        String eventId = getIntent().getStringExtra("eventId");
 
-        if (user == null || eventId == null || eventId.trim().isEmpty()) {
-            Toast.makeText(ViewEventDetailsActivity.this, "Error: Invalid event ID or user not logged in.", Toast.LENGTH_SHORT).show();
-            return;
-        }
+        if (user != null && eventId != null && !eventId.isEmpty()) {
+            String userId = user.getUid();
 
-        String userId = user.getUid();
-        DocumentReference eventRef = db.collection("events").document(eventId);
-
-        // Fetch the event document to check current sign-ups and max attendees
-        eventRef.get().addOnSuccessListener(documentSnapshot -> {
-            if (documentSnapshot.exists()) {
-                Event event = documentSnapshot.toObject(Event.class);
-                if (event != null) {
-                    List<String> currentSignUps = event.getSignups();
-                    Integer maxAttendees = event.getMaxAttendees(); // Use Integer to allow for null
-
-                    // Proceed if no maxAttendees set (null) or current sign-ups are less than max
-                    if (maxAttendees == null || (currentSignUps == null || currentSignUps.size() < maxAttendees)) {
-                        // Check if the user is already signed up
-                        if (currentSignUps != null && currentSignUps.contains(userId)) {
-                            Toast.makeText(ViewEventDetailsActivity.this, "You are already signed up.", Toast.LENGTH_SHORT).show();
-                            return;
-                        }
-                        // Add user to sign-ups
-                        eventRef.update("signups", FieldValue.arrayUnion(userId))
-                                .addOnSuccessListener(aVoid -> Toast.makeText(ViewEventDetailsActivity.this, "Signed up successfully", Toast.LENGTH_SHORT).show())
-                                .addOnFailureListener(e -> Toast.makeText(ViewEventDetailsActivity.this, "Sign up failed: " + e.getMessage(), Toast.LENGTH_SHORT).show());
-                    } else {
-                        // Max attendees limit is set and reached/exceeded
-                        Toast.makeText(ViewEventDetailsActivity.this, "Event is full.", Toast.LENGTH_SHORT).show();
+            DocumentReference eventRef = db.collection("events").document(eventId);
+            // First, get the current event document to check the existing check-ins
+            eventRef.get().addOnCompleteListener(task -> {
+                if (task.isSuccessful() && task.getResult() != null) {
+                    DocumentSnapshot document = task.getResult();
+                    Map<String, Object> checkIns = (Map<String, Object>) document.get("checkInsCount");
+                    if (checkIns == null) {
+                        checkIns = new HashMap<>();
                     }
+                    Object currentCountObject = checkIns.get(userId);
+                    int currentCount = 0;
+                    if (currentCountObject instanceof Long) {
+                        currentCount = ((Long) currentCountObject).intValue();
+                    } else if (currentCountObject instanceof Integer) {
+                        currentCount = (Integer) currentCountObject;
+                    }
+                    // Increment the count
+                    checkIns.put(userId, currentCount + 1);
+
+                    // Update the document
+                    eventRef.update("checkInsCount", checkIns)
+                            .addOnSuccessListener(aVoid -> {
+                                Toast.makeText(EventCheckIn.this, "Checked in successfully", Toast.LENGTH_SHORT).show();
+                                // Optionally, navigate to another activity or update UI
+                            })
+                            .addOnFailureListener(e -> {
+                                Toast.makeText(EventCheckIn.this, "Failed to check in: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                            });
                 } else {
-                    Toast.makeText(ViewEventDetailsActivity.this, "Event data could not be loaded.", Toast.LENGTH_SHORT).show();
+                    Log.d("EventCheckIn", "Failed to get event document: ", task.getException());
+                    Toast.makeText(EventCheckIn.this, "Failed to check in", Toast.LENGTH_SHORT).show();
                 }
-            } else {
-                Toast.makeText(ViewEventDetailsActivity.this, "Event not found.", Toast.LENGTH_SHORT).show();
-            }
-        }).addOnFailureListener(e -> Toast.makeText(ViewEventDetailsActivity.this, "Failed to fetch event details: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+            });
+        } else {
+            // User not logged in or eventId is null/empty
+            Toast.makeText(this, "Error: User not logged in or invalid event ID.", Toast.LENGTH_LONG).show();
+        }
     }
 
 
@@ -168,7 +162,8 @@ public class ViewEventDetailsActivity extends AppCompatActivity {
      * Navigates to the DashboardActivity when the "Go to Dashboard" button is clicked.
      */
     private void goToDashboardActivity() {
-        Intent intent = new Intent(ViewEventDetailsActivity.this, DashboardActivity.class);
+        Intent intent = new Intent(EventCheckIn.this, DashboardActivity.class);
         startActivity(intent);
     }
 }
+

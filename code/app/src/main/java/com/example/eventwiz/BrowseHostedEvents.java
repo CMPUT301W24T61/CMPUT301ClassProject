@@ -1,5 +1,6 @@
 package com.example.eventwiz;
 
+import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.Log;
@@ -19,11 +20,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class BrowseHostedEvents extends AppCompatActivity {
+public class BrowseHostedEvents extends AppCompatActivity implements EventAdapter.EventClickListener{
     private ListView listView;
     private EventAdapter adapter;
 
-    // This should be a list of Event objects now
     private List<Event> events;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
 
@@ -32,7 +32,7 @@ public class BrowseHostedEvents extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_browse_hosted_events);
 
-        // Setup the action bar
+
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setTitle("EventWiz");
@@ -40,24 +40,30 @@ public class BrowseHostedEvents extends AppCompatActivity {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
 
-        // Initialize the list and adapter
+
         listView = findViewById(R.id.lvEvents);
         events = new ArrayList<>();
-        adapter = new EventAdapter(this, events);
+        adapter = new EventAdapter(this, events, this);
         listView.setAdapter(adapter);
 
-        // Set a listener for list item clicks
-        listView.setOnItemClickListener((parent, view, position, id) -> {
-            Event event = events.get(position);
-            // Navigate to ViewEventDetailsActivity with the event ID
-        });
 
-        // Back button
         ImageButton backButton = findViewById(R.id.BackArrow);
         backButton.setOnClickListener(view -> onBackPressed());
 
-        // Fetch events from Firestore
+
         fetchEvents();
+        listView.setOnItemClickListener((parent, view, position, id) -> {
+            Event event = events.get(position);
+            Intent intent = new Intent(BrowseHostedEvents.this, ViewHostedEventDetailsActivity.class);
+            intent.putExtra("eventId", event.getId());
+            startActivity(intent);
+        });
+    }
+    @Override
+    public void onEventClicked(Event event) {
+        Intent intent = new Intent(BrowseHostedEvents.this, ViewHostedEventDetailsActivity.class);
+        intent.putExtra("eventId", event.getId());
+        startActivity(intent);
     }
 
     private void fetchEvents() {
@@ -66,24 +72,23 @@ public class BrowseHostedEvents extends AppCompatActivity {
             String currentUserId = user.getUid();
 
             db.collection("events")
-                    .whereEqualTo("organizerId", currentUserId) // Filter events by organizerId
+                    .whereEqualTo("organizerId", currentUserId)
                     .get()
                     .addOnCompleteListener(task -> {
                         if (task.isSuccessful()) {
-                            events.clear(); // Clear existing events to avoid duplicates
+                            events.clear();
                             for (QueryDocumentSnapshot document : task.getResult()) {
                                 Event event = document.toObject(Event.class);
-                                event.setId(document.getId()); // Ensure the ID is set
+                                event.setId(document.getId());
                                 events.add(event);
                             }
-                            adapter.notifyDataSetChanged(); // Notify the adapter of the change
+                            adapter.notifyDataSetChanged();
                         } else {
                             Log.e("BrowseHostedEvents", "Error getting documents: ", task.getException());
                         }
                     });
         } else {
             Log.e("BrowseHostedEvents", "No user signed in");
-            // Handle case where no user is signed in (optional)
         }
     }
 }

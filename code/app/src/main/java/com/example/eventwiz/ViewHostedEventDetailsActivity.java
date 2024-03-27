@@ -15,37 +15,19 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
 import com.bumptech.glide.Glide;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 
-import java.util.List;
-
-/**
- * ViewEventDetailsActivity displays the details of a specific event.
- * It retrieves event details from Firestore and populates the UI accordingly.
- */
-public class ViewEventDetailsActivity extends AppCompatActivity {
-
+public class ViewHostedEventDetailsActivity extends AppCompatActivity {
     private TextView tvEventName, tvEventDate, tvEventStartTime, tvEventEndTime, tvEventLocation, tvMaxAttendees, tvEventDescription;
-    private Button btnSignUp, btnCheckIn;
+    private Button btnSignedUpList, btnCheckedInList;
     private ImageView ivEventPoster, ivCheckInQRCode, ivPromotionQRCode;
     private FirebaseFirestore db;
 
-    /**
-     * Called when the activity is first created.
-     *
-     * @param savedInstanceState If the activity is being re-initialized after previously being shut down,
-     *                           this Bundle contains the data it most recently supplied in
-     *                           onSaveInstanceState(Bundle).
-     *                           Otherwise, it is null.
-     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.view_event_details);
+        setContentView(R.layout.view_hosted_event_details);
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setTitle("Event Details");
@@ -55,67 +37,35 @@ public class ViewEventDetailsActivity extends AppCompatActivity {
         db = FirebaseFirestore.getInstance();
         initializeUI();
         String eventId = getIntent().getStringExtra("eventId");
+
+        btnSignedUpList.setOnClickListener(v -> {
+            if (eventId != null && !eventId.isEmpty()) {
+                Intent intent = new Intent(ViewHostedEventDetailsActivity.this, AttendeeListActivity.class);
+                intent.putExtra("eventId", eventId);
+                startActivity(intent);
+            } else {
+                Toast.makeText(ViewHostedEventDetailsActivity.this, "Event ID is missing", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        btnCheckedInList.setOnClickListener(v -> {
+            if (eventId != null && !eventId.isEmpty()) {
+                Intent intent = new Intent(ViewHostedEventDetailsActivity.this, CheckedInAttendeesActivity.class);
+                intent.putExtra("eventId", eventId);
+                startActivity(intent);
+            } else {
+                Toast.makeText(ViewHostedEventDetailsActivity.this, "Event ID is missing", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        ImageButton btnGoToDashboard = findViewById(R.id.gotodasboard);
+        btnGoToDashboard.setOnClickListener(v -> goToDashboardActivity());
+
         if (eventId != null && !eventId.isEmpty()) {
             loadEventFromFirestore(eventId);
         }
-        btnSignUp = findViewById(R.id.btnSignUp);
-        btnSignUp.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                signUpForEvent();
-            }
-        });
-        ImageButton btnGoToDashboard = findViewById(R.id.gotodasboard);
-        btnGoToDashboard.setOnClickListener(v -> goToDashboardActivity());
-    }
-    private void signUpForEvent() {
-        String eventId = getIntent().getStringExtra("eventId");
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-
-        if (user == null || eventId == null || eventId.trim().isEmpty()) {
-            Toast.makeText(ViewEventDetailsActivity.this, "Error: Invalid event ID or user not logged in.", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        String userId = user.getUid();
-        DocumentReference eventRef = db.collection("events").document(eventId);
-
-        // Fetch the event document to check current sign-ups and max attendees
-        eventRef.get().addOnSuccessListener(documentSnapshot -> {
-            if (documentSnapshot.exists()) {
-                Event event = documentSnapshot.toObject(Event.class);
-                if (event != null) {
-                    List<String> currentSignUps = event.getSignups();
-                    Integer maxAttendees = event.getMaxAttendees(); // Use Integer to allow for null
-
-                    // Proceed if no maxAttendees set (null) or current sign-ups are less than max
-                    if (maxAttendees == null || (currentSignUps == null || currentSignUps.size() < maxAttendees)) {
-                        // Check if the user is already signed up
-                        if (currentSignUps != null && currentSignUps.contains(userId)) {
-                            Toast.makeText(ViewEventDetailsActivity.this, "You are already signed up.", Toast.LENGTH_SHORT).show();
-                            return;
-                        }
-                        // Add user to sign-ups
-                        eventRef.update("signups", FieldValue.arrayUnion(userId))
-                                .addOnSuccessListener(aVoid -> Toast.makeText(ViewEventDetailsActivity.this, "Signed up successfully", Toast.LENGTH_SHORT).show())
-                                .addOnFailureListener(e -> Toast.makeText(ViewEventDetailsActivity.this, "Sign up failed: " + e.getMessage(), Toast.LENGTH_SHORT).show());
-                    } else {
-                        // Max attendees limit is set and reached/exceeded
-                        Toast.makeText(ViewEventDetailsActivity.this, "Event is full.", Toast.LENGTH_SHORT).show();
-                    }
-                } else {
-                    Toast.makeText(ViewEventDetailsActivity.this, "Event data could not be loaded.", Toast.LENGTH_SHORT).show();
-                }
-            } else {
-                Toast.makeText(ViewEventDetailsActivity.this, "Event not found.", Toast.LENGTH_SHORT).show();
-            }
-        }).addOnFailureListener(e -> Toast.makeText(ViewEventDetailsActivity.this, "Failed to fetch event details: " + e.getMessage(), Toast.LENGTH_SHORT).show());
     }
 
-
-    /**
-     * Initializes UI elements by finding their respective views in the layout.
-     */
     private void initializeUI() {
         tvEventName = findViewById(R.id.tvEventName);
         tvEventDate = findViewById(R.id.tvEventDate);
@@ -127,6 +77,8 @@ public class ViewEventDetailsActivity extends AppCompatActivity {
         tvEventStartTime = findViewById(R.id.tvEventStartTime);
         tvEventEndTime = findViewById(R.id.tvEventEndTime);
         tvEventDescription = findViewById(R.id.tvEventDescription);
+        btnSignedUpList = findViewById(R.id.btnSignUpList);
+        btnCheckedInList = findViewById(R.id.btnCheckInList);
     }
 
     /**
@@ -168,7 +120,8 @@ public class ViewEventDetailsActivity extends AppCompatActivity {
      * Navigates to the DashboardActivity when the "Go to Dashboard" button is clicked.
      */
     private void goToDashboardActivity() {
-        Intent intent = new Intent(ViewEventDetailsActivity.this, DashboardActivity.class);
+        Intent intent = new Intent(ViewHostedEventDetailsActivity.this, DashboardActivity.class);
         startActivity(intent);
     }
 }
+
