@@ -82,6 +82,7 @@ public class CreateEventActivity extends AppCompatActivity {
                 generateAndUploadData();
             }
         });
+
         checkboxReuseQRCode.setOnCheckedChangeListener((buttonView, isChecked) -> {
             qrCodeSpinner.setVisibility(isChecked ? View.VISIBLE : View.GONE);
             if (isChecked) {
