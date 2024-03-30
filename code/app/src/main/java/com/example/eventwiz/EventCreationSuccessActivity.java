@@ -12,6 +12,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.FileProvider;
 
 import com.bumptech.glide.Glide;
 
@@ -55,7 +56,9 @@ public class EventCreationSuccessActivity extends AppCompatActivity {
         event = (Event) getIntent().getSerializableExtra("event");
 
         initializeUI();
-        loadEventDetails();
+        OrganizerService organizerService = new OrganizerService(this);
+        organizerService.loadEventDetails(event, ivEventPoster, ivCheckInQRCode, ivPromotionQRCode,
+                tvEventName, tvEventDate, tvEventStartTime, tvEventEndTime, tvEventLocation, tvMaxAttendees);
 
     }
 
@@ -76,37 +79,34 @@ public class EventCreationSuccessActivity extends AppCompatActivity {
 
         ImageButton btnGoToDashboard = findViewById(R.id.gotodasboard);
         btnGoToDashboard.setOnClickListener(v -> goToDashboardActivity());
+
+        //adding share functionlity
+        ivCheckInQRCode.setOnClickListener(v -> shareImage(ivCheckInQRCode));
+        ivPromotionQRCode.setOnClickListener(v -> shareImage(ivPromotionQRCode));
     }
 
-    /**
-     * Loads and displays the event details on the UI elements.
-     * If the event has associated images (poster, QR codes), they are loaded using Glide.
-     */
-    private void loadEventDetails() {
-        if (event != null) {
-            tvEventName.setText(event.getName());
-            tvEventDate.setText("Date: " + event.getDate());
-            tvEventStartTime.setText(event.getStartTime());
-            tvEventEndTime.setText(event.getEndTime());
-            tvEventLocation.setText("Location: " + event.getLocation());
-            tvMaxAttendees.setText("Max Attendees: " + event.getMaxAttendees());
+    //shares qr codes to other apps.
+    private void shareImage(ImageView imageView) {
+        imageView.setDrawingCacheEnabled(true);
+        Bitmap bitmap = imageView.getDrawingCache();
+        try {
+            File file = new File(getExternalCacheDir(), "shared_image.png");
+            FileOutputStream fOut = new FileOutputStream(file);
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, fOut);
+            fOut.flush();
+            fOut.close();
+            imageView.setDrawingCacheEnabled(false); // Disable drawing cache after usage
 
-            if (event.getPosterUrl() != null && !event.getPosterUrl().isEmpty()) {
-                Glide.with(this).load(event.getPosterUrl()).into(ivEventPoster);
-            } else {
-                ivEventPoster.setImageResource(R.drawable.image_placeholder_background);
-            }
-            if (event.getCheckInQRCode() != null && !event.getCheckInQRCode().isEmpty()) {
-                Glide.with(this).load(event.getCheckInQRCode()).into(ivCheckInQRCode);
-            } else {
-                ivCheckInQRCode.setVisibility(View.GONE);
-            }
+            Uri contentUri = FileProvider.getUriForFile(this, "com.example.eventwiz.fileprovider", file);
 
-            if (event.getPromotionQRCode() != null && !event.getPromotionQRCode().isEmpty()) {
-                Glide.with(this).load(event.getPromotionQRCode()).into(ivPromotionQRCode);
-            } else {
-                ivPromotionQRCode.setVisibility(View.GONE);
-            }
+            Intent shareIntent = new Intent();
+            shareIntent.setAction(Intent.ACTION_SEND);
+            shareIntent.setType("image/png");
+            shareIntent.putExtra(Intent.EXTRA_STREAM, contentUri);
+            shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            startActivity(Intent.createChooser(shareIntent, "Share image via"));
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
     @Override
