@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -119,9 +120,27 @@ public class AttendeeService {
                 .addOnFailureListener(e -> callback.onComplete(false));
     }
 
-    // Other methods...
+
 
     public interface Callback<T> {
         void onComplete(T result);
+    }
+
+    public static void loadEventDetails(String eventId, final EventDetailsListener listener) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        DocumentReference eventDocument = db.collection("events").document(eventId);
+        eventDocument.get().addOnSuccessListener(documentSnapshot -> {
+            if (documentSnapshot.exists()) {
+                Event event = documentSnapshot.toObject(Event.class);
+                listener.onEventDetailsLoaded(event);
+            } else {
+                listener.onEventDetailsError();
+            }
+        }).addOnFailureListener(e -> listener.onEventDetailsError());
+    }
+
+    public interface EventDetailsListener {
+        void onEventDetailsLoaded(Event event);
+        void onEventDetailsError();
     }
 }
