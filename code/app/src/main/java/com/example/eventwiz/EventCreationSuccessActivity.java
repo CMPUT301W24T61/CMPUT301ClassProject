@@ -16,6 +16,7 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.FileProvider;
 
 import com.bumptech.glide.Glide;
 
@@ -59,6 +60,11 @@ public class EventCreationSuccessActivity extends AppCompatActivity {
 
         initializeUI();
 
+        OrganizerService organizerService = new OrganizerService(this);
+        organizerService.loadEventDetails(event, ivEventPoster, ivCheckInQRCode, ivPromotionQRCode,
+                tvEventName, tvEventDate, tvEventStartTime, tvEventEndTime, tvEventLocation, tvMaxAttendees);
+
+
         // Retrieve the event ID passed from the previous activity
         String eventId = getIntent().getStringExtra("eventId");
         if (eventId != null) {
@@ -96,7 +102,12 @@ public class EventCreationSuccessActivity extends AppCompatActivity {
 
         ImageButton btnGoToDashboard = findViewById(R.id.gotodasboard);
         btnGoToDashboard.setOnClickListener(v -> goToDashboardActivity());
+
+        //adding share functionlity
+        ivCheckInQRCode.setOnClickListener(v -> shareImage(ivCheckInQRCode));
+        ivPromotionQRCode.setOnClickListener(v -> shareImage(ivPromotionQRCode));
     }
+
     /**
      * Loads and displays the event details on the UI elements.
      * If the event has associated images (poster, QR codes), they are loaded using Glide.
@@ -128,6 +139,31 @@ public class EventCreationSuccessActivity extends AppCompatActivity {
             Glide.with(this).load(event.getPromotionQRCode()).into(ivPromotionQRCode);
         } else {
             ivPromotionQRCode.setVisibility(View.GONE);
+
+
+    //shares qr codes to other apps.
+    private void shareImage(ImageView imageView) {
+        imageView.setDrawingCacheEnabled(true);
+        Bitmap bitmap = imageView.getDrawingCache();
+        try {
+            File file = new File(getExternalCacheDir(), "shared_image.png");
+            FileOutputStream fOut = new FileOutputStream(file);
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, fOut);
+            fOut.flush();
+            fOut.close();
+            imageView.setDrawingCacheEnabled(false); // Disable drawing cache after usage
+
+            Uri contentUri = FileProvider.getUriForFile(this, "com.example.eventwiz.fileprovider", file);
+
+            Intent shareIntent = new Intent();
+            shareIntent.setAction(Intent.ACTION_SEND);
+            shareIntent.setType("image/png");
+            shareIntent.putExtra(Intent.EXTRA_STREAM, contentUri);
+            shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            startActivity(Intent.createChooser(shareIntent, "Share image via"));
+        } catch (Exception e) {
+            e.printStackTrace();
+
         }
     }
     @Override

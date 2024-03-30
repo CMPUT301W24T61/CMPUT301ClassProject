@@ -32,7 +32,7 @@ public class ViewEventDetailsActivity extends AppCompatActivity {
     private TextView tvEventName, tvEventDate, tvEventStartTime, tvEventEndTime, tvEventLocation, tvMaxAttendees, tvEventDescription;
     private Button btnSignUp, btnCheckIn;
     private ImageView ivEventPoster, ivCheckInQRCode, ivPromotionQRCode;
-    private FirebaseFirestore db;
+
 
     /**
      * Called when the activity is first created.
@@ -52,7 +52,7 @@ public class ViewEventDetailsActivity extends AppCompatActivity {
             int color = ContextCompat.getColor(this, R.color.turqoise);
             actionBar.setBackgroundDrawable(new ColorDrawable(color));
         }
-        db = FirebaseFirestore.getInstance();
+
         initializeUI();
         String eventId = getIntent().getStringExtra("eventId");
         if (eventId != null && !eventId.isEmpty()) {
@@ -135,11 +135,16 @@ public class ViewEventDetailsActivity extends AppCompatActivity {
      * @param eventId The unique identifier of the event to be loaded.
      */
     private void loadEventFromFirestore(String eventId) {
-        DocumentReference eventDocument = db.collection("events").document(eventId);
-        eventDocument.get().addOnSuccessListener(documentSnapshot -> {
-            if (documentSnapshot.exists()) {
-                Event event = documentSnapshot.toObject(Event.class);
+        AttendeeService.loadEventDetails(eventId, new AttendeeService.EventDetailsListener() {
+            @Override
+            public void onEventDetailsLoaded(Event event) {
                 loadEventDetails(event);
+            }
+
+            @Override
+            public void onEventDetailsError() {
+                // Handle the error case, perhaps show a toast or log
+                Toast.makeText(ViewEventDetailsActivity.this, "Error loading event details", Toast.LENGTH_SHORT).show();
             }
         });
     }

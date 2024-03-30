@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -28,6 +30,9 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.Random;
+
 /**
  * Activity for the user dashboard, providing options to create events, browse events, and scan QR codes.
  *
@@ -147,12 +152,12 @@ public class DashboardActivity extends AppCompatActivity {
 
 
         //manageEventsButton.setOnClickListener(new View.OnClickListener() {
-            //@Override
-            //public void onClick(View view) {
+        //@Override
+        //public void onClick(View view) {
 
-                //Intent intent = new Intent(OrganizerDashboardActivity.this, ManageEventsActivity.class);
-                //startActivity(intent);
-            //}
+        //Intent intent = new Intent(OrganizerDashboardActivity.this, ManageEventsActivity.class);
+        //startActivity(intent);
+        //}
         //});
 
         backButton.setOnClickListener(new View.OnClickListener() {
@@ -198,41 +203,12 @@ public class DashboardActivity extends AppCompatActivity {
 
                                 if (user != null && url != null) {
                                     // Both name and URL are available
-                                    tvwelcomeText.setText("Welcome " + user);
+                                    tvwelcomeText.setText("Welcome " + user + ":)");
                                     Picasso.get().load(url).into(savedPic);
-                                } else if (user != null && url == null) {
+                                } else if (user != null) {
                                     // Only name is available
-                                    tvwelcomeText.setText("Welcome " + user);
-                                    // Handle the case when no profile picture is available
-                                    // Create a Bitmap with ARGB_8888 configuration
-                                    Paint paint = new Paint();
-                                    int desiredSizeInDp = 10;  // Adjust this to your desired size in dp
-
-// Convert dp to pixels
-                                    float scale = getResources().getDisplayMetrics().density;
-                                    int desiredSizeInPixels = (int) (desiredSizeInDp * scale + 0.5f);
-
-                                    Bitmap b = Bitmap.createBitmap(desiredSizeInPixels, desiredSizeInPixels, Bitmap.Config.ARGB_8888);
-                                    Canvas c = new Canvas(b);
-                                    c.drawColor(ContextCompat.getColor(DashboardActivity.this, R.color.coral));
-                                    paint.setAntiAlias(true);
-                                    // Calculate initials
-                                    String[] strArray = user.split(" ");
-                                    StringBuilder initialsBuilder = new StringBuilder();
-
-                                    for (String str : strArray) {
-                                        if (!str.isEmpty()) {
-                                            initialsBuilder.append(str.charAt(0));
-                                        }
-                                    }
-
-                                    String initials = initialsBuilder.toString().toUpperCase();
-
-                                    // Draw the initials on the Canvas at the center
-                                    float x = (b.getWidth() - paint.measureText(initials)) / 2;
-                                    float y = (b.getHeight() / 2) - ((paint.descent() + paint.ascent()) / 2);
-                                    c.drawText(initials, x, y, paint);
-                                    savedPic.setImageBitmap(b);
+                                    tvwelcomeText.setText("Welcome " + user + ":)");
+                                    generateInitialsBitmapAndSet(user);
                                 }
                             } else {
                                 Toast.makeText(DashboardActivity.this, "Create a Profile", Toast.LENGTH_SHORT).show();
@@ -241,12 +217,6 @@ public class DashboardActivity extends AppCompatActivity {
                     });
         }
     }
-
-//    @Override
-//    public void onBackPressed() {
-//        Intent intent = new Intent(DashboardActivity.this, MainActivity.class);
-//        startActivity(intent);
-//    }
 
     /**
      * Method to handle the deletion of the user's profile image. If the image exists, it is deleted,
@@ -268,6 +238,7 @@ public class DashboardActivity extends AppCompatActivity {
                     DocumentSnapshot document = task.getResult();
                     if (document.exists()) {
                         String profilePicUrl = document.getString("profilePicImage");
+                        String userName = document.getString("userName");
 
                         if (profilePicUrl != null) {
                             // The profile image URL exists, proceed with deletion
@@ -279,10 +250,9 @@ public class DashboardActivity extends AppCompatActivity {
                                                 // Image deleted successfully
                                                 Toast.makeText(DashboardActivity.this, "Profile image deleted", Toast.LENGTH_SHORT).show();
                                                 // Set a default image or handle the absence of an image
-                                                // For example, you can set the default image as you did in the onStart method
-                                                // or load a placeholder image.
-                                                // ...
-                                                savedPic.setImageResource(R.drawable.ic_default_profile_icon);
+                                                // Generate bitmap and set savedPic to display it
+                                                generateInitialsBitmapAndSet(userName);
+
                                                 Toast.makeText(DashboardActivity.this, "Go to My Profile to Add picture", Toast.LENGTH_SHORT).show();
                                             } else {
                                                 // Failed to delete image
@@ -293,6 +263,8 @@ public class DashboardActivity extends AppCompatActivity {
                         } else {
                             // The profile image URL is already null
                             Toast.makeText(DashboardActivity.this, "Profile image already deleted", Toast.LENGTH_SHORT).show();
+                            // Generate bitmap and set savedPic to display it
+                            generateInitialsBitmapAndSet(userName);
                             // You may want to handle this case accordingly
                             Toast.makeText(DashboardActivity.this, "Go to My Profile to Add picture", Toast.LENGTH_SHORT).show();
                         }
@@ -314,12 +286,53 @@ public class DashboardActivity extends AppCompatActivity {
         }
     }
 
+    private void generateInitialsBitmapAndSet(String userName) {
+        // Randomly generate background color
+        Random random = new Random();
+        int backgroundColor = Color.rgb(random.nextInt(256), random.nextInt(256), random.nextInt(256));
 
+        // Define circle size (adjust as needed)
+        int circleSizeInDp = 100; // Adjust this value as needed
+        float density = getResources().getDisplayMetrics().density;
+        int circleSizeInPixels = (int) (circleSizeInDp * density);
 
+        // Create a Bitmap with ARGB_8888 configuration
+        Bitmap b = Bitmap.createBitmap(circleSizeInPixels, circleSizeInPixels, Bitmap.Config.ARGB_8888);
+        Canvas c = new Canvas(b);
 
+        // Draw background circle
+        Paint circlePaint = new Paint();
+        circlePaint.setAntiAlias(true);
+        circlePaint.setColor(backgroundColor);
+        c.drawCircle(circleSizeInPixels / 2, circleSizeInPixels / 2, circleSizeInPixels / 2, circlePaint);
 
+        // Initialize Paint for drawing text
+        Paint textPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        textPaint.setColor(Color.WHITE); // Set text color to white
+        textPaint.setTextAlign(Paint.Align.CENTER);
 
+        // Calculate initials
+        String[] strArray = userName.split(" ");
+        StringBuilder initialsBuilder = new StringBuilder();
+        for (String str : strArray) {
+            if (!str.isEmpty()) {
+                initialsBuilder.append(str.charAt(0));
+            }
+        }
+        String initials = initialsBuilder.toString().toUpperCase();
 
+        // Calculate text size to fit within the circle
+        float textSizePx = circleSizeInPixels * 0.6f; // Adjust this multiplier as needed for padding
+        textPaint.setTextSize(textSizePx);
 
+        // Draw the initials on the Canvas at the center
+        Rect textBounds = new Rect();
+        textPaint.getTextBounds(initials, 0, initials.length(), textBounds);
+        float x = circleSizeInPixels / 2;
+        float y = (circleSizeInPixels - textBounds.height()) / 2 - textBounds.top; // Center vertically
+        c.drawText(initials, x, y, textPaint);
 
+        // Set the bitmap to the ImageView
+        savedPic.setImageBitmap(b);
+    }
 }
