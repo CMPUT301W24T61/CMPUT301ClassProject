@@ -1,5 +1,6 @@
 package com.example.eventwiz;
 
+import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.Log;
@@ -25,7 +26,7 @@ import java.util.List;
  * @author Hunaid
  */
 
-public class BrowseEventsActivity extends AppCompatActivity {
+public class BrowseEventsActivity extends AppCompatActivity implements EventAdapter.EventClickListener {
     private ListView listView;
     private EventAdapter adapter;
 
@@ -56,13 +57,15 @@ public class BrowseEventsActivity extends AppCompatActivity {
         // Initialize the list and adapter
         listView = findViewById(R.id.lvEvents);
         events = new ArrayList<>();
-        adapter = new EventAdapter(this, events);
+        adapter = new EventAdapter(this, events, this);
         listView.setAdapter(adapter);
 
         // Set a listener for list item clicks
         listView.setOnItemClickListener((parent, view, position, id) -> {
             Event event = events.get(position);
-            // Navigate to ViewEventDetailsActivity with the event ID
+            Intent intent = new Intent(BrowseEventsActivity.this, ViewEventDetailsActivity.class);
+            intent.putExtra("eventId", event.getId());
+            startActivity(intent);
         });
 
         // Back button
@@ -72,7 +75,12 @@ public class BrowseEventsActivity extends AppCompatActivity {
         // Fetch events from Firestore
         fetchEvents();
     }
-
+    @Override
+    public void onEventClicked(Event event) {
+        Intent intent = new Intent(BrowseEventsActivity.this, ViewEventDetailsActivity.class);
+        intent.putExtra("eventId", event.getId());
+        startActivity(intent);
+    }
 
 
     private void fetchEvents() {

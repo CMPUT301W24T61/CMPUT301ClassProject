@@ -14,10 +14,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AttendeeService {
-    private static boolean checkIn = false;
     private static FirebaseFirestore db = FirebaseFirestore.getInstance();
+
     public interface EventQueryListener {
-        void onEventFound(DocumentSnapshot eventDocument);
+        void onEventFound(DocumentSnapshot eventDocument, boolean isCheckIn);
         void onEventNotFound();
         void onEventQueryError();
     }
@@ -51,9 +51,15 @@ public class AttendeeService {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         queryEventByHashCode(db, context, scannedCode, new EventQueryListener() {
             @Override
-            public void onEventFound(DocumentSnapshot eventDocument) {
-
-                Intent intent = new Intent(context, ViewEventDetailsActivity.class);
+            public void onEventFound(DocumentSnapshot eventDocument, boolean isCheckIn) {
+                Intent intent;
+                if (isCheckIn) {
+                    // If the scanned code is for check-in, navigate to EventCheckInActivity
+                    intent = new Intent(context, EventCheckIn.class);
+                } else {
+                    // If the scanned code is for promotion, navigate to ViewEventDetailsActivity
+                    intent = new Intent(context, ViewEventDetailsActivity.class);
+                }
                 intent.putExtra("eventId", eventDocument.getId()); // Pass the event ID
                 context.startActivity(intent);
             }
@@ -78,9 +84,7 @@ public class AttendeeService {
                     if (task.isSuccessful() && task.getResult() != null) {
                         if (!task.getResult().isEmpty()) {
                             DocumentSnapshot eventDocument = task.getResult().getDocuments().get(0);
-                            checkIn = true;
-                            Toast.makeText(context, "Checked in", Toast.LENGTH_LONG).show();
-                            listener.onEventFound(eventDocument);
+                            listener.onEventFound(eventDocument, true); // Pass true for checkIn
                         } else {
                             // If not found in hashCode field, check promotionHashCode field
                             queryEventByPromotionHashCode(db, context, hashCode, listener);
@@ -99,16 +103,12 @@ public class AttendeeService {
                     if (task.isSuccessful() && task.getResult() != null) {
                         if (!task.getResult().isEmpty()) {
                             DocumentSnapshot eventDocument = task.getResult().getDocuments().get(0);
-                            listener.onEventFound(eventDocument);
-                            checkIn= false;
-                            Toast.makeText(context, "Promotion Code", Toast.LENGTH_LONG).show();
+                            listener.onEventFound(eventDocument, false); // Pass false for promotion
                         } else {
                             listener.onEventNotFound();
-                            Toast.makeText(context, "Promotion Code not found", Toast.LENGTH_LONG).show();
                         }
                     } else {
                         listener.onEventQueryError();
-                        Toast.makeText(context, "Error searching for event with Promotion Code.", Toast.LENGTH_LONG).show();
                     }
                 });
     }

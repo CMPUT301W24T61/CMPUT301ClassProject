@@ -140,6 +140,14 @@ public class DashboardActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+        hostedEventsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // Start the QRCodeScannerActivity
+                Intent intent = new Intent(DashboardActivity.this, BrowseHostedEvents.class);
+                startActivity(intent);
+            }
+        });
 
 
 

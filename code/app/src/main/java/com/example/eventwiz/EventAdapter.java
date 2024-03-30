@@ -21,9 +21,12 @@ import java.util.List;
  * @see Event
  * @author Hunaid,Yesith
  */
+
 public class EventAdapter extends ArrayAdapter<Event> {
-    public EventAdapter(Context context, List<Event> events) {
+    private EventClickListener eventClickListener;
+    public EventAdapter(Context context, List<Event> events,EventClickListener eventClickListener) {
         super(context, 0, events);
+        this.eventClickListener = eventClickListener;
     }
 
     /**
@@ -63,19 +66,17 @@ public class EventAdapter extends ArrayAdapter<Event> {
         // Click listener to navigate to event details
 
         convertView.setOnClickListener(view -> {
-            if (QRCodeScannerActivity.isUserAdmin()) {
-                showConfirmationDialog(event);
-            } else {
-                Intent intent = new Intent(getContext(), ViewEventDetailsActivity.class);
-                intent.putExtra("eventId", event.getId());
-                getContext().startActivity(intent);
+            if(eventClickListener != null) {
+                eventClickListener.onEventClicked(event);
             }
         });
 
         // Return the completed view to render on screen
         return convertView;
     }
-
+    public interface EventClickListener {
+        void onEventClicked(Event event);
+    }
 
     private void showConfirmationDialog(Event event) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());

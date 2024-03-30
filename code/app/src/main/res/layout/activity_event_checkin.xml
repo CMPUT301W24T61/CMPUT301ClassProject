@@ -165,10 +165,10 @@
             android:gravity="center">
 
             <Button
-                android:id="@+id/btnSignUp"
+                android:id="@+id/btnCheckIn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Sign Up" />
+                android:text="Check In" />
         </LinearLayout>
 
 

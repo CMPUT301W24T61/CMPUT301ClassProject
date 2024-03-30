@@ -160,17 +160,23 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/tvPromotionQRLabel"
-            android:layout_centerInParent="true"
-            android:orientation="horizontal"
-            android:gravity="center">
+            android:layout_centerHorizontal="true"
+            android:orientation="horizontal">
 
             <Button
-                android:id="@+id/btnSignUp"
+                android:id="@+id/btnCheckInList"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Sign Up" />
-        </LinearLayout>
+                android:layout_marginEnd="8dp"
+                android:text="Checked In List" />
 
+            <Button
+                android:id="@+id/btnSignUpList"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:text="Signed Up List" />
+        </LinearLayout>
 
     </RelativeLayout>
 </ScrollView>

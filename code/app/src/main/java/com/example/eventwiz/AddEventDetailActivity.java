@@ -8,9 +8,13 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Spinner;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
-
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -18,7 +22,11 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.HashMap;
 
 
 /**
@@ -54,10 +62,6 @@ public class AddEventDetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_event_detail);
         db = FirebaseFirestore.getInstance();
-
-        organizer = new Organizer();
-
-
         initializeUI();
         populateSpinners();
     }
@@ -189,8 +193,7 @@ public class AddEventDetailActivity extends AppCompatActivity {
         String eventName = etEventName.getText().toString();
         String eventDescription = etEventDescription.getText().toString();
         String maxAttendeesStr = etMaxAttendees.getText().toString();
-        int maxAttendees = maxAttendeesStr.isEmpty() ? 0 : Integer.parseInt(maxAttendeesStr);
-
+        Integer maxAttendees = maxAttendeesStr.isEmpty() ? null : Integer.parseInt(maxAttendeesStr);
 
         String date = spinnerDay.getSelectedItem().toString() + "-" +
                 spinnerMonth.getSelectedItem().toString() + "-" +
@@ -202,21 +205,18 @@ public class AddEventDetailActivity extends AppCompatActivity {
                 spinnerToMinute.getSelectedItem().toString() + " " +
                 toAmPM.getSelectedItem().toString();
 
-
-
-        String checkInQRCodePath = "";
-        String promotionQRCodePath = "";
-        String posterUrl = "";
-
-
-        Event event = new Event(eventName, eventDescription, date, startTime, endTime, "", maxAttendees, checkInQRCodePath, promotionQRCodePath, posterUrl, "", "");
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        String organizerId = currentUser != null ? currentUser.getUid() : null; // Ensure currentUser is not null
+        Map<String, Integer> checkInsCount = new HashMap<>();
+        Event event = new Event(eventName, eventDescription, date, startTime, endTime, "", maxAttendees, "", "", "", "", "", new ArrayList<>(), checkInsCount);
+        event.setOrganizerId(organizerId);
         saveEventToFirestore(event);
-
         Intent intent = new Intent(AddEventDetailActivity.this, AddEventLocationActivity.class);
         intent.putExtra("event", event);
         intent.putExtra("organizer", organizer);
         startActivity(intent);
     }
+
 
     /**
      * Saves the provided event details to Firestore.

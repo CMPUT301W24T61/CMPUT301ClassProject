@@ -43,6 +43,15 @@
             android:parentActivityName=".MainActivity"
             android:exported="false" />
         <activity
+            android:name=".BrowseHostedEvents"
+            android:parentActivityName=".DashboardActivity" />
+        <activity
+            android:name=".ViewHostedEventDetailsActivity"
+            android:parentActivityName=".BrowseHostedEvents" />
+        <activity
+            android:name=".AttendeeListActivity"
+            android:parentActivityName=".ViewHostedEventDetailsActivity" />
+        <activity
             android:name=".AdminDashboard"
             android:exported="false"
             android:parentActivityName=".MainActivity" />
@@ -54,6 +63,10 @@
             android:name=".SaveUserProfileActivity"
             android:exported="false"
             android:parentActivityName=".MainActivity" />
+        <activity
+            android:name="CheckedInAttendeesActivity"
+            android:exported="false"
+            android:parentActivityName="ViewHostedEventDetailsActivity"/>
         <activity
             android:name=".BrowseEventsActivity"
             android:exported="false"
@@ -89,14 +102,6 @@
             android:name=".ViewEventDetailsActivity"
             android:parentActivityName=".BrowseEventsActivity"
         />
-        <activity android:name=".PortraitCaptureActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.AppCompat.Light.DarkActionBar"
-            android:stateNotNeeded="true"
-            android:windowSoftInputMode="stateAlwaysHidden"
-            android:configChanges="orientation|keyboardHidden|screenSize">
-        </activity>
-        <activity android:name=".ScanQRActivity" />
     </application>
 
 </manifest>
