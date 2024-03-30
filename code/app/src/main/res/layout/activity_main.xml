@@ -98,7 +98,7 @@
         android:layout_marginTop="30dp"
         android:background="@drawable/circle"
         android:onClick="buttonSwitchGPS"
-        android:elevation="10dp"
+        android:elevation="4dp"
         android:padding="10dp"
         android:scaleType="fitCenter"
         android:src="@drawable/ic_location"

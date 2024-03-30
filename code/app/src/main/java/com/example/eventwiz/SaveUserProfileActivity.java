@@ -1,6 +1,7 @@
 package com.example.eventwiz;
 
 import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
@@ -15,12 +16,14 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
@@ -51,11 +54,7 @@ import java.io.IOException;
 public class SaveUserProfileActivity extends AppCompatActivity {
 
     private EditText eduserName, eduserEmail, eduserHomepage, eduserMobile;
-
-
-
     private Button SaveProfileButton;
-
     private ImageView selectPhoto;
     public Uri imageUri;
     private Bitmap bitmap;
@@ -83,9 +82,6 @@ public class SaveUserProfileActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_save_user_profile);
-
-
-
         eduserName = findViewById(R.id.editText_register_name);
         eduserEmail = findViewById(R.id.editText_register_email);
         eduserHomepage = findViewById(R.id.editText_homepage);
@@ -94,23 +90,16 @@ public class SaveUserProfileActivity extends AppCompatActivity {
         SaveProfileButton = findViewById(R.id.button_register);
 
 
-
-        // create instances
         firestore = FirebaseFirestore.getInstance();
         storage = FirebaseStorage.getInstance();
         userStorageRef = storage.getReference();
-
         userAuth = FirebaseAuth.getInstance();
 
         retrieveAnonymousUserId();
-
-
+        onEditProfileClicked();
 
 
         selectPhoto.setOnClickListener(new View.OnClickListener() {
-
-
-
             @Override
             public void onClick(View view) {
 
@@ -123,23 +112,37 @@ public class SaveUserProfileActivity extends AppCompatActivity {
         SaveProfileButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                uploadImage();
-                uploadUserInfo();
+                // Check if imageUri is null
+                if (imageUri == null) {
+                    // Display an AlertDialog to inform the user about the auto-generation of the profile picture
+                    AlertDialog.Builder builder = new AlertDialog.Builder(SaveUserProfileActivity.this);
+                    builder.setTitle("No Profile Picture Selected");
+                    builder.setMessage("Profile Picture will be Auto-Generated.");
+                    builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            // Proceed with uploading user information without a profile picture
+                            dialogInterface.dismiss();
+                            uploadUserInfo();
+                            Intent intent = new Intent(SaveUserProfileActivity.this,MainActivity.class);
+                            startActivity(intent);
+                        }
+                    });
+                    AlertDialog alertDialog = builder.create();
+                    alertDialog.show();
+                } else {
+                    // If imageUri is not null, directly upload user information
+                    uploadImage();
+                    uploadUserInfo();
+                    Intent intent = new Intent(SaveUserProfileActivity.this, MainActivity.class);
+                    startActivity(intent);
 
-
-                Intent intent = new Intent(SaveUserProfileActivity.this, MainActivity.class);
-                startActivity(intent);
-
+                }
 
             }
         });
 
-
-
-
     }
-
-
     /**
      * Launches the gallery to allow the user to pick an image for their profile.
      */
@@ -188,7 +191,7 @@ public class SaveUserProfileActivity extends AppCompatActivity {
      */
 
     private void uploadImage(){
-        //chekc imageuri
+        //check imageuri
         if(imageUri != null){
             // create storage instance
             final StorageReference myRef = userStorageRef.child("photo/"+imageUri.getLastPathSegment());
@@ -250,9 +253,7 @@ public class SaveUserProfileActivity extends AppCompatActivity {
                                 public void onComplete(@NonNull Task<Void> task) {
                                     if(task.isSuccessful()){
                                         Toast.makeText(SaveUserProfileActivity.this,"Profile Created Successfully!",Toast.LENGTH_SHORT).show();
-
                                     }
-
                                 }
                             }).addOnFailureListener(new OnFailureListener() {
                                 @Override
@@ -294,4 +295,100 @@ public class SaveUserProfileActivity extends AppCompatActivity {
         }
     }
 
+
+    private boolean validateInputs() {
+        String name = eduserName.getText().toString().trim();
+        String email = eduserEmail.getText().toString().trim();
+        String homepage = eduserHomepage.getText().toString().trim();
+        String mobile = eduserMobile.getText().toString().trim();
+
+        // Check if name is empty
+        if (TextUtils.isEmpty(name)) {
+            eduserName.setError("Name is required");
+            return false;
+        }
+
+        // Check if email is empty and is in valid format
+        if (TextUtils.isEmpty(email)) {
+            eduserEmail.setError("Email is required");
+            return false;
+        } else if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            eduserEmail.setError("Enter a valid email address");
+            return false;
+        }
+
+        // Check if homepage is empty and is a valid URL
+        if (TextUtils.isEmpty(homepage)) {
+            eduserHomepage.setError("Homepage is required");
+            return false;
+        } else if (!android.util.Patterns.WEB_URL.matcher(homepage).matches()) {
+            eduserHomepage.setError("Enter a valid homepage URL");
+            return false;
+        }
+
+        // Check if mobile is empty and is in valid format
+        if (TextUtils.isEmpty(mobile)) {
+            eduserMobile.setError("Mobile number is required");
+            return false;
+        } else if (!android.util.Patterns.PHONE.matcher(mobile).matches()) {
+            eduserMobile.setError("Enter a valid mobile number");
+            return false;
+        }
+
+        // Regular expressions for validation
+        String namePattern = "[a-zA-Z]+\\s+[a-zA-Z]+";
+        String emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+";
+        String urlPattern = "(https?://)?(www\\.)?[a-zA-Z0-9]+\\.[a-zA-Z]{2,}(/\\S*)?";
+        String mobilePattern = "\\d{10}";
+
+        // Check if name matches the pattern
+        if (!name.matches(namePattern)) {
+            eduserName.setError("Enter your full name");
+            return false;
+        }
+
+        // Check if email matches the pattern
+        if (!email.matches(emailPattern)) {
+            eduserEmail.setError("Enter a valid email address");
+            return false;
+        }
+
+        // Check if homepage URL matches the pattern
+        if (!homepage.matches(urlPattern)) {
+            eduserHomepage.setError("Enter a valid homepage URL");
+            return false;
+        }
+
+        // Check if mobile number matches the pattern
+        if (!mobile.matches(mobilePattern)) {
+            eduserMobile.setError("Enter a valid 10-digit mobile number");
+            return false;
+        }
+
+        // All inputs are valid
+        return true;
+    }
+
+    private void onEditProfileClicked() {
+        TextView textViewRegisterHead = findViewById(R.id.textView_register_head);
+        boolean isEditingProfile = getIntent().getBooleanExtra("editProfile", false);
+        textViewRegisterHead.setText(isEditingProfile ? "Edit Profile" : "Create Profile");
+
+        Intent intent = getIntent();
+        if (intent != null) {
+            Bundle extras = intent.getExtras();
+            if (extras != null) {
+                String userName = extras.getString("userName");
+                String userEmail = extras.getString("userEmail");
+                String userHomepage = extras.getString("userHomepage");
+                String userMobile = extras.getString("userMobile");
+
+                if (userName != null) eduserName.setText(userName);
+                if (userEmail != null) eduserEmail.setText(userEmail);
+                if (userHomepage != null) eduserHomepage.setText(userHomepage);
+                if (userMobile != null) eduserMobile.setText(userMobile);
+            }
+        }
+
+    }
 }

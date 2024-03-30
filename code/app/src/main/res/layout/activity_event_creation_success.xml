@@ -145,21 +145,6 @@
 
 
 
-        <ImageButton
-            android:id="@+id/btn_share_qr_code"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_marginLeft="5dp"
-            android:src="@drawable/ic_share"
-            android:layout_below="@id/tvCheckInQRLabel"
-            android:layout_centerHorizontal="true"
-            android:scaleType="fitCenter"
-            android:text="Share QR Code"
-            android:background="@drawable/rounded_button"
-            android:elevation="4dp"
-            android:layout_marginTop="0dp" />
-
-
         <TextView
             android:id="@+id/tvPromotionQRLabel"
             android:layout_width="wrap_content"

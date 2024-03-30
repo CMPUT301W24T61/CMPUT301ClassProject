@@ -1,100 +1,76 @@
 package com.example.eventwiz;
 
-
-
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
-import static android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.location.LocationManager;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.Settings;
-import android.view.View;
-import android.widget.TextView;
-
-
-import android.app.Activity;
-import android.content.Intent;
-import android.content.SharedPreferences;
-import android.os.Bundle;
-import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 
-
-
-/**
- * MainActivity class handles button presses from the main screen and calls other classes and activities.
- * It also manages user authentication and GPS status.
- * @author yesith
- */
 public class MainActivity extends AppCompatActivity {
+
     private FirebaseAuth userAuth;
-    SharedPreferences sp;
-    String uid;
+    private SharedPreferences sp;
+    private String uid;
 
     private TextView gpsStatus;
     private LocationManager locationManager;
 
-    /**
-     * Called when the activity is first created.
-     *
-     * @param savedInstanceState Bundle that contains data most recently supplied if the activity is being re-initialized.
-     */
+    // Flag to track if profile creation dialog has been shown
+    private boolean profileCreationDialogShown = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
-
-
         userAuth = FirebaseAuth.getInstance();
-
         sp = getSharedPreferences("MyPrefs", MODE_PRIVATE);
-
-
 
         gpsStatus = findViewById(R.id.gps_status);
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-
-
 
         Button buttonGetStarted = findViewById(R.id.button_get_started);
         buttonGetStarted.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this, DashboardActivity.class);
-                startActivity(intent);
-
+                FirebaseUser currentUser = userAuth.getCurrentUser();
+                if (currentUser != null) {
+                    uid = currentUser.getUid();
+                    checkUserProfileExists(uid);
+                } else {
+                    Toast.makeText(MainActivity.this, "User is not signed in", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
         Button buttonRegister = findViewById(R.id.button_register);
-
         buttonRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(MainActivity.this, SaveUserProfileActivity.class);
                 startActivity(intent);
-
             }
         });
-
 
         Button buttonScanQR = findViewById(R.id.button_scan_qr);
         buttonScanQR.setOnClickListener(new View.OnClickListener() {
@@ -105,54 +81,106 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        // Check GPS status asynchronously
+        new CheckGpsStatusTask().execute();
     }
 
-    /**
-     * Called when the activity is about to become visible to the user.
-     */
     @Override
     public void onStart() {
         super.onStart();
-
-        // Check if the user is signed in (non-null) and update UI
-        FirebaseUser currentUser = userAuth.getCurrentUser();
-        if (currentUser == null) {
-            // If the user is not signed in, attempt anonymous authentication
-            Log.d("Authentication", "User is not signed in. Attempting anonymous authentication.");
-            attemptAnonymousAuthentication();
-        } else {
-            // If the user is already signed in, update UI
-            Log.d("Authentication", "User is already signed in. UID: " + currentUser.getUid());
-            updateUI(currentUser);
-        }
-
-        if(locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)){
-            gpsStatus.setText("GPS is ON");
-
-        }else{
-            gpsStatus.setText("GPS is OFF");
-        }
+        // Check user authentication status asynchronously
+        new CheckUserAuthStatusTask().execute();
     }
-    /**
-     * Attempt anonymous authentication using Firebase.
-     */
+
+    private boolean checkUserProfileExists(String uid) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        DocumentReference docRef = db.collection("Users").document(uid); // Change "users" to your collection where user profiles are stored
+        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
+                        // User document exists, now check if userName and userEmail exist
+                        String userName = document.getString("userName");
+                        String userEmail = document.getString("userEmail");
+                        if (userName != null && userEmail != null) {
+                            // Both userName and userEmail exist
+                            // User profile is complete
+                            if (!profileCreationDialogShown) {
+                                // Show dialog only if it hasn't been shown before
+                                Intent intent = new Intent(MainActivity.this, DashboardActivity.class);
+                                startActivity(intent);
+                            }
+                        } else {
+                            // Either userName or userEmail is missing
+                            // Show dialog to create profile
+                            if (!profileCreationDialogShown) {
+                                showCreateProfileDialog();
+                                profileCreationDialogShown = true;
+
+                            }
+                        }
+                    } else {
+                        // User document does not exist
+                        // Show dialog to create profile
+                        if (!profileCreationDialogShown) {
+                            showCreateProfileDialog();
+                            profileCreationDialogShown = true;
+
+                        }
+                    }
+                } else {
+                    // Handle error
+                    Log.e("Firestore", "Error checking user profile existence: ", task.getException());
+                }
+            }
+        });
+        return false;
+    }
+
+    private void showCreateProfileDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("No User Profile Found!");
+        builder.setMessage("Create a Profile to Get Started.")
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        // prompt to main UI to create profile
+                        dialogInterface.dismiss();
+                        profileCreationDialogShown = false;
+
+
+                    }
+                });
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
+    }
+
     private void attemptAnonymousAuthentication() {
         userAuth.signInAnonymously().addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()) {
-                    // If anonymous authentication is successful, get the current user
                     FirebaseUser user = userAuth.getCurrentUser();
-                    uid = userAuth.getUid();
-                    SharedPreferences.Editor editor = sp.edit();
-                    editor.putString("anonymousUserId", uid);
-                    editor.apply();
-                    Log.d("Authentication", "Anonymous authentication successful. UID: " + user.getUid());
-                    updateUI(user);
-                    Log.d("SharedPreferences", "Saved Anonymous User ID: " + uid);
+                    if (user != null) {
+                        uid = user.getUid();
+                        SharedPreferences.Editor editor = sp.edit();
+                        editor.putString("anonymousUserId", uid);
+                        editor.apply();
+                        Log.d("Authentication", "Anonymous authentication successful. UID: " + uid);
+                        updateUI(user);
+                        Log.d("SharedPreferences", "Saved Anonymous User ID: " + uid);
 
+                        // Debug: Check if UID is successfully retrieved from SharedPreferences
+                        String retrievedUid = sp.getString("anonymousUserId", null);
+                        if (retrievedUid != null) {
+                            Log.d("SharedPreferences", "Retrieved Anonymous User ID: " + retrievedUid);
+                        } else {
+                            Log.e("SharedPreferences", "Failed to retrieve Anonymous User ID from SharedPreferences");
+                        }
+                    }
                 } else {
-                    // If anonymous authentication fails, update UI accordingly and show a toast
                     Log.e("Authentication", "Anonymous authentication failed: " + task.getException());
                     updateUI(null);
                     Toast.makeText(MainActivity.this, "Anonymous authentication failed: " + task.getException(), Toast.LENGTH_SHORT).show();
@@ -161,52 +189,33 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    /**
-     * Update UI based on the current user's status.
-     *
-     * @param user FirebaseUser object representing the current user.
-     */
     private void updateUI(FirebaseUser user) {
         if (user != null) {
-            // Update UI for a signed-in user
             Log.d("Authentication", "User is signed in. UID: " + user.getUid());
             Toast.makeText(MainActivity.this, "Signed in anonymously", Toast.LENGTH_SHORT).show();
-            // You can navigate to another activity or perform additional actions here
         } else {
-            // Handle the case when the user is still not signed in after attempting anonymous authentication
             Log.d("Authentication", "User is still not signed in.");
             Toast.makeText(MainActivity.this, "User is not signed in", Toast.LENGTH_SHORT).show();
         }
     }
 
-
-    /**
-     * Called when the user clicks the switch GPS button.
-     *
-     * @param view The view that was clicked.
-     */
     public void buttonSwitchGPS(View view) {
         if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-            // GPS is currently ON, turn it OFF
             turnOffGPS();
         } else {
-            // GPS is currently OFF, turn it ON
             turnOnGPS();
         }
     }
 
-    /**
-     * Show a dialog to enable GPS when it is currently disabled.
-     */
     private void turnOnGPS() {
-
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
-        alertDialogBuilder.setMessage("GPS is disabled. Would you like to enable it?")
+        alertDialogBuilder.setMessage("Location is disabled. Would you like to enable it?")
                 .setCancelable(true)
                 .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+                        updateGPSStatus(true); // Update GPS status text when GPS is turned on
                     }
                 })
                 .setNegativeButton("No", new DialogInterface.OnClickListener() {
@@ -218,18 +227,16 @@ public class MainActivity extends AppCompatActivity {
         AlertDialog alertDialog = alertDialogBuilder.create();
         alertDialog.show();
     }
-    /**
-     * Show a dialog to disable GPS when it is currently enabled.
-     */
+
     private void turnOffGPS() {
-        // Check if the user wants to enable GPS
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
-        alertDialogBuilder.setMessage("GPS is enabled. Would you like to disable it?")
+        alertDialogBuilder.setMessage("Location is enabled. Would you like to disable it?")
                 .setCancelable(true)
                 .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+                        updateGPSStatus(false); // Update GPS status text when GPS is turned off
                     }
                 })
                 .setNegativeButton("No", new DialogInterface.OnClickListener() {
@@ -242,4 +249,41 @@ public class MainActivity extends AppCompatActivity {
         alertDialog.show();
     }
 
+    private void updateGPSStatus(boolean isGpsEnabled) {
+        gpsStatus.setText(isGpsEnabled ? "Location ON" : "Location OFF");
+    }
+
+    // AsyncTask to check GPS status
+    private class CheckGpsStatusTask extends AsyncTask<Void, Void, Boolean> {
+
+        @Override
+        protected Boolean doInBackground(Void... voids) {
+            return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+        }
+
+        @Override
+        protected void onPostExecute(Boolean isGpsEnabled) {
+            updateGPSStatus(isGpsEnabled);
+        }
+    }
+
+    // AsyncTask to check user authentication status
+    private class CheckUserAuthStatusTask extends AsyncTask<Void, Void, FirebaseUser> {
+
+        @Override
+        protected FirebaseUser doInBackground(Void... voids) {
+            return userAuth.getCurrentUser();
+        }
+
+        @Override
+        protected void onPostExecute(FirebaseUser currentUser) {
+            if (currentUser == null) {
+                Log.d("Authentication", "User is not signed in. Attempting anonymous authentication.");
+                attemptAnonymousAuthentication();
+            } else {
+                Log.d("Authentication", "User is already signed in. UID: " + currentUser.getUid());
+                updateUI(currentUser);
+            }
+        }
+    }
 }

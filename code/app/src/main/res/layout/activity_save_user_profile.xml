@@ -23,7 +23,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            android:text="Create Profile"
             android:textAlignment="center"
             android:layout_marginBottom="50dp"
             android:textAppearance="@style/TextAppearance.AppCompat.Headline" />
@@ -46,7 +45,8 @@
             android:layout_marginTop="70dp"
             android:src ="@drawable/ic_default_profile_icon"
             android:background="@drawable/circle"
-            android:scaleType="fitCenter"
+            android:scaleType="centerCrop"
+            android:adjustViewBounds="true"
             android:elevation="4dp"/>
 
 
