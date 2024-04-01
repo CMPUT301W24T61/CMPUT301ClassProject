@@ -177,7 +177,8 @@ public class EventCreationSuccessActivity extends AppCompatActivity {
             Glide.with(this).load(event.getPromotionQRCode()).into(ivPromotionQRCode);
         } else {
             ivPromotionQRCode.setVisibility(View.GONE);
-
+        }
+    }
 
     //shares qr codes to other apps.
     private void shareImage(ImageView imageView) {
