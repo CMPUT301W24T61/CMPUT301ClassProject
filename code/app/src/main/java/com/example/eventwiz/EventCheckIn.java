@@ -123,34 +123,33 @@ public class EventCheckIn extends AppCompatActivity {
                 });
     }
 
+    // Update check-in logic
     private void updateCheckInsAndLocation(String eventId, String userId, double latitude, double longitude) {
         DocumentReference eventRef = db.collection("events").document(eventId);
+        DocumentReference userRef = db.collection("users").document(userId); // Reference to user document
+
         // First, get the current event document to check the existing check-ins
         eventRef.get().addOnCompleteListener(task -> {
             if (task.isSuccessful() && task.getResult() != null) {
-                DocumentSnapshot document = task.getResult();
-                Map<String, Object> checkIns = (Map<String, Object>) document.get("checkInsCount");
-                if (checkIns == null) {
-                    checkIns = new HashMap<>();
-                }
-                Object currentCountObject = checkIns.get(userId);
-                int currentCount = 0;
-                if (currentCountObject instanceof Long) {
-                    currentCount = ((Long) currentCountObject).intValue();
-                } else if (currentCountObject instanceof Integer) {
-                    currentCount = (Integer) currentCountObject;
-                }
+                DocumentSnapshot eventDocument = task.getResult();
+                Map<String, Object> checkIns = eventDocument.get("checkInsCount") != null ?
+                        (Map<String, Object>) eventDocument.get("checkInsCount") : new HashMap<>();
+
                 // Increment the count
-                checkIns.put(userId, currentCount + 1);
+                if (checkIns != null) {
+                    checkIns.put(userId, (int) checkIns.getOrDefault(userId, 0) + 1);
+                }
 
-                // Update the document with check-ins count and location
-                Map<String, Object> eventData = new HashMap<>();
-                eventData.put("checkInsCount", checkIns);
-                eventData.put("lastCheckInLocation", new GeoPoint(latitude, longitude));
-
-                eventRef.update(eventData)
+                // Update the document with check-ins count
+                eventRef.update("checkInsCount", checkIns)
                         .addOnSuccessListener(aVoid -> {
                             Toast.makeText(EventCheckIn.this, "Checked in successfully", Toast.LENGTH_SHORT).show();
+
+                            // Update user document with last check-in location
+                            userRef.update("lastCheckInLocation", new GeoPoint(latitude, longitude))
+                                    .addOnSuccessListener(aVoid1 -> Log.d("EventCheckIn", "User location updated successfully"))
+                                    .addOnFailureListener(e -> Log.e("EventCheckIn", "Error updating user location", e));
+
                             // Optionally, navigate to another activity or update UI
                         })
                         .addOnFailureListener(e -> {
@@ -162,6 +161,7 @@ public class EventCheckIn extends AppCompatActivity {
             }
         });
     }
+
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {

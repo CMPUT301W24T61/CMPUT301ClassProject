@@ -42,6 +42,7 @@ public class DashboardActivity extends AppCompatActivity {
     // Declare UI components
     private Button createEventButton;
     private Button hostedEventsButton;
+    private Button signedUpEventsButton;
     private Button browseEventsButton;
     private Button profileButton;
 
@@ -80,6 +81,7 @@ public class DashboardActivity extends AppCompatActivity {
         // Initialize UI components
         createEventButton = findViewById(R.id.createEvent);
         hostedEventsButton = findViewById(R.id.myHostedEvents);
+        signedUpEventsButton = findViewById(R.id.mySignedUpEvents);
         browseEventsButton = findViewById(R.id.browseEvents);
         profileButton = findViewById(R.id.myProfile);
         scanQRButton = findViewById(R.id.fabCamera);
@@ -109,6 +111,14 @@ public class DashboardActivity extends AppCompatActivity {
             public void onClick(View view) {
                 // Intent to navigate to CreateEventActivity
                 Intent intent = new Intent(DashboardActivity.this, AddEventDetailActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        signedUpEventsButton.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view){
+                Intent intent = new Intent(DashboardActivity.this, BrowseSignedUpEventsActivity.class);
                 startActivity(intent);
             }
         });

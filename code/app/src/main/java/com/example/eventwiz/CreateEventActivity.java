@@ -18,7 +18,11 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.Transaction;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -82,6 +86,7 @@ public class CreateEventActivity extends AppCompatActivity {
                 generateAndUploadData();
             }
         });
+
         checkboxReuseQRCode.setOnCheckedChangeListener((buttonView, isChecked) -> {
             qrCodeSpinner.setVisibility(isChecked ? View.VISIBLE : View.GONE);
             if (isChecked) {
@@ -91,27 +96,25 @@ public class CreateEventActivity extends AppCompatActivity {
         });
     }
     private void fetchAndPopulateQRCodes() {
-        StorageReference storageRef = storage.getReference().child("qr_codes/");
-        storageRef.listAll()
-                .addOnSuccessListener(listResult -> {
-                    if (listResult.getItems().isEmpty()) {
-                        Toast.makeText(CreateEventActivity.this, "No QR codes available.", Toast.LENGTH_SHORT).show();
-                        return;
+        FirebaseFirestore.getInstance().collection("events").get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    List<QRCodeEventDetail> qrCodeDetails = new ArrayList<>();
+                    for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
+                        String checkInQRCodeUrl = documentSnapshot.getString("checkInQRCode");
+                        String promotionQRCodeUrl = documentSnapshot.getString("promotionQRCode");
+                        String eventName = documentSnapshot.getString("name");
+                        String eventPosterUrl = documentSnapshot.getString("posterUrl");
+                        String hashCode = documentSnapshot.getString("hashCode");
+                        // Create a new QRCodeEventDetail object with both QR code URLs
+                        QRCodeEventDetail qrCodeEventDetail = new QRCodeEventDetail(checkInQRCodeUrl, promotionQRCodeUrl, eventName, eventPosterUrl,hashCode);
+                        qrCodeDetails.add(qrCodeEventDetail);
                     }
-                    // Iterate over each item and get download URLs
-                    for (StorageReference itemRef : listResult.getItems()) {
-                        itemRef.getDownloadUrl().addOnSuccessListener(uri -> {
-                            qrCodeUrls.add(uri.toString());
-                            // Notify the adapter that the data set has changed to update the Spinner
-                            qrCodeAdapter.notifyDataSetChanged();
-                        }).addOnFailureListener(e -> {
-                            Toast.makeText(CreateEventActivity.this, "Failed to fetch QR code URL.", Toast.LENGTH_SHORT).show();
-                        });
-                    }
+
+                    // Update the adapter with new list of QRCodeEventDetail objects
+                    QRCodeEventAdapter adapter = new QRCodeEventAdapter(CreateEventActivity.this, qrCodeDetails);
+                    qrCodeSpinner.setAdapter(adapter);
                 })
-                .addOnFailureListener(e -> {
-                    Toast.makeText(CreateEventActivity.this, "Failed to list QR codes.", Toast.LENGTH_SHORT).show();
-                });
+                .addOnFailureListener(e -> Log.e("CreateEventActivity", "Error fetching QR codes", e));
     }
 
     /**
@@ -121,18 +124,16 @@ public class CreateEventActivity extends AppCompatActivity {
         // Ensure at least one QR code generation option is selected
         if (!checkboxGenerateCheckInQR.isChecked() && !checkboxGeneratePromotionQR.isChecked() && !checkboxReuseQRCode.isChecked()) {
             Toast.makeText(CreateEventActivity.this, "At least one QR code option is required.", Toast.LENGTH_LONG).show();
-            return; // Exit if no option is selected
+            return;
         }
 
-        event = (Event) getIntent().getSerializableExtra("event"); // Assume event object is prepared
-
-        // Conditional logic for generating/uploading QR codes
+        event = (Event) getIntent().getSerializableExtra("event");
         if (checkboxGenerateCheckInQR.isChecked()) {
             try {
                 String uniqueString = organizer.generateUniqueString();
                 String hashedString = organizer.hashString(uniqueString);
                 Bitmap checkInQRCodeBitmap = organizer.generateCheckInQRCode(hashedString);
-                String checkInQRFileName = "checkInQRCode_" + System.currentTimeMillis() + ".png";
+                String checkInQRFileName = "checkInQRCode_" + event.getId() + ".png";
                 uploadBitmapAndGetUrl(checkInQRCodeBitmap, checkInQRFileName, checkInQRUrl -> {
                     event.setCheckInQRCode(checkInQRUrl);
                     event.setHashCode(hashedString);
@@ -142,10 +143,21 @@ public class CreateEventActivity extends AppCompatActivity {
                 Toast.makeText(this, "Check-In QR Code generation failed: " + e.getMessage(), Toast.LENGTH_LONG).show();
             }
         } else if (checkboxReuseQRCode.isChecked()) {
-            // Reuse selected QR code
-            String selectedQRCodeUrl = (String) qrCodeSpinner.getSelectedItem();
-            event.setCheckInQRCode(selectedQRCodeUrl);
-            completeEventCreation();
+            QRCodeEventDetail selectedDetail = (QRCodeEventDetail) qrCodeSpinner.getSelectedItem();
+            if (selectedDetail != null) {
+                associateQRCodeWithNewEvent(selectedDetail.getHashCode(), event, new TransactionCallback() {
+                    @Override
+                    public void onSuccess() {
+                        completeEventCreation();
+                    }
+                    @Override
+                    public void onFailure(Exception e) {
+                        Toast.makeText(CreateEventActivity.this, "Error updating event details.", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            } else {
+                Toast.makeText(this, "No QR code selected.", Toast.LENGTH_SHORT).show();
+            }
         }
 
         if (checkboxGeneratePromotionQR.isChecked()) {
@@ -153,7 +165,7 @@ public class CreateEventActivity extends AppCompatActivity {
                 String uniqueString = organizer.generateUniqueString();
                 String hashedString = organizer.hashString(uniqueString);
                 Bitmap promotionQRCodeBitmap = organizer.generateCheckInQRCode(hashedString);
-                String promotionQRFileName = "promotionQRCode_" + System.currentTimeMillis() + ".png";
+                String promotionQRFileName = "promotionQRCode_" + event.getId() + ".png";
                 uploadBitmapAndGetUrl(promotionQRCodeBitmap, promotionQRFileName, promotionQRUrl -> {
                     event.setPromotionQRCode(promotionQRUrl);
                     event.setPromotionHashCode(hashedString);
@@ -163,6 +175,43 @@ public class CreateEventActivity extends AppCompatActivity {
                 Toast.makeText(this, "Promotion QR Code generation failed: " + e.getMessage(), Toast.LENGTH_LONG).show();
             }
         }
+    }
+    private interface TransactionCallback {
+        void onSuccess();
+        void onFailure(Exception e);
+    }
+
+    private void associateQRCodeWithNewEvent(final String reusedQRCodeHash, final Event newEvent, final TransactionCallback callback) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        db.collection("events").whereEqualTo("hashCode", reusedQRCodeHash).get().addOnCompleteListener(task -> {
+            if (task.isSuccessful() && !task.getResult().isEmpty()) {
+                DocumentSnapshot oldEventDocument = task.getResult().getDocuments().get(0);
+                final String qrCodeUrl = oldEventDocument.getString("checkInQRCode");
+
+                db.runTransaction((Transaction.Function<Void>) transaction -> {
+                    DocumentReference oldEventRef = oldEventDocument.getReference();
+                    DocumentReference newEventRef = db.collection("events").document(newEvent.getId());
+                    transaction.update(oldEventRef, "hashCode", null);
+                    transaction.update(oldEventRef, "checkInQRCode", null);
+                    transaction.update(newEventRef, "hashCode", reusedQRCodeHash);
+                    transaction.update(newEventRef, "checkInQRCode", qrCodeUrl);
+                    newEvent.setHashCode(reusedQRCodeHash);
+                    newEvent.setCheckInQRCode(qrCodeUrl);
+                    return null;
+                }).addOnSuccessListener(aVoid -> {
+                    if (callback != null) {
+                        callback.onSuccess();
+                    }
+                }).addOnFailureListener(e -> {
+                    if (callback != null) {
+                        callback.onFailure(e);
+                    }
+                });
+            } else {
+                Toast.makeText(CreateEventActivity.this, "No existing event found with that QR Code.", Toast.LENGTH_LONG).show();
+            }
+        });
     }
 
     private void completeEventCreation() {

@@ -43,7 +43,7 @@ dependencies {
     annotationProcessor ("com.github.bumptech.glide:compiler:4.13.0")
     implementation ("com.google.zxing:core:3.4.1")
     implementation ("com.journeyapps:zxing-android-embedded:4.2.0")
-
+    implementation ("com.squareup.picasso:picasso:2.71828")
     compileOnly(files("${android.sdkDirectory}/platforms/${android.compileSdkVersion}/android.jar"))
 
     implementation("androidx.appcompat:appcompat:1.6.1")

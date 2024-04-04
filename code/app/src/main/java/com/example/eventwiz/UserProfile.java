@@ -1,11 +1,15 @@
 package com.example.eventwiz;
 
+import com.google.firebase.firestore.GeoPoint;
+
 /**
  * Responsible for storing the User's profile
  * @author Yesith
  */
 public class UserProfile {
     private String UserName, UserEmail, UserHomepage, UserMobile,UserDocID,CurrentUserID,ProfilePicImage;
+
+    private GeoPoint lastCheckInLocation;
 
 
     public UserProfile() {
@@ -142,5 +146,13 @@ public class UserProfile {
      */
     public void setProfilePicImage(String profilePicImage) {
         ProfilePicImage = profilePicImage;
+    }
+
+    public GeoPoint getLastCheckInLocation() {
+        return lastCheckInLocation;
+    }
+
+    public void setLastCheckInLocation(GeoPoint lastCheckInLocation) {
+        this.lastCheckInLocation = lastCheckInLocation;
     }
 }

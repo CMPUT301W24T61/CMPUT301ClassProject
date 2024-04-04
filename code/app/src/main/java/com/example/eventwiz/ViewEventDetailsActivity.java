@@ -3,6 +3,7 @@ package com.example.eventwiz;
 import static com.example.eventwiz.AttendeeService.db;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.Log;
@@ -24,6 +25,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FieldValue;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.List;
 
@@ -36,7 +38,8 @@ public class ViewEventDetailsActivity extends AppCompatActivity {
     private TextView tvEventName, tvEventDate, tvEventStartTime, tvEventEndTime, tvEventLocation, tvMaxAttendees, tvEventDescription;
     private ImageButton btnSignUp, btnCheckIn;
     private ImageView ivEventPoster, ivCheckInQRCode, ivPromotionQRCode;
-
+    private FirebaseFirestore db;
+    private Event event;
 
     /**
      * Called when the activity is first created.
@@ -56,12 +59,14 @@ public class ViewEventDetailsActivity extends AppCompatActivity {
             int color = ContextCompat.getColor(this, R.color.turqoise);
             actionBar.setBackgroundDrawable(new ColorDrawable(color));
         }
-
+        db = FirebaseFirestore.getInstance();
         initializeUI();
         String eventId = getIntent().getStringExtra("eventId");
         if (eventId != null && !eventId.isEmpty()) {
             loadEventFromFirestore(eventId);
         }
+        ivCheckInQRCode = findViewById(R.id.ivCheckInQRCode);
+        ivPromotionQRCode = findViewById(R.id.ivPromotionQRCode);
         btnSignUp = findViewById(R.id.btnSignUp);
         btnSignUp.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -69,6 +74,7 @@ public class ViewEventDetailsActivity extends AppCompatActivity {
                 signUpForEvent();
             }
         });
+
         ImageButton btnGoBack = findViewById(R.id.goback);
         btnGoBack.setOnClickListener(v -> finish());
 
@@ -90,7 +96,31 @@ public class ViewEventDetailsActivity extends AppCompatActivity {
             }
         });
 
+        ivEventPoster.setOnClickListener(view -> {
+            if (event != null && event.getPosterUrl() != null && !event.getPosterUrl().isEmpty()) {
+                String imageUrl = event.getPosterUrl();
+                Log.d("EventCreationSuccess", "Displaying Event Poster: " + imageUrl);
+                EnlargeImageFragment enlargeImageFragment = EnlargeImageFragment.newInstance(imageUrl);
+                enlargeImageFragment.show(getSupportFragmentManager(), "enlarge_event_poster");
+            } else {
+                Log.e("EventCreationSuccess", "Event Poster URL is null or empty.");
+            }
+        });
+        ivCheckInQRCode.setOnClickListener(view -> {
+            if (event != null && event.getCheckInQRCode() != null && !event.getCheckInQRCode().isEmpty()) {
+                String imageUrl = event.getCheckInQRCode();
+                EnlargeImageFragment enlargeImageFragment = EnlargeImageFragment.newInstance(imageUrl);
+                enlargeImageFragment.show(getSupportFragmentManager(), "enlarge_check_in_qr");
+            }
+        });
 
+        ivPromotionQRCode.setOnClickListener(view -> {
+            if (event != null && event.getPromotionQRCode() != null && !event.getPromotionQRCode().isEmpty()) {
+                String imageUrl = event.getPromotionQRCode();
+                EnlargeImageFragment enlargeImageFragment = EnlargeImageFragment.newInstance(imageUrl);
+                enlargeImageFragment.show(getSupportFragmentManager(), "enlarge_promotion_qr");
+            }
+        });
     }
 
 
@@ -106,7 +136,6 @@ public class ViewEventDetailsActivity extends AppCompatActivity {
 
         String userId = user.getUid();
         DocumentReference eventRef = db.collection("events").document(eventId);
-        // Fetch the event document to check current sign-ups and max attendees
         eventRef.get().addOnSuccessListener(documentSnapshot -> {
             if (documentSnapshot.exists()) {
                 Event event = documentSnapshot.toObject(Event.class);
@@ -118,7 +147,8 @@ public class ViewEventDetailsActivity extends AppCompatActivity {
                     if (maxAttendees == null || (currentSignUps == null || currentSignUps.size() < maxAttendees)) {
                         // Check if the user is already signed up
                         if (currentSignUps != null && currentSignUps.contains(userId)) {
-                            Toast.makeText(ViewEventDetailsActivity.this, "You are already signed up.", Toast.LENGTH_SHORT).show();
+                            btnSignUp.setVisibility(View.INVISIBLE);
+                            Toast.makeText(ViewEventDetailsActivity.this, "Denied! You are already signed up for this Event.", Toast.LENGTH_SHORT).show();
                             return;
                         }
                         // Add user to sign-ups
@@ -163,16 +193,11 @@ public class ViewEventDetailsActivity extends AppCompatActivity {
      * @param eventId The unique identifier of the event to be loaded.
      */
     private void loadEventFromFirestore(String eventId) {
-        AttendeeService.loadEventDetails(eventId, new AttendeeService.EventDetailsListener() {
-            @Override
-            public void onEventDetailsLoaded(Event event) {
+        DocumentReference eventDocument = db.collection("events").document(eventId);
+        eventDocument.get().addOnSuccessListener(documentSnapshot -> {
+            if (documentSnapshot.exists()) {
+                event = documentSnapshot.toObject(Event.class);
                 loadEventDetails(event);
-            }
-
-            @Override
-            public void onEventDetailsError() {
-                // Handle the error case, perhaps show a toast or log
-                Toast.makeText(ViewEventDetailsActivity.this, "Error loading event details", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -185,6 +210,7 @@ public class ViewEventDetailsActivity extends AppCompatActivity {
     private void loadEventDetails(Event event) {
         if (event != null) {
             tvEventName.setText(event.getName());
+
             tvEventDate.setText(String.format("On: %s", event.getDate()));
             tvEventStartTime.setText(String.format("From: %s", event.getStartTime()));
             tvEventEndTime.setText(String.format("To: %s", event.getEndTime()));
@@ -211,7 +237,6 @@ public class ViewEventDetailsActivity extends AppCompatActivity {
                 // Handle the case where 'event' is null, for example, display an error message or log a warning.
                 Log.e("ViewEventDetailsActivity","Event is null");
             }
-
 
             Glide.with(this).load(event.getPosterUrl()).placeholder(R.drawable.image_placeholder_background).into(ivEventPoster);
             Glide.with(this).load(event.getCheckInQRCode()).placeholder(R.drawable.image_placeholder_background).into(ivCheckInQRCode);

@@ -6,10 +6,12 @@ import android.content.SharedPreferences;
 import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -38,6 +40,10 @@ public class MainActivity extends AppCompatActivity {
     // Flag to track if profile creation dialog has been shown
     private boolean profileCreationDialogShown = false;
 
+    private Button buttonRegister;
+
+    private ProgressBar loadingProgressBar;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,8 +52,11 @@ public class MainActivity extends AppCompatActivity {
         userAuth = FirebaseAuth.getInstance();
         sp = getSharedPreferences("MyPrefs", MODE_PRIVATE);
 
+
         gpsStatus = findViewById(R.id.gps_status);
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+
+        loadingProgressBar = findViewById(R.id.loading_progress_bar);
 
         Button buttonGetStarted = findViewById(R.id.button_get_started);
         buttonGetStarted.setOnClickListener(new View.OnClickListener() {
@@ -63,7 +72,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        Button buttonRegister = findViewById(R.id.button_register);
+        buttonRegister = findViewById(R.id.button_register);
         buttonRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -88,6 +97,7 @@ public class MainActivity extends AppCompatActivity {
 
         // Check GPS status asynchronously
         new CheckGpsStatusTask().execute();
+
     }
 
     @Override
@@ -98,6 +108,12 @@ public class MainActivity extends AppCompatActivity {
 
         // Check if anonymous userID is saved
         checkIfAnonymousUserIdSaved();
+
+        FirebaseUser currentUser = userAuth.getCurrentUser();
+        if (currentUser != null) {
+            uid = currentUser.getUid();
+            onStartProfileButtonVisibility(uid);
+        }
     }
 
     private void checkIfAnonymousUserIdSaved() {
@@ -114,7 +130,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private boolean checkUserProfileExists(String uid) {
+    private void checkUserProfileExists(String uid) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         DocumentReference docRef = db.collection("Users").document(uid); // Change "users" to your collection where user profiles are stored
         docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -133,6 +149,7 @@ public class MainActivity extends AppCompatActivity {
                                 // Show dialog only if it hasn't been shown before
                                 Intent intent = new Intent(MainActivity.this, DashboardActivity.class);
                                 startActivity(intent);
+
                             }
                         } else {
                             // Either userName or userEmail is missing
@@ -158,7 +175,6 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
-        return false;
     }
 
     private void checkUserProfileExistsForQRScan(String uid) {
@@ -176,6 +192,29 @@ public class MainActivity extends AppCompatActivity {
                     } else {
                         // User document does not exist
                         showCreateProfileDialogForQRScan();
+                    }
+                } else {
+                    // Handle error
+                    Log.e("Firestore", "Error checking user profile existence: ", task.getException());
+                }
+            }
+        });
+    }
+
+    private void onStartProfileButtonVisibility(String uid) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        DocumentReference docRef = db.collection("Users").document(uid); // Change "users" to your collection where user profiles are stored
+        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
+                        // User document exists, hide the "Create Profile" button
+                        buttonRegister.setVisibility(View.GONE);
+                    } else {
+                        // User document does not exist, show the "Create Profile" button
+                        buttonRegister.setVisibility(View.VISIBLE);
                     }
                 } else {
                     // Handle error
@@ -219,9 +258,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void attemptAnonymousAuthentication() {
+        // Show loading ProgressBar
+        loadingProgressBar.setVisibility(View.VISIBLE);
         userAuth.signInAnonymously().addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
+                loadingProgressBar.setVisibility(View.GONE);
                 if (task.isSuccessful()) {
                     FirebaseUser user = userAuth.getCurrentUser();
                     if (user != null) {
@@ -347,4 +390,6 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
+
+
 }

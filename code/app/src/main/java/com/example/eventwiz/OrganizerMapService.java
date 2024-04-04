@@ -1,5 +1,4 @@
 package com.example.eventwiz;
-
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.Bundle;
@@ -23,7 +22,9 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.GeoPoint;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class OrganizerMapService extends AppCompatActivity implements OnMapReadyCallback {
 
@@ -42,36 +43,19 @@ public class OrganizerMapService extends AppCompatActivity implements OnMapReady
             Toast.makeText(this, "Error: Map fragment is null", Toast.LENGTH_SHORT).show();
         }
 
-
         db = FirebaseFirestore.getInstance();
-
-        getLocationFromFirestore();
-        // Call method to retrieve GeoPoint data
-        getCheckInLocationsFromFirestore();
     }
 
-    private void getLocationFromFirestore() {
-        String eventId = getIntent().getStringExtra("eventId");
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-
-        if (user == null || eventId == null || eventId.trim().isEmpty()) {
-            Toast.makeText(OrganizerMapService.this, "Error: Invalid event ID or user not logged in.", Toast.LENGTH_SHORT).show();
-            return;
+    @Override
+    public void onMapReady(@NonNull GoogleMap googleMap) {
+        mMap = googleMap;
+        // Once the map is ready, call geocodeAndShowOnMap method
+        String address = getIntent().getStringExtra("eventLocation");
+        if (address != null && !address.isEmpty()) {
+            geocodeAndShowOnMap(address);
         }
-
-        DocumentReference eventRef = db.collection("events").document(eventId);
-        eventRef.get().addOnCompleteListener(task -> {
-            if (task.isSuccessful() && task.getResult() != null) {
-                DocumentSnapshot document = task.getResult();
-                if (document.exists()) {
-                    String address = document.getString("location");
-                    geocodeAndShowOnMap(address);
-                }
-            } else {
-                // Handle failed task
-                Toast.makeText(OrganizerMapService.this, "Failed to fetch event details: " + task.getException(), Toast.LENGTH_SHORT).show();
-            }
-        });
+        // Call method to retrieve GeoPoint data
+        getCheckInLocationsFromFirestore();
     }
 
     private void geocodeAndShowOnMap(String address) {
@@ -102,39 +86,51 @@ public class OrganizerMapService extends AppCompatActivity implements OnMapReady
             return;
         }
 
+        // Get reference to the event document
         DocumentReference eventRef = db.collection("events").document(eventId);
-        eventRef.get().addOnCompleteListener(task -> {
-            if (task.isSuccessful() && task.getResult() != null) {
-                DocumentSnapshot document = task.getResult();
-                if (document.exists()) {
-                    // Retrieve check-in GeoPoint data and call method to display on map
-                    GeoPoint checkInLocation = document.getGeoPoint("lastCheckInLocation");
-                    if (checkInLocation != null) {
-                        showLocationOnMap(checkInLocation.getLatitude(), checkInLocation.getLongitude());
+
+        // Query the event document to get the list of user IDs signed up for the event
+        eventRef.get().addOnSuccessListener(documentSnapshot -> {
+            if (documentSnapshot.exists()) {
+                Event event = documentSnapshot.toObject(Event.class);
+                if (event != null) {
+                    Map<String,Integer> signedUpUserIds = event.getCheckInsCount();
+                    if (signedUpUserIds != null && !signedUpUserIds.isEmpty()) {
+                        // Iterate through each signed up user ID
+                        for (String userId : signedUpUserIds.keySet()) {
+                            // Get reference to the user document
+                            DocumentReference userRef = db.collection("users").document(userId);
+                            // Query the user document to get the GeoPoint data for the last check-in location
+                            userRef.get().addOnSuccessListener(userDocumentSnapshot -> {
+                                if (userDocumentSnapshot.exists()) {
+                                    GeoPoint checkInLocation = userDocumentSnapshot.getGeoPoint("lastCheckInLocation");
+                                    if (checkInLocation != null) {
+                                        // Display the location on the map
+                                        showLocationOnMap(checkInLocation.getLatitude(), checkInLocation.getLongitude());
+                                    }
+                                }
+                            }).addOnFailureListener(e -> {
+                                // Handle failure to fetch user document
+                                Toast.makeText(OrganizerMapService.this, "Failed to fetch user document: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                            });
+                        }
                     } else {
-                        Toast.makeText(OrganizerMapService.this, "No check-in location found", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(OrganizerMapService.this, "No attendees have checked in", Toast.LENGTH_SHORT).show();
                     }
                 }
             } else {
-                // Handle failed task
-                Toast.makeText(OrganizerMapService.this, "Failed to fetch event details: " + task.getException(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(OrganizerMapService.this, "Event document does not exist", Toast.LENGTH_SHORT).show();
             }
+        }).addOnFailureListener(e -> {
+            // Handle failure to fetch event document
+            Toast.makeText(OrganizerMapService.this, "Failed to fetch event document: " + e.getMessage(), Toast.LENGTH_SHORT).show();
         });
     }
+
     // Method to display location on map using latitude and longitude
     private void showLocationOnMap(double latitude, double longitude) {
         LatLng latLng = new LatLng(latitude, longitude);
         mMap.addMarker(new MarkerOptions().position(latLng).title("Check-in Location"));
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
-    }
-
-    @Override
-    public void onMapReady(@NonNull GoogleMap googleMap) {
-        mMap = googleMap;
-        // Once the map is ready, call geocodeAndShowOnMap method
-        String address = getIntent().getStringExtra("eventLocation");
-        if (address != null && !address.isEmpty()) {
-            geocodeAndShowOnMap(address);
-        }
     }
 }

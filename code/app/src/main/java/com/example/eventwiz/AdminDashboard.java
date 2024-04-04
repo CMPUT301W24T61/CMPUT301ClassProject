@@ -90,31 +90,5 @@ public class AdminDashboard extends AppCompatActivity {
             }
         });
 
-//        scanQRButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                // Start the QRCodeScannerActivity
-//                Intent intent = new Intent(AdminDashboard.this, ScanQRActivity.class);
-//                startActivity(intent);
-//            }
-//        });
-
-        //viewEventsButton.setOnClickListener(new View.OnClickListener() {
-        //@Override
-        //public void onClick(View view) {
-
-        // Intent intent = new Intent(OrganizerDashboardActivity.this, ViewEventsActivity.class);
-        //startActivity(intent);
-        //}
-        //});
-
-        //manageEventsButton.setOnClickListener(new View.OnClickListener() {
-        //@Override
-        //public void onClick(View view) {
-
-        //Intent intent = new Intent(OrganizerDashboardActivity.this, ManageEventsActivity.class);
-        //startActivity(intent);
-        //}
-        //});
     }
 }

@@ -54,9 +54,14 @@
         <activity
             android:name=".BrowseHostedEvents"
             android:parentActivityName=".DashboardActivity" />
+
         <activity
             android:name=".HostedEventDashboardActivity"
-            android:parentActivityName=".BrowseHostedEvents" />
+            android:parentActivityName=".BrowseHostedEvents"/>
+        <activity
+            android:name=".BrowseSignedUpEventsActivity"
+            android:parentActivityName=".DashboardActivity" />
+
         <activity
             android:name=".AttendeeListActivity"
             android:parentActivityName=".HostedEventDashboardActivity" />
