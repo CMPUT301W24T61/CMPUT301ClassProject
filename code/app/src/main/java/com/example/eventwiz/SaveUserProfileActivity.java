@@ -126,6 +126,7 @@ public class SaveUserProfileActivity extends AppCompatActivity {
                                 uploadUserInfo();
                                 Intent intent = new Intent(SaveUserProfileActivity.this,MainActivity.class);
                                 startActivity(intent);
+                                finish();
                             }
                         });
                         AlertDialog alertDialog = builder.create();
@@ -136,6 +137,7 @@ public class SaveUserProfileActivity extends AppCompatActivity {
                         uploadUserInfo();
                         Intent intent = new Intent(SaveUserProfileActivity.this, MainActivity.class);
                         startActivity(intent);
+                        finish();
 
                     }
                 } else {

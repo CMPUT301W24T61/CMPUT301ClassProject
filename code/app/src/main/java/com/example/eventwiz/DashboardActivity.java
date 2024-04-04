@@ -57,8 +57,6 @@ public class DashboardActivity extends AppCompatActivity {
     private String currentID;
 
 
-
-
     /**
      * Called when the activity is first created. Responsible for initializing the UI components,
      * setting up click listeners, and handling various actions within the dashboard.
@@ -103,8 +101,6 @@ public class DashboardActivity extends AppCompatActivity {
         });
 
 
-
-
         // Set onClickListeners for each button
         createEventButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -115,9 +111,9 @@ public class DashboardActivity extends AppCompatActivity {
             }
         });
 
-        signedUpEventsButton.setOnClickListener(new View.OnClickListener(){
+        signedUpEventsButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view){
+            public void onClick(View view) {
                 Intent intent = new Intent(DashboardActivity.this, BrowseSignedUpEventsActivity.class);
                 startActivity(intent);
             }
@@ -177,7 +173,7 @@ public class DashboardActivity extends AppCompatActivity {
 
 
         super.onStart();
-        Toast.makeText(DashboardActivity.this,"Loading Current Profile!", Toast.LENGTH_SHORT).show();
+        Toast.makeText(DashboardActivity.this, "Loading Current Profile!", Toast.LENGTH_SHORT).show();
 
 
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();

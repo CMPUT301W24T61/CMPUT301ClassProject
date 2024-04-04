@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/app_back"
     tools:context=".HostedEventDashboardActivity">
 
     <TextView
@@ -30,7 +31,6 @@
         android:paddingTop="18dp"
         android:src="@drawable/ic_back_arrow" />
 
-
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -41,107 +41,112 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="100dp"
+            android:layout_marginTop="80dp"
             android:text="Event Status"
             android:textStyle="bold"
             android:textColor="@color/black"
             android:textSize="20sp" />
 
-        <!-- Event Details TextViews -->
-        <TextView
-            android:id="@+id/tv_event_id"
-            android:layout_width="wrap_content"
+        <!-- Encapsulating TextViews in CardView -->
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/tv_event_status"
-            android:layout_marginTop="24dp"
+            android:layout_marginTop="15dp"
             android:layout_marginStart="24dp"
-            android:text="Event ID: "
-            android:textColor="@color/black"
-            android:textStyle="italic"
-            android:textSize="16sp" />
+            android:layout_marginEnd="24dp"
+            app:cardCornerRadius="8dp"
+            app:cardElevation="8dp">
 
-        <TextView
-            android:id="@+id/tv_event_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/tv_event_id"
-            android:layout_marginTop="8dp"
-            android:layout_marginStart="24dp"
-            android:text="Event Name: "
-            android:textStyle="bold"
-            android:textColor="@color/black"
-            android:textSize="16sp" />
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="16dp">
 
-        <TextView
-            android:id="@+id/tv_event_date"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/tv_event_name"
-            android:layout_marginTop="8dp"
-            android:layout_marginStart="24dp"
-            android:text="Date: "
-            android:textStyle="bold"
-            android:textColor="@color/black"
-            android:textSize="16sp" />
+                <!-- Your TextViews -->
+                <TextView
+                    android:id="@+id/tv_event_id"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Event ID: "
+                    android:textColor="@color/black"
+                    android:textSize="18sp" />
 
-        <TextView
-            android:id="@+id/tv_start_time"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/tv_event_date"
-            android:layout_marginTop="8dp"
-            android:layout_marginStart="24dp"
-            android:text="Start Time: "
-            android:textStyle="bold"
-            android:textColor="@color/black"
-            android:textSize="16sp" />
+                <TextView
+                    android:id="@+id/tv_event_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/tv_event_id"
+                    android:layout_marginTop="8dp"
+                    android:gravity="center"
+                    android:text="Event Name: "
+                    android:textColor="@color/black"
+                    android:textSize="18sp" />
 
-        <TextView
-            android:id="@+id/tv_end_time"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/tv_start_time"
-            android:layout_marginTop="8dp"
-            android:layout_marginStart="24dp"
-            android:text="End Time: "
-            android:textStyle="bold"
-            android:textColor="@color/black"
-            android:textSize="16sp" />
+                <TextView
+                    android:id="@+id/tv_event_date"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/tv_event_name"
+                    android:layout_marginTop="8dp"
+                    android:text="Date: "
+                    android:textColor="@color/black"
+                    android:textSize="18sp" />
 
-        <TextView
-            android:id="@+id/tv_location"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/tv_end_time"
-            android:layout_marginTop="8dp"
-            android:layout_marginStart="24dp"
-            android:text="Location: "
-            android:textStyle="bold"
-            android:textColor="@color/black"
-            android:textSize="16sp" />
+                <TextView
+                    android:id="@+id/tv_start_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/tv_event_date"
+                    android:layout_marginTop="8dp"
+                    android:text="Start Time: "
+                    android:textColor="@color/black"
+                    android:textSize="18sp" />
 
-        <TextView
-            android:id="@+id/tv_attendance"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/tv_location"
-            android:layout_marginTop="8dp"
-            android:layout_marginStart="24dp"
-            android:text="Real Time Attendance: "
-            android:textColor="@color/black"
-            android:textStyle="bold"
-            android:textSize="16sp" />
+                <TextView
+                    android:id="@+id/tv_end_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/tv_start_time"
+                    android:layout_marginTop="8dp"
+                    android:text="End Time: "
+                    android:textColor="@color/black"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:id="@+id/tv_location"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/tv_end_time"
+                    android:layout_marginTop="8dp"
+                    android:text="Location: "
+                    android:textColor="@color/black"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:id="@+id/tv_attendance"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/tv_location"
+                    android:layout_marginTop="8dp"
+                    android:text="Real Time Attendance: "
+                    android:textColor="@color/black"
+                    android:textSize="18sp" />
+
+            </RelativeLayout>
+
+        </androidx.cardview.widget.CardView>
 
         <ImageView
             android:id="@+id/iv_event_poster"
-            android:layout_width="250dp"
-            android:layout_height="250dp"
-            android:layout_below="@id/tv_attendance"
+            android:layout_width="300dp"
+            android:layout_height="200dp"
+            android:layout_below="@id/tv_event_status"
             android:layout_centerHorizontal="true"
-            android:src="@drawable/image_placeholder_background"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="330dp"
             android:elevation="8dp"
-            android:contentDescription="event_poster" />
+            android:contentDescription="event_poster"
+            android:src="@drawable/image_placeholder_background" />
 
         <!-- Round Buttons -->
         <ImageButton
@@ -225,11 +230,6 @@
             android:scaleType="fitCenter"
             android:src="@drawable/ic_checkin" />
 
-
     </RelativeLayout>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
-
-
-
-

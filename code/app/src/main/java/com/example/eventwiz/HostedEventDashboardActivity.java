@@ -113,7 +113,7 @@ public class HostedEventDashboardActivity extends AppCompatActivity {
     private void loadEventDetails(Event event) {
         if (event != null) {
             tvEventID.setText(String.format("ID: %s", event.getId()));
-            tvEventName.setText(String.format("Event Name: %s", event.getName()));
+            tvEventName.setText(String.format("Event: %s", event.getName()));
             tvEventDate.setText(String.format("On: %s", event.getDate()));
             tvEventStartTime.setText(String.format("From: %s", event.getStartTime()));
             tvEventEndTime.setText(String.format("To: %s", event.getEndTime()));
@@ -163,7 +163,7 @@ public class HostedEventDashboardActivity extends AppCompatActivity {
                         long minutes = (millisUntilFinished % (1000 * 60 * 60)) / (1000 * 60);
                         long seconds = (millisUntilFinished % (1000 * 60)) / 1000;
 
-                        String countdown = String.format(Locale.getDefault(), "Event starts in:\n %02d days, %02d hrs, %02d mins, %02d sec", days, hours, minutes, seconds);
+                        String countdown = String.format(Locale.getDefault(), "         Your Event Starts in:\n%02d days, %02d hrs, %02d mins, %02d sec", days, hours, minutes, seconds);
                         tvCountdownTimer.setText(countdown);
                     }
 
