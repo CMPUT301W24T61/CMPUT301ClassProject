@@ -20,7 +20,7 @@ public class Event implements Serializable {
     private String startTime;
     private String endTime;
     private String location;
-    private int maxAttendees;
+    private Integer maxAttendees;
     private String posterUrl;
     private String checkInQRCode;
     private String promotionQRCode;
@@ -35,7 +35,7 @@ public class Event implements Serializable {
     public Event() {
         // Default constructor required for calls to DataSnapshot.getValue(Event.class)
     }
-    public Event(String name, String description, String date, String startTime, String endTime, String location, int maxAttendees, String checkInQRCode, String promotionQRCode, String posterUrl, String hashCode, String promotionHashCode, List<String> signups, Map<String, Integer> checkInsCount) {
+    public Event(String name, String description, String date, String startTime, String endTime, String location, Integer maxAttendees, String checkInQRCode, String promotionQRCode, String posterUrl, String hashCode, String promotionHashCode, List<String> signups, Map<String, Integer> checkInsCount) {
         this.id = UUID.randomUUID().toString();
         this.name = name;
         this.description = description;
@@ -110,11 +110,11 @@ public class Event implements Serializable {
         this.location = location;
     }
 
-    public int getMaxAttendees() {
+    public Integer getMaxAttendees() {
         return maxAttendees;
     }
 
-    public void setMaxAttendees(int maxAttendees) {
+    public void setMaxAttendees(Integer maxAttendees) {
         this.maxAttendees = maxAttendees;
 
     }

@@ -42,6 +42,7 @@ public class EventCreationSuccessActivity extends AppCompatActivity {
     private TextView tvEventName, tvEventDate, tvEventStartTime, tvEventEndTime, tvEventLocation, tvMaxAttendees, tvEventDescription;
     private ImageView ivEventPoster, ivCheckInQRCode, ivPromotionQRCode;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private Event event;
 
 
     /**
@@ -57,7 +58,8 @@ public class EventCreationSuccessActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_event_creation_success);
-
+        ivCheckInQRCode = findViewById(R.id.ivCheckInQRCode);
+        ivPromotionQRCode = findViewById(R.id.ivPromotionQRCode);
         initializeUI();
 
         OrganizerService organizerService = new OrganizerService(this);
@@ -71,19 +73,51 @@ public class EventCreationSuccessActivity extends AppCompatActivity {
             fetchEventDetails(eventId);
         } else {
             Log.e("EventCreationSuccess", "Event ID is null.");
-            // Handle the case when eventId is null
+
         }
+        ivEventPoster.setOnClickListener(view -> {
+            if (event != null && event.getPosterUrl() != null && !event.getPosterUrl().isEmpty()) {
+                String imageUrl = event.getPosterUrl();
+                Log.d("EventCreationSuccess", "Displaying Event Poster: " + imageUrl);
+                EnlargeImageFragment enlargeImageFragment = EnlargeImageFragment.newInstance(imageUrl);
+                enlargeImageFragment.show(getSupportFragmentManager(), "enlarge_event_poster");
+            } else {
+                Log.e("EventCreationSuccess", "Event Poster URL is null or empty.");
+            }
+        });
+        ivCheckInQRCode.setOnClickListener(view -> {
+            if (event != null && event.getCheckInQRCode() != null && !event.getCheckInQRCode().isEmpty()) {
+                String imageUrl = event.getCheckInQRCode();
+                Log.d("EventCreationSuccess", "Displaying Check-In QR Code: " + imageUrl);
+                EnlargeImageFragment enlargeImageFragment = EnlargeImageFragment.newInstance(imageUrl);
+                enlargeImageFragment.show(getSupportFragmentManager(), "enlarge_check_in_qr");
+            } else {
+                Log.e("EventCreationSuccess", "Check-In QR Code URL is null or empty.");
+            }
+        });
+
+        ivPromotionQRCode.setOnClickListener(view -> {
+            if (event != null && event.getPromotionQRCode() != null && !event.getPromotionQRCode().isEmpty()) {
+                String imageUrl = event.getPromotionQRCode();
+                Log.d("EventCreationSuccess", "Displaying Promotion QR Code: " + imageUrl);
+                EnlargeImageFragment enlargeImageFragment = EnlargeImageFragment.newInstance(imageUrl);
+                enlargeImageFragment.show(getSupportFragmentManager(), "enlarge_promotion_qr");
+            } else {
+                Log.e("EventCreationSuccess", "Promotion QR Code URL is null or empty.");
+            }
+        });
     }
 
     private void fetchEventDetails(String eventId) {
         DocumentReference eventDocument = db.collection("events").document(eventId);
         eventDocument.get().addOnSuccessListener(documentSnapshot -> {
             if (documentSnapshot.exists()) {
-                Event event = documentSnapshot.toObject(Event.class);
+                event = documentSnapshot.toObject(Event.class);
                 loadEventDetails(event);
             }
         });
     }
+
     /**
      * Initializes the UI elements by finding and assigning views to their respective variables.
      */
@@ -122,9 +156,13 @@ public class EventCreationSuccessActivity extends AppCompatActivity {
         tvEventStartTime.setText(String.format("Start Time: %s", event.getStartTime()));
         tvEventEndTime.setText(String.format("End Time: %s", event.getEndTime()));
         tvEventLocation.setText(String.format("Location: %s", event.getLocation()));
-        tvMaxAttendees.setText(String.format("Max Attendees: %d", event.getMaxAttendees()));
         tvEventDescription.setText(String.format("Event Description: %s", event.getDescription()));
-
+        if (event.getMaxAttendees() != null) {
+            tvMaxAttendees.setText(String.format("Max Attendees: %d", event.getMaxAttendees()));
+            tvMaxAttendees.setVisibility(View.VISIBLE);
+        } else {
+            tvMaxAttendees.setVisibility(View.GONE);
+        }
         if (event.getPosterUrl() != null && !event.getPosterUrl().isEmpty()) {
             Glide.with(this).load(event.getPosterUrl()).into(ivEventPoster);
         }
@@ -139,7 +177,8 @@ public class EventCreationSuccessActivity extends AppCompatActivity {
             Glide.with(this).load(event.getPromotionQRCode()).into(ivPromotionQRCode);
         } else {
             ivPromotionQRCode.setVisibility(View.GONE);
-
+        }
+    }
 
     //shares qr codes to other apps.
     private void shareImage(ImageView imageView) {
