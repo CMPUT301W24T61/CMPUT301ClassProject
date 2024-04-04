@@ -76,8 +76,13 @@ public class MainActivity extends AppCompatActivity {
         buttonScanQR.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this, QRCodeScannerActivity.class);
-                startActivity(intent);
+                FirebaseUser currentUser = userAuth.getCurrentUser();
+                if (currentUser != null) {
+                    uid = currentUser.getUid();
+                    checkUserProfileExistsForQRScan(uid);
+                } else {
+                    Toast.makeText(MainActivity.this, "User is not signed in", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
@@ -90,6 +95,23 @@ public class MainActivity extends AppCompatActivity {
         super.onStart();
         // Check user authentication status asynchronously
         new CheckUserAuthStatusTask().execute();
+
+        // Check if anonymous userID is saved
+        checkIfAnonymousUserIdSaved();
+    }
+
+    private void checkIfAnonymousUserIdSaved() {
+        // Retrieve the anonymous userID from SharedPreferences
+        String savedUserId = sp.getString("anonymousUserId", null);
+
+        // Check if the saved userID is not null
+        if (savedUserId != null) {
+            // Anonymous UserID is saved, you can log it or display it
+            Log.d("SharedPreferences", "Anonymous UserID found: " + savedUserId);
+        } else {
+            // Anonymous UserID is not saved
+            Log.d("SharedPreferences", "No Anonymous UserID found");
+        }
     }
 
     private boolean checkUserProfileExists(String uid) {
@@ -139,6 +161,30 @@ public class MainActivity extends AppCompatActivity {
         return false;
     }
 
+    private void checkUserProfileExistsForQRScan(String uid) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        DocumentReference docRef = db.collection("Users").document(uid); // Change "users" to your collection where user profiles are stored
+        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
+                        // User document exists
+                        Intent intent = new Intent(MainActivity.this, QRCodeScannerActivity.class);
+                        startActivity(intent);
+                    } else {
+                        // User document does not exist
+                        showCreateProfileDialogForQRScan();
+                    }
+                } else {
+                    // Handle error
+                    Log.e("Firestore", "Error checking user profile existence: ", task.getException());
+                }
+            }
+        });
+    }
+
     private void showCreateProfileDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("No User Profile Found!");
@@ -151,6 +197,21 @@ public class MainActivity extends AppCompatActivity {
                         profileCreationDialogShown = false;
 
 
+                    }
+                });
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
+    }
+
+    private void showCreateProfileDialogForQRScan() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("No User Profile Found!");
+        builder.setMessage("Create a Profile to Access this Feature.")
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        // Do nothing or navigate to profile creation activity
+                        dialogInterface.dismiss();
                     }
                 });
         AlertDialog alertDialog = builder.create();

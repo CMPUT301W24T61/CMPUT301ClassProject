@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ListView;
 
@@ -19,19 +20,30 @@ import com.google.firebase.auth.FirebaseUser;
 import java.util.ArrayList;
 import java.util.List;
 
-
-public class BrowseHostedEvents extends AppCompatActivity implements EventAdapter.EventClickListener{
+public class BrowseHostedEvents extends AppCompatActivity implements EventAdapter.EventClickListener {
     private ListView listView;
     private EventAdapter adapter;
 
     private List<Event> events;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
 
+    private ImageButton backButton; // Corrected declaration
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_browse_hosted_events);
 
+        // Correct initialization of backButton
+        backButton = findViewById(R.id.back_arrow);
+
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(BrowseHostedEvents.this, DashboardActivity.class);
+                startActivity(intent);
+            }
+        });
 
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
@@ -40,28 +52,24 @@ public class BrowseHostedEvents extends AppCompatActivity implements EventAdapte
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
 
-
         listView = findViewById(R.id.lvEvents);
         events = new ArrayList<>();
         adapter = new EventAdapter(this, events, this);
         listView.setAdapter(adapter);
 
-
-        ImageButton backButton = findViewById(R.id.BackArrow);
-        backButton.setOnClickListener(view -> onBackPressed());
-
-
         fetchEvents();
+
         listView.setOnItemClickListener((parent, view, position, id) -> {
             Event event = events.get(position);
-            Intent intent = new Intent(BrowseHostedEvents.this, ViewHostedEventDetailsActivity.class);
+            Intent intent = new Intent(BrowseHostedEvents.this, HostedEventDashboardActivity.class);
             intent.putExtra("eventId", event.getId());
             startActivity(intent);
         });
     }
+
     @Override
     public void onEventClicked(Event event) {
-        Intent intent = new Intent(BrowseHostedEvents.this, ViewHostedEventDetailsActivity.class);
+        Intent intent = new Intent(BrowseHostedEvents.this, HostedEventDashboardActivity.class);
         intent.putExtra("eventId", event.getId());
         startActivity(intent);
     }

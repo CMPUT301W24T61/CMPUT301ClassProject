@@ -2,6 +2,7 @@ package com.example.eventwiz;
 
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.Map;
@@ -20,7 +21,7 @@ public class Event implements Serializable {
     private String startTime;
     private String endTime;
     private String location;
-    private int maxAttendees;
+    private Integer maxAttendees;
     private String posterUrl;
     private String checkInQRCode;
     private String promotionQRCode;
@@ -32,10 +33,13 @@ public class Event implements Serializable {
     private String hashCode;
     private String promotionHashCode;
 
+    private List<Announcement>announcements;
+
+
     public Event() {
         // Default constructor required for calls to DataSnapshot.getValue(Event.class)
     }
-    public Event(String name, String description, String date, String startTime, String endTime, String location, int maxAttendees, String checkInQRCode, String promotionQRCode, String posterUrl, String hashCode, String promotionHashCode, List<String> signups, Map<String, Integer> checkInsCount) {
+    public Event(String name, String description, String date, String startTime, String endTime, String location, int maxAttendees, String checkInQRCode, String promotionQRCode, String posterUrl, String hashCode, String promotionHashCode, List<String> signups, Map<String, Integer> checkInsCount,List<Announcement> announcements) {
         this.id = UUID.randomUUID().toString();
         this.name = name;
         this.description = description;
@@ -51,8 +55,19 @@ public class Event implements Serializable {
         this.posterUrl = posterUrl;
         this.hashCode= hashCode;
         this.promotionHashCode = promotionHashCode;
+        this.announcements = announcements;
     }
 
+    public <E> Event(String eventName, String eventDescription, String date, String startTime, String endTime, String s, Integer maxAttendees, String s1, String s2, String s3, String s4, String s5, ArrayList<E> es, Map<String, Integer> checkInsCount) {
+    }
+
+    public List<Announcement> getAnnouncements() {
+        return announcements;
+    }
+
+    public void setAnnouncements(List<Announcement> announcements) {
+        this.announcements = announcements;
+    }
 
     public String getId() {
         return id;
@@ -110,11 +125,11 @@ public class Event implements Serializable {
         this.location = location;
     }
 
-    public int getMaxAttendees() {
+    public Integer getMaxAttendees() {
         return maxAttendees;
     }
 
-    public void setMaxAttendees(int maxAttendees) {
+    public void setMaxAttendees(Integer maxAttendees) {
         this.maxAttendees = maxAttendees;
 
     }
@@ -183,5 +198,8 @@ public class Event implements Serializable {
 
     public void setPromotionHashCode(String promotionHashCode) {
         this.promotionHashCode = promotionHashCode;
+    }
+    public void addAnnouncement(Announcement announcement) {
+        announcements.add(announcement);
     }
 }

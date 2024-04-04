@@ -70,7 +70,7 @@ public class CreateEventActivity extends AppCompatActivity {
         posterImageView = findViewById(R.id.poster);
         Button uploadButton = findViewById(R.id.uploadButton);
         Button createEventButton = findViewById(R.id.createEventButton);
-        ImageButton backButton = findViewById(R.id.BackArrow);
+        ImageButton backButton = findViewById(R.id.back_arrow);
         backButton.setOnClickListener(view -> onBackPressed());
 
         uploadButton.setOnClickListener(v -> mGetContent.launch("image/*"));

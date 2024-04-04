@@ -2,4 +2,12 @@
     <string name="app_name">EventWiz</string>
     <string name="welcome_text">Join &amp; Create Events Instantly!</string>
     <string name="edit_profile">Edit or Change Image</string>
+
+
+    <string-array name="attendee_options">
+        <item>Attendee List</item>
+        <item>Checked-In List</item>
+    </string-array>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

@@ -5,9 +5,11 @@
 
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+
 
     <uses-feature android:name="android.hardware.camera" />
     <uses-feature android:name="android.hardware.camera.autofocus" />
@@ -24,6 +26,13 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.EventWiz"
         tools:targetApi="31">
+
+        <!-- Add your API key here -->
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyBKlNto4TBJoeOLfPwvPNMflhb6NF_jWRU">
+
+        </meta-data>
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="com.example.eventwiz.fileprovider"
@@ -46,11 +55,11 @@
             android:name=".BrowseHostedEvents"
             android:parentActivityName=".DashboardActivity" />
         <activity
-            android:name=".ViewHostedEventDetailsActivity"
+            android:name=".HostedEventDashboardActivity"
             android:parentActivityName=".BrowseHostedEvents" />
         <activity
             android:name=".AttendeeListActivity"
-            android:parentActivityName=".ViewHostedEventDetailsActivity" />
+            android:parentActivityName=".HostedEventDashboardActivity" />
         <activity
             android:name=".AdminDashboard"
             android:exported="false"
@@ -66,7 +75,7 @@
         <activity
             android:name="CheckedInAttendeesActivity"
             android:exported="false"
-            android:parentActivityName="ViewHostedEventDetailsActivity"/>
+            android:parentActivityName=".HostedEventDashboardActivity"/>
         <activity
             android:name=".BrowseEventsActivity"
             android:exported="false"
@@ -98,10 +107,33 @@
         <activity android:name=".CreateEventActivity" />
         <activity android:name=".EventCreationSuccessActivity"/>
         <activity
-
             android:name=".ViewEventDetailsActivity"
-            android:parentActivityName=".BrowseEventsActivity"
-        />
+            android:parentActivityName=".BrowseEventsActivity" />
+        <activity
+            android:name=".ViewShareQRCodeActivity"
+            android:parentActivityName=".HostedEventDashboardActivity" />
+        <activity
+            android:name=".OrganizerMapService"
+            android:parentActivityName=".HostedEventDashboardActivity" />
+        <activity
+            android:name=".AttendeeMapService"
+            android:parentActivityName=".ViewEventDetailsActivity" />
+        <activity
+            android:name=".AnnouncementsListActivity"
+            android:parentActivityName=".ViewEventDetailsActivity" />
+
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="com.example.eventwiz.fileprovider"
+            android:grantUriPermissions="true"
+            android:exported="false">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
+
     </application>
+
+
 
 </manifest>

@@ -2,7 +2,6 @@ package com.example.eventwiz;
 
 import android.app.AlertDialog;
 import android.content.Context;
-import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -53,9 +52,9 @@ public class EventAdapter extends ArrayAdapter<Event> {
         Event event = getItem(position);
 
         // Lookup view for data population
-        TextView tvEventName = convertView.findViewById(R.id.tvEventName);
+        TextView tvEventName = convertView.findViewById(R.id.tv_event_name);
         TextView tvEventDateTime = convertView.findViewById(R.id.tvEventDateTime);
-        ImageView imgEventPoster = convertView.findViewById(R.id.ivEventPoster);
+        ImageView imgEventPoster = convertView.findViewById(R.id.iv_event_poster);
 
 
         // Populate the data into the template view using the data object

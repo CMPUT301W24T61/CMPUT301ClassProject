@@ -4,13 +4,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".BrowseEventsActivity">
+    tools:context=".AnnouncementsListActivity">
 
     <TextView
         android:id="@+id/tvHeader"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Checked In Attendees"
+        android:text="Announcments"
         android:gravity="center"
         android:textSize="24sp"
         android:textColor="@android:color/white"
@@ -32,7 +32,7 @@
         android:background="@android:color/transparent"/>
 
     <ListView
-        android:id="@+id/lvAttendees"
+        android:id="@+id/lvAnnouncements"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginBottom="8dp"

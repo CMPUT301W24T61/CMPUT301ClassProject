@@ -1,6 +1,7 @@
 plugins {
     id("com.android.application")
     id("com.google.gms.google-services")
+
 }
 
 android {
@@ -9,7 +10,7 @@ android {
 
     defaultConfig {
         applicationId = "com.example.eventwiz"
-        minSdk = 24
+        minSdk = 26
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
@@ -57,13 +58,22 @@ dependencies {
     implementation("com.google.firebase:firebase-analytics")
 
 
+    implementation ("com.google.android.gms:play-services-maps:18.2.0")
+    implementation ("com.google.android.gms:play-services-location:21.2.0")
+
+
+
+
     implementation("com.google.firebase:firebase-storage")
     implementation("com.google.firebase:firebase-firestore:24.10.3")
     implementation ("de.hdodenhof:circleimageview:3.1.0")
 
 
 
+
+
     implementation("com.google.firebase:firebase-storage:20.3.0")
+    implementation ("com.google.android.gms:play-services-maps:18.2.0")
 
 
     testImplementation("junit:junit:4.13.2")
@@ -78,6 +88,16 @@ dependencies {
     annotationProcessor("com.github.bumptech.glide:compiler:4.12.0")
     implementation ("com.squareup.picasso:picasso:2.8")
     androidTestImplementation ("org.mockito:mockito-core:2.28.2")
+    implementation ("com.squareup.okhttp3:okhttp:4.9.0")
+    implementation ("com.google.code.gson:gson:2.10.1")
+
+    implementation ("org.osmdroid:osmdroid-android:6.1.11")
+    implementation ("org.osmdroid:osmdroid-mapsforge:6.1.11")
+
+
+
+
+
 
 
 

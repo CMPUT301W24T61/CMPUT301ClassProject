@@ -36,7 +36,7 @@ public class CheckedInAttendeesActivity extends AppCompatActivity {
             loadCheckedInAttendeesForEvent(eventId);
         }
 
-        ImageButton backButton = findViewById(R.id.BackArrow);
+        ImageButton backButton = findViewById(R.id.back_arrow);
         backButton.setOnClickListener(v -> onBackPressed());
     }
 

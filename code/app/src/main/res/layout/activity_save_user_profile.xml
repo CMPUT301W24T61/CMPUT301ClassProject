@@ -129,7 +129,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="textShortMessage"
-            android:hint="xxxxxxxxx"
+            android:hint="xxx-xxx-xxxx"
             android:textSize="16dp"
             android:padding="6dp"
             android:layout_below="@id/textView_mobile"

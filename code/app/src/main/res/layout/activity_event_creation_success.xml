@@ -15,14 +15,15 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/turqoise"
-            android:text="EVENTWIZ"
+            android:text="Success !"
             android:textAlignment="center"
-            android:textColor="@android:color/black"
+            android:textStyle="bold"
+            android:textColor="@android:color/white"
             android:textSize="24sp"
             android:padding="16dp" />
 
         <ImageButton
-            android:id="@+id/gotodasboard"
+            android:id="@+id/goback"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_alignParentStart="true"
@@ -39,7 +40,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/tvEventHeader"
-            android:text="Success !\nYour New Event is here..."
+            android:text="Your New Event is here..."
             android:textColor="@android:color/black"
             android:textSize="20sp"
             android:gravity="center"
@@ -47,7 +48,7 @@
             android:layout_marginBottom="16dp" />
 
         <TextView
-            android:id="@+id/tvEventName"
+            android:id="@+id/tv_event_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/tvSuccessMessage"
@@ -55,13 +56,14 @@
             android:textColor="@android:color/black"
             android:gravity="center_horizontal"
             android:textSize="22sp"
-            android:layout_marginTop="16dp" />
+            android:textStyle="bold"
+            android:layout_marginTop="10dp" />
 
         <TextView
             android:id="@+id/tvEventDate"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/tvEventName"
+            android:layout_below="@id/tv_event_name"
             android:text="Date: TBD"
             android:textColor="@android:color/black"
             android:gravity="center_horizontal"
@@ -103,21 +105,21 @@
 
 
         <ImageView
-            android:id="@+id/ivEventPoster"
+            android:id="@+id/iv_event_poster"
             android:layout_width="200dp"
             android:layout_height="200dp"
             android:layout_below="@id/tvEventDescription"
             android:layout_centerHorizontal="true"
             android:src="@drawable/image_placeholder_background"
-            android:layout_marginTop="32dp"
+            android:layout_marginTop="10dp"
             android:contentDescription="event_poster" />
 
         <ImageView
             android:id="@+id/ivCheckInQRCode"
             android:layout_width="100dp"
             android:layout_height="100dp"
-            android:layout_below="@id/ivEventPoster"
-            android:layout_alignStart="@id/ivEventPoster"
+            android:layout_below="@id/iv_event_poster"
+            android:layout_alignStart="@id/iv_event_poster"
             android:layout_marginTop="10dp"
             android:src="@drawable/image_placeholder_background"
             android:contentDescription="qr code" />
@@ -126,8 +128,8 @@
             android:id="@+id/ivPromotionQRCode"
             android:layout_width="100dp"
             android:layout_height="100dp"
-            android:layout_below="@id/ivEventPoster"
-            android:layout_alignEnd="@id/ivEventPoster"
+            android:layout_below="@id/iv_event_poster"
+            android:layout_alignEnd="@id/iv_event_poster"
             android:layout_marginTop="10dp"
             android:src="@drawable/image_placeholder_background"
             android:contentDescription="promotion_qr_code" />

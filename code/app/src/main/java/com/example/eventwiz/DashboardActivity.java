@@ -20,7 +20,6 @@ import android.graphics.Paint;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -84,7 +83,7 @@ public class DashboardActivity extends AppCompatActivity {
         browseEventsButton = findViewById(R.id.browseEvents);
         profileButton = findViewById(R.id.myProfile);
         scanQRButton = findViewById(R.id.fabCamera);
-        backButton = findViewById(R.id.BackArrow);
+        backButton = findViewById(R.id.back_arrow);
 
         tvwelcomeText = findViewById(R.id.Welcome);
         savedPic = findViewById(R.id.ivProfile);
@@ -148,17 +147,6 @@ public class DashboardActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-
-
-
-        //manageEventsButton.setOnClickListener(new View.OnClickListener() {
-        //@Override
-        //public void onClick(View view) {
-
-        //Intent intent = new Intent(OrganizerDashboardActivity.this, ManageEventsActivity.class);
-        //startActivity(intent);
-        //}
-        //});
 
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override

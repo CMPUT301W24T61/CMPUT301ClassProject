@@ -11,10 +11,7 @@ import static androidx.test.espresso.matcher.ViewMatchers.withText;
 
 import static org.hamcrest.CoreMatchers.allOf;
 import static org.hamcrest.CoreMatchers.anything;
-import static org.hamcrest.CoreMatchers.containsString;
-import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.startsWith;
 import static org.hamcrest.Matchers.hasToString;
 
 import androidx.test.espresso.action.ViewActions;
@@ -56,7 +53,7 @@ public class    BrowseEventsActivityTest {
         //Check if the event detail page has opened
         onView(withId(R.id.ivCheckInQRCode)).check(matches(isDisplayed()));
         onView(withId(R.id.ivPromotionQRCode)).check(matches(isDisplayed()));
-        onView(withId(R.id.ivEventPoster)).check(matches(isDisplayed()));
+        onView(withId(R.id.iv_event_poster)).check(matches(isDisplayed()));
         Intents.intended(hasComponent(BrowseEventsActivity.class.getName()));
 
     }

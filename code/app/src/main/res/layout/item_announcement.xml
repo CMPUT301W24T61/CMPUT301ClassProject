@@ -6,44 +6,46 @@
     android:padding="16dp">
 
     <ImageView
-        android:id="@+id/ivAttendeeProfilePic"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
-        android:src="@drawable/ic_default_profile_icon"
+        android:id="@+id/announcementPic"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:background="@drawable/circle"
+        android:scaleType="fitCenter"
+
+        android:src="@drawable/ic_announce"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         android:contentDescription="profile_picture" />
 
     <TextView
-        android:id="@+id/tvAttendeeName"
+        android:id="@+id/tvAnnouncementTitle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:textSize="18sp"
         android:textStyle="bold"
-        android:text="User Name"
-        app:layout_constraintStart_toEndOf="@+id/ivAttendeeProfilePic"
-        app:layout_constraintTop_toTopOf="@+id/ivAttendeeProfilePic"
+        android:layout_marginLeft="5dp"
+        android:text="Announcment"
+        app:layout_constraintStart_toEndOf="@+id/announcementPic"
+        app:layout_constraintTop_toTopOf="@+id/announcementPic"
         app:layout_constraintEnd_toEndOf="parent" />
 
     <TextView
-        android:id="@+id/tvAttendeeEmail"
+        android:id="@+id/tvAnnouncementDate"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="User Email"
+        android:text="Date Posted"
         android:textSize="14sp"
-        app:layout_constraintStart_toStartOf="@+id/tvAttendeeName"
-        app:layout_constraintTop_toBottomOf="@+id/tvAttendeeName"
+        app:layout_constraintStart_toStartOf="@+id/tvAnnouncementTitle"
+        app:layout_constraintTop_toBottomOf="@+id/tvAnnouncementTitle"
         app:layout_constraintEnd_toEndOf="parent" />
-
-
-
     <TextView
-        android:id="@+id/tvAttendeeMobile"
+        android:id="@+id/tvDescription"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="User Mobile"
+        android:text="Description"
         android:textSize="14sp"
-        app:layout_constraintStart_toStartOf="@+id/tvAttendeeEmail"
-        app:layout_constraintTop_toBottomOf="@+id/tvAttendeeEmail"
+        app:layout_constraintStart_toStartOf="@+id/tvAnnouncementDate"
+        app:layout_constraintTop_toBottomOf="@+id/tvAnnouncementDate"
         app:layout_constraintEnd_toEndOf="parent" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

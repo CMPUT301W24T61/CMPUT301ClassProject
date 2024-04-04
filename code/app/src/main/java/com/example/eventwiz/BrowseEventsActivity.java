@@ -11,9 +11,6 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -69,7 +66,7 @@ public class BrowseEventsActivity extends AppCompatActivity implements EventAdap
         });
 
         // Back button
-        ImageButton backButton = findViewById(R.id.BackArrow);
+        ImageButton backButton = findViewById(R.id.back_arrow);
         backButton.setOnClickListener(view -> onBackPressed());
 
         // Fetch events from Firestore

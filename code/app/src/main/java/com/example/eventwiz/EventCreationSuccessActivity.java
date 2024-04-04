@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
@@ -12,18 +11,16 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.FirebaseFirestore;
-
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.FileProvider;
 
 import com.bumptech.glide.Glide;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-
 
 /**
  * Activity to display the details of a successfully created event.
@@ -33,7 +30,7 @@ import java.io.IOException;
  * This class extends AppCompatActivity and is used to handle the UI and navigation logic
  * for the event creation success screen.
  *
- * The event details are passed to this activity through an Intent with the key "event".
+ * The event details are passed to this activity through an Intent with the key "eventId".
  *
  * @author Junkai
  */
@@ -42,7 +39,6 @@ public class EventCreationSuccessActivity extends AppCompatActivity {
     private TextView tvEventName, tvEventDate, tvEventStartTime, tvEventEndTime, tvEventLocation, tvMaxAttendees, tvEventDescription;
     private ImageView ivEventPoster, ivCheckInQRCode, ivPromotionQRCode;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
-
 
     /**
      * Called when the activity is starting. Responsible for initializing the UI,
@@ -60,11 +56,6 @@ public class EventCreationSuccessActivity extends AppCompatActivity {
 
         initializeUI();
 
-        OrganizerService organizerService = new OrganizerService(this);
-        organizerService.loadEventDetails(event, ivEventPoster, ivCheckInQRCode, ivPromotionQRCode,
-                tvEventName, tvEventDate, tvEventStartTime, tvEventEndTime, tvEventLocation, tvMaxAttendees);
-
-
         // Retrieve the event ID passed from the previous activity
         String eventId = getIntent().getStringExtra("eventId");
         if (eventId != null) {
@@ -80,30 +71,39 @@ public class EventCreationSuccessActivity extends AppCompatActivity {
         eventDocument.get().addOnSuccessListener(documentSnapshot -> {
             if (documentSnapshot.exists()) {
                 Event event = documentSnapshot.toObject(Event.class);
-                loadEventDetails(event);
+                if (event != null) {
+                    loadEventDetails(event);
+                } else {
+                    Log.e("EventCreationSuccess", "Event object is null.");
+                }
+            } else {
+                Log.e("EventCreationSuccess", "Event document does not exist.");
             }
+        }).addOnFailureListener(e -> {
+            Log.e("EventCreationSuccess", "Error fetching event details", e);
         });
     }
+
+
     /**
      * Initializes the UI elements by finding and assigning views to their respective variables.
      */
-
     private void initializeUI() {
-        tvEventName = findViewById(R.id.tvEventName);
+        tvEventName = findViewById(R.id.tv_event_name);
         tvEventDate = findViewById(R.id.tvEventDate);
         tvEventStartTime = findViewById(R.id.tvEventStartTime);
         tvEventEndTime = findViewById(R.id.tvEventEndTime);
         tvEventLocation = findViewById(R.id.tvEventLocation);
         tvMaxAttendees = findViewById(R.id.tvMaxAttendees);
         tvEventDescription = findViewById(R.id.tvEventDescription);
-        ivEventPoster = findViewById(R.id.ivEventPoster);
+        ivEventPoster = findViewById(R.id.iv_event_poster);
         ivCheckInQRCode = findViewById(R.id.ivCheckInQRCode);
         ivPromotionQRCode = findViewById(R.id.ivPromotionQRCode);
 
-        ImageButton btnGoToDashboard = findViewById(R.id.gotodasboard);
+        ImageButton btnGoToDashboard = findViewById(R.id.goback);
         btnGoToDashboard.setOnClickListener(v -> goToDashboardActivity());
 
-        //adding share functionlity
+        //adding share functionality
         ivCheckInQRCode.setOnClickListener(v -> shareImage(ivCheckInQRCode));
         ivPromotionQRCode.setOnClickListener(v -> shareImage(ivPromotionQRCode));
     }
@@ -118,12 +118,26 @@ public class EventCreationSuccessActivity extends AppCompatActivity {
             return;
         }
         tvEventName.setText(event.getName());
-        tvEventDate.setText(String.format("Date: %s", event.getDate()));
-        tvEventStartTime.setText(String.format("Start Time: %s", event.getStartTime()));
-        tvEventEndTime.setText(String.format("End Time: %s", event.getEndTime()));
+        tvEventDate.setText(String.format("On: %s", event.getDate()));
+        tvEventStartTime.setText(String.format("From: %s", event.getStartTime()));
+        tvEventEndTime.setText(String.format("To: %s", event.getEndTime()));
         tvEventLocation.setText(String.format("Location: %s", event.getLocation()));
-        tvMaxAttendees.setText(String.format("Max Attendees: %d", event.getMaxAttendees()));
-        tvEventDescription.setText(String.format("Event Description: %s", event.getDescription()));
+
+        // Display description if not null
+        if (event.getDescription() != null && !event.getDescription().isEmpty()) {
+            tvEventDescription.setVisibility(View.VISIBLE);
+            tvEventDescription.setText(String.format("Description: %s", event.getDescription()));
+        } else {
+            tvEventDescription.setVisibility(View.GONE);
+        }
+
+        // Display max attendees if not equal to Integer.MAX_VALUE
+        if (event.getMaxAttendees() != null && event.getMaxAttendees() != Integer.MAX_VALUE) {
+            tvMaxAttendees.setVisibility(View.VISIBLE);
+            tvMaxAttendees.setText(String.format("Attendee Limit: %d", event.getMaxAttendees()));
+        } else {
+            tvMaxAttendees.setText(String.format("Unlimited Attendance"));
+        }
 
         if (event.getPosterUrl() != null && !event.getPosterUrl().isEmpty()) {
             Glide.with(this).load(event.getPosterUrl()).into(ivEventPoster);
@@ -139,7 +153,8 @@ public class EventCreationSuccessActivity extends AppCompatActivity {
             Glide.with(this).load(event.getPromotionQRCode()).into(ivPromotionQRCode);
         } else {
             ivPromotionQRCode.setVisibility(View.GONE);
-
+        }
+    }
 
     //shares qr codes to other apps.
     private void shareImage(ImageView imageView) {
@@ -161,11 +176,12 @@ public class EventCreationSuccessActivity extends AppCompatActivity {
             shareIntent.putExtra(Intent.EXTRA_STREAM, contentUri);
             shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
             startActivity(Intent.createChooser(shareIntent, "Share image via"));
-        } catch (Exception e) {
+        } catch (IOException e) {
             e.printStackTrace();
-
+            Toast.makeText(this, "Error sharing image", Toast.LENGTH_SHORT).show();
         }
     }
+
     @Override
     public boolean onSupportNavigateUp() {
         onBackPressed();
@@ -179,7 +195,4 @@ public class EventCreationSuccessActivity extends AppCompatActivity {
         Intent intent = new Intent(EventCreationSuccessActivity.this, DashboardActivity.class);
         startActivity(intent);
     }
-
-
 }
-

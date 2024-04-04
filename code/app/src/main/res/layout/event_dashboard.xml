@@ -3,168 +3,228 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".DashboardActivity">
+    tools:context=".HostedEventDashboardActivity">
+
+    <TextView
+        android:id="@+id/tvHeader"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/turqoise"
+        android:gravity="center"
+        android:padding="16dp"
+        android:text="Event Dashboard"
+        android:textColor="@android:color/white"
+        android:textSize="24sp"
+        android:textStyle="bold" />
 
     <ImageButton
-        android:id="@+id/BackArrow"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingTop="18dp"
-        android:paddingLeft="14dp"
-        android:src="@drawable/ic_back_arrow"
-        android:contentDescription="go back to previous page"
-        android:layout_alignParentTop="true"
+        android:id="@+id/goback"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         android:layout_alignParentStart="true"
-        android:background="@android:color/transparent"/>
+        android:layout_alignParentTop="true"
+        android:background="@android:color/transparent"
+        android:scaleType="fitCenter"
+        android:contentDescription="go back to user_dashboard"
+        android:paddingLeft="20dp"
+        android:paddingTop="18dp"
+        android:src="@drawable/ic_back_arrow" />
+
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:paddingBottom="56dp">
+        android:paddingBottom="20dp">
 
         <TextView
-            android:id="@+id/event_status"
+            android:id="@+id/tv_event_status"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="100dp"
             android:text="Event Status"
+            android:textStyle="bold"
             android:textColor="@color/black"
-            android:textSize="24sp" />
+            android:textSize="20sp" />
 
         <!-- Event Details TextViews -->
         <TextView
-            android:id="@+id/tvEventID"
+            android:id="@+id/tv_event_id"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/event_status"
+            android:layout_below="@id/tv_event_status"
             android:layout_marginTop="24dp"
             android:layout_marginStart="24dp"
             android:text="Event ID: "
             android:textColor="@color/black"
+            android:textStyle="italic"
             android:textSize="16sp" />
 
         <TextView
-            android:id="@+id/tvEventName"
+            android:id="@+id/tv_event_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/tvEventID"
+            android:layout_below="@id/tv_event_id"
             android:layout_marginTop="8dp"
             android:layout_marginStart="24dp"
             android:text="Event Name: "
+            android:textStyle="bold"
             android:textColor="@color/black"
             android:textSize="16sp" />
 
         <TextView
-            android:id="@+id/tvStartTime"
+            android:id="@+id/tv_event_date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/tvEventName"
+            android:layout_below="@id/tv_event_name"
+            android:layout_marginTop="8dp"
+            android:layout_marginStart="24dp"
+            android:text="Date: "
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/tv_start_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tv_event_date"
             android:layout_marginTop="8dp"
             android:layout_marginStart="24dp"
             android:text="Start Time: "
+            android:textStyle="bold"
             android:textColor="@color/black"
             android:textSize="16sp" />
 
         <TextView
-            android:id="@+id/tvEndTime"
+            android:id="@+id/tv_end_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/tvStartTime"
+            android:layout_below="@id/tv_start_time"
             android:layout_marginTop="8dp"
             android:layout_marginStart="24dp"
             android:text="End Time: "
+            android:textStyle="bold"
             android:textColor="@color/black"
             android:textSize="16sp" />
 
         <TextView
-            android:id="@+id/tvVenue"
+            android:id="@+id/tv_location"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/tvEndTime"
+            android:layout_below="@id/tv_end_time"
             android:layout_marginTop="8dp"
             android:layout_marginStart="24dp"
-            android:text="Venue: "
+            android:text="Location: "
+            android:textStyle="bold"
             android:textColor="@color/black"
             android:textSize="16sp" />
 
         <TextView
-            android:id="@+id/tvAttendance"
+            android:id="@+id/tv_attendance"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/tvVenue"
+            android:layout_below="@id/tv_location"
             android:layout_marginTop="8dp"
             android:layout_marginStart="24dp"
-            android:text="Attendance: "
+            android:text="Real Time Attendance: "
             android:textColor="@color/black"
+            android:textStyle="bold"
             android:textSize="16sp" />
+
+        <ImageView
+            android:id="@+id/iv_event_poster"
+            android:layout_width="250dp"
+            android:layout_height="250dp"
+            android:layout_below="@id/tv_attendance"
+            android:layout_centerHorizontal="true"
+            android:src="@drawable/image_placeholder_background"
+            android:layout_marginTop="10dp"
+            android:elevation="8dp"
+            android:contentDescription="event_poster" />
 
         <!-- Round Buttons -->
         <ImageButton
             android:id="@+id/button_notifications"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
-            android:layout_below="@id/tvAttendance"
-            android:layout_marginTop="24dp"
-            android:layout_marginStart="10dp"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_below="@id/iv_event_poster"
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="30dp"
+            android:layout_marginTop="15dp"
             android:layout_marginEnd="10dp"
             android:background="@drawable/rounded_button"
             android:backgroundTint="@color/amber"
-            android:src="@drawable/ic_create_notification"
-            android:scaleType="fitCenter"
             android:padding="10dp"
-            android:textColor="@android:color/black" />
+            android:scaleType="fitCenter"
+            android:elevation="8dp"
+            android:src="@drawable/ic_create_notification"
+            android:tooltipText="Send Notifications" />
 
         <ImageButton
             android:id="@+id/button_announce"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
-            android:layout_below="@id/tvAttendance"
-            android:layout_marginTop="24dp"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_below="@id/iv_event_poster"
             android:layout_marginStart="10dp"
             android:layout_marginEnd="10dp"
+            android:layout_marginTop="15dp"
             android:layout_toEndOf="@id/button_notifications"
             android:background="@drawable/rounded_button"
-            android:text="2"
-            android:textColor="@android:color/black" />
+            android:src="@drawable/ic_announce"
+            android:tooltipText="Announcements"
+            android:scaleType="fitCenter"
+            android:elevation="8dp"
+            android:padding="10dp" />
 
         <ImageButton
             android:id="@+id/button_map"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
-            android:layout_below="@id/tvAttendance"
-            android:layout_marginTop="24dp"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_below="@id/iv_event_poster"
             android:layout_marginStart="10dp"
             android:layout_marginEnd="10dp"
+            android:layout_marginTop="15dp"
             android:layout_toEndOf="@id/button_announce"
             android:background="@drawable/rounded_button"
-            android:text="3"
-            android:textColor="@android:color/black" />
+            android:src="@drawable/ic_map"
+            android:tooltipText="check-in Map"
+            android:scaleType="fitCenter"
+            android:elevation="8dp"
+            android:padding="10dp" />
 
         <ImageButton
-            android:id="@+id/button_attendees"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
-            android:layout_below="@id/tvAttendance"
+            android:id="@+id/button_qr_codes"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_below="@id/iv_event_poster"
             android:layout_marginStart="10dp"
             android:layout_marginEnd="10dp"
-            android:layout_marginTop="24dp"
+            android:layout_marginTop="15dp"
             android:layout_toEndOf="@id/button_map"
             android:background="@drawable/rounded_button"
-            android:text="4"
-            android:textColor="@android:color/black" />
+            android:tooltipText="share QR codes"
+            android:src="@drawable/ic_qr_code"
+            android:scaleType="fitCenter"
+            android:elevation="8dp"
+            android:padding="10dp"/>
 
-        <TextView
-            android:id="@+id/tvHeader"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/turqoise"
-            android:gravity="center"
-            android:padding="16dp"
-            android:text="Event Dashboard"
-            android:textColor="@android:color/white"
-            android:textSize="24sp"
-            android:textStyle="bold" />
+        <ImageButton
+            android:id="@+id/button_attendance"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_below="@id/iv_event_poster"
+            android:layout_alignParentEnd="true"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginEnd="30dp"
+            android:layout_toEndOf="@id/button_qr_codes"
+            android:background="@drawable/rounded_button"
+            android:padding="10dp"
+            android:elevation="8dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_checkin" />
+
 
     </RelativeLayout>
 

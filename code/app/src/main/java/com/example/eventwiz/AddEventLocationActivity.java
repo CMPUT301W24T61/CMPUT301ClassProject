@@ -61,7 +61,7 @@ public class AddEventLocationActivity extends AppCompatActivity {
         etStateProvince = findViewById(R.id.etStateProvince);
         etCountry = findViewById(R.id.etCountry);
         btnNext = findViewById(R.id.btnNext);
-        ImageButton backButton = findViewById(R.id.BackArrow);
+        ImageButton backButton = findViewById(R.id.back_arrow);
 
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
@@ -79,14 +79,23 @@ public class AddEventLocationActivity extends AppCompatActivity {
      * Finally, navigates to the next activity for additional event details.
      */
     private void processEventLocation() {
+         if (isFieldEmpty(etAddressLine1) || isFieldEmpty(etCity) || isFieldEmpty(etStateProvince)
+                 || isFieldEmpty(etCountry) || isFieldEmpty(etAreaCodePostalCode)) {
+                 etAddressLine1.setError("This field is required");
+                 etCity.setError("This field is required");
+                 etStateProvince.setError("This field is required");
+                 etCountry.setError("This field is required");
+                 etAreaCodePostalCode.setError("This field is required");
+                 return;
+                 }    
         StringBuilder locationBuilder = new StringBuilder();
         appendLocationPart(etAddressLine1, locationBuilder);
         appendLocationPart(etAddressLine2, locationBuilder);
         appendLocationPart(etAddressLine3, locationBuilder);
         appendLocationPart(etCity, locationBuilder);
-        appendLocationPart(etAreaCodePostalCode, locationBuilder);
         appendLocationPart(etStateProvince, locationBuilder);
         appendLocationPart(etCountry, locationBuilder);
+        appendLocationPart(etAreaCodePostalCode, locationBuilder); 
 
         String location = locationBuilder.toString().replaceAll(", $", "");
 
@@ -131,4 +140,13 @@ public class AddEventLocationActivity extends AppCompatActivity {
         onBackPressed();
         return true;
     }
+
+     private boolean isFieldEmpty(EditText editText) {
+
+             return editText.getText().toString().trim().isEmpty();
+
+     }
+
+
+
 }
