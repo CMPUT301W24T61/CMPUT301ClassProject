@@ -7,6 +7,8 @@ import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 
+import static java.lang.Thread.sleep;
+
 import androidx.test.espresso.action.ViewActions;
 import androidx.test.ext.junit.rules.ActivityScenarioRule;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
@@ -27,7 +29,6 @@ public class US020203Test {
     public void testUpdateProfile() throws InterruptedException {
         //create a profile to proceed
         create_profile();
-        /*
         //Go to the user dashboard
         goto_userDashboard();
         sleep(250);
@@ -38,7 +39,6 @@ public class US020203Test {
         goto_userProfile();
         //Check user Profile update
         checkPrifileUpdate();
-         */
     }
 
     private void create_profile() {
