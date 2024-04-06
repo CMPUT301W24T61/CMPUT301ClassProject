@@ -60,6 +60,13 @@ public class BrowseEventsActivity extends AppCompatActivity implements EventAdap
         adapter = new EventAdapter(this, events, this);
         listView.setAdapter(adapter);
 
+        // Back button
+        ImageButton backButton = findViewById(R.id.BackArrow);
+        backButton.setOnClickListener(view -> onBackPressed());
+
+        // Fetch events from Firestore
+        fetchEvents();
+
         // Set a listener for list item clicks
         listView.setOnItemClickListener((parent, view, position, id) -> {
             Event event = events.get(position);
@@ -68,12 +75,7 @@ public class BrowseEventsActivity extends AppCompatActivity implements EventAdap
             startActivity(intent);
         });
 
-        // Back button
-        ImageButton backButton = findViewById(R.id.BackArrow);
-        backButton.setOnClickListener(view -> onBackPressed());
 
-        // Fetch events from Firestore
-        fetchEvents();
     }
     @Override
     public void onEventClicked(Event event) {

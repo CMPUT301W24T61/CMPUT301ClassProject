@@ -34,6 +34,7 @@ public class ViewEventDetailsActivity extends AppCompatActivity {
     private ImageView ivEventPoster, ivCheckInQRCode, ivPromotionQRCode;
 
 
+
     /**
      * Called when the activity is first created.
      *
@@ -78,7 +79,7 @@ public class ViewEventDetailsActivity extends AppCompatActivity {
         }
 
         String userId = user.getUid();
-        DocumentReference eventRef = db.collection("events").document(eventId);
+        DocumentReference eventRef = FirebaseFirestore.getInstance().collection("events").document(eventId);
 
         // Fetch the event document to check current sign-ups and max attendees
         eventRef.get().addOnSuccessListener(documentSnapshot -> {

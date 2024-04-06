@@ -30,7 +30,7 @@ public class BrowseHostedEvents extends AppCompatActivity implements EventAdapte
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_browse_hosted_events);
+        setContentView(R.layout.activity_browse_events);
 
 
         ActionBar actionBar = getSupportActionBar();

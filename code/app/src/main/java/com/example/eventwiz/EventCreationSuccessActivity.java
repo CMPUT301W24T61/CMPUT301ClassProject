@@ -42,6 +42,7 @@ public class EventCreationSuccessActivity extends AppCompatActivity {
     private TextView tvEventName, tvEventDate, tvEventStartTime, tvEventEndTime, tvEventLocation, tvMaxAttendees, tvEventDescription;
     private ImageView ivEventPoster, ivCheckInQRCode, ivPromotionQRCode;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private OrganizerService organizerService;
 
 
     /**
@@ -60,10 +61,6 @@ public class EventCreationSuccessActivity extends AppCompatActivity {
 
         initializeUI();
 
-        OrganizerService organizerService = new OrganizerService(this);
-        organizerService.loadEventDetails(event, ivEventPoster, ivCheckInQRCode, ivPromotionQRCode,
-                tvEventName, tvEventDate, tvEventStartTime, tvEventEndTime, tvEventLocation, tvMaxAttendees);
-
 
         // Retrieve the event ID passed from the previous activity
         String eventId = getIntent().getStringExtra("eventId");
@@ -81,6 +78,8 @@ public class EventCreationSuccessActivity extends AppCompatActivity {
             if (documentSnapshot.exists()) {
                 Event event = documentSnapshot.toObject(Event.class);
                 loadEventDetails(event);
+                organizerService.loadEventDetails(event, ivEventPoster, ivCheckInQRCode, ivPromotionQRCode,
+                        tvEventName, tvEventDate, tvEventStartTime, tvEventEndTime, tvEventLocation, tvMaxAttendees);
             }
         });
     }
@@ -106,6 +105,7 @@ public class EventCreationSuccessActivity extends AppCompatActivity {
         //adding share functionlity
         ivCheckInQRCode.setOnClickListener(v -> shareImage(ivCheckInQRCode));
         ivPromotionQRCode.setOnClickListener(v -> shareImage(ivPromotionQRCode));
+        organizerService = new OrganizerService(this);
     }
 
     /**
@@ -139,7 +139,8 @@ public class EventCreationSuccessActivity extends AppCompatActivity {
             Glide.with(this).load(event.getPromotionQRCode()).into(ivPromotionQRCode);
         } else {
             ivPromotionQRCode.setVisibility(View.GONE);
-
+        }
+    }
 
     //shares qr codes to other apps.
     private void shareImage(ImageView imageView) {
