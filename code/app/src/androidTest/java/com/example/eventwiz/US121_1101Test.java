@@ -34,7 +34,9 @@ import org.junit.runner.RunWith;
 @RunWith(AndroidJUnit4.class)
 @LargeTest
 /*
- * This UI Component Test helps test the User Stories 1.2.1
+ * This UI Component Test helps test the User Stories 1.2.1, 1.10.1
+ * Requirements: As an organizer, I want to view the list of attendees who have checked in to my event.
+ * Requirements: As an organizer, I want to see who is signed up to attend my event
  */
 public class US121_1101Test {
     @Rule
