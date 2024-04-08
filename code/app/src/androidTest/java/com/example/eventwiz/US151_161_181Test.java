@@ -34,9 +34,11 @@ import org.junit.runner.RunWith;
 @RunWith(AndroidJUnit4.class)
 @LargeTest
 /*
-* This UI Component Test helps test the User Story 1.1.1
-* Requirement: As an organizer, I want to create a new event and generate unique QR Code for attendee checkin
-* Acceptance Criteria: [Have a button that creates a new eve
+* This UI Component Test helps test the User Story 1.5.1, 1.6.1, 1.8.1
+* Requirement: As an organizer, I want to track real-time attendance and receive alerts for important milestones.
+* Requirement: As an organizer, I want to share a generator QR code image to other apps so I can email or update other documents with the QR code.
+* Requirement: As an organizer, I want to see on a map where users are checking in from.
+*
 * */
 public class US151_161_181Test {
     @Rule
