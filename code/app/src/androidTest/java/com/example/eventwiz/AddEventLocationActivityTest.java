@@ -29,7 +29,7 @@ import org.junit.runner.RunWith;
 public class AddEventLocationActivityTest {
 
     @Rule
-    public ActivityScenarioRule<MainActivity> scenario = new ActivityScenarioRule<>(MainActivity.class);
+    public ActivityScenarioRule<NotificationCreationActivity> scenario = new ActivityScenarioRule<>(NotificationCreationActivity.class);
 
     @Test
     /**

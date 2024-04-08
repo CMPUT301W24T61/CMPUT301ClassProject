@@ -66,6 +66,7 @@ dependencies {
 
     implementation("com.google.firebase:firebase-storage")
     implementation("com.google.firebase:firebase-firestore:24.10.3")
+    implementation("com.google.firebase:firebase-core:21.1.1")
     implementation ("de.hdodenhof:circleimageview:3.1.0")
 
 
@@ -93,6 +94,11 @@ dependencies {
 
     implementation ("org.osmdroid:osmdroid-android:6.1.11")
     implementation ("org.osmdroid:osmdroid-mapsforge:6.1.11")
+
+    implementation ("com.squareup.retrofit2:retrofit:2.11.0")
+    implementation ("com.squareup.retrofit2:converter-gson:2.11.0")
+
+    implementation ("com.google.firebase:firebase-messaging")
 
 
 

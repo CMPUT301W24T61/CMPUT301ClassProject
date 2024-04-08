@@ -1,9 +1,13 @@
 package com.example.eventwiz;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.TooltipCompat;
 
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.drawable.ColorDrawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.view.View;
@@ -13,6 +17,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.TooltipCompat;
+import androidx.core.app.ActivityCompat;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentManager;
 
@@ -30,6 +39,8 @@ public class HostedEventDashboardActivity extends AppCompatActivity {
     private ImageView ivEventPoster;
     private FirebaseFirestore db;
     private CountDownTimer countDownTimer;
+    private static final String CHANNEL_ID = "attendance_notification_channel";
+    private int notificationIdCounter = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,12 +66,7 @@ public class HostedEventDashboardActivity extends AppCompatActivity {
         }
 
         ImageButton viewAttendance = findViewById(R.id.button_attendance);
-        viewAttendance.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                openAttendeeOptionsDialog(eventId);
-            }
-        });
+        viewAttendance.setOnClickListener(v -> openAttendeeOptionsDialog(eventId));
         TooltipCompat.setTooltipText(viewAttendance, "View Attendance");
 
         ImageButton viewQRcodes = findViewById(R.id.button_qr_codes);
@@ -75,7 +81,9 @@ public class HostedEventDashboardActivity extends AppCompatActivity {
         createAnnouncement.setOnClickListener(v -> openAnnouncementDialog());
         TooltipCompat.setTooltipText(viewQRcodes, "Create Announcement");
 
-
+        ImageButton createNotification = findViewById(R.id.button_notifications);
+        createNotification.setOnClickListener(v -> openNotificationActivity());
+        TooltipCompat.setTooltipText(viewQRcodes, "Create Announcement");
     }
 
     @Override
@@ -134,6 +142,14 @@ public class HostedEventDashboardActivity extends AppCompatActivity {
                         long signups = updatedEvent.getSignups().size(); // Fetch number of sign-ups
 
                         tvMaxAttendees.setText(String.format("%d check-ins out of %d sign-ups", checkins, signups));
+
+                        // Calculate attendance percentage
+                        double attendancePercentage = (checkins * 100.0) / signups;
+
+                        // Check if attendance percentage reaches 50% or 100% and show notification
+                        if (attendancePercentage == 50.0 || attendancePercentage == 100.0) {
+                            showAttendanceNotification(event.getId(), attendancePercentage);
+                        }
                     }
                 }
             });
@@ -181,7 +197,6 @@ public class HostedEventDashboardActivity extends AppCompatActivity {
         }
     }
 
-
     private void goToBrowseActivity() {
         Intent intent = new Intent(HostedEventDashboardActivity.this, BrowseHostedEvents.class);
         startActivity(intent);
@@ -210,22 +225,77 @@ public class HostedEventDashboardActivity extends AppCompatActivity {
         }
     }
 
-    // Code to open announcement dialog
-    // Code to open announcement dialog
     private void openAnnouncementDialog() {
-        // Retrieve the event ID from the activity's intent
         String eventId = getIntent().getStringExtra("eventId");
-
-        // Create a new instance of the AnnouncementDialogFragment
         AnnouncementDialogFragment dialogFragment = new AnnouncementDialogFragment();
-
-        // Pass the event ID to the dialog fragment using arguments
         Bundle args = new Bundle();
-        args.putString("eventId", eventId); // Pass event ID to the dialog
+        args.putString("eventId", eventId);
         dialogFragment.setArguments(args);
-
-        // Show the dialog fragment
         dialogFragment.show(getSupportFragmentManager(), "AnnouncementDialogFragment");
     }
 
+    private void openNotificationActivity() {
+        String eventId = getIntent().getStringExtra("eventId");
+        Intent intent = new Intent(HostedEventDashboardActivity.this, NotificationCreationActivity.class);
+        intent.putExtra("eventId", eventId);
+        startActivity(intent);
+    }
+
+    private void showAttendanceNotification(String eventId, double attendancePercentage) {
+        String notificationTitle;
+        String notificationMessage;
+
+        if (attendancePercentage == 50.0) {
+            notificationTitle = "50% Attendance Reached";
+            notificationMessage = "Half of the attendees have checked in!";
+        } else if (attendancePercentage == 100.0) {
+            notificationTitle = "Full Attendance Reached";
+            notificationMessage = "All attendees have checked in!";
+        } else {
+            // No need to show notification
+            return;
+        }
+
+        createNotificationChannel();
+
+        Intent intent = new Intent(this, HostedEventDashboardActivity.class);
+        intent.putExtra("eventId", eventId);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID)
+                .setSmallIcon(R.drawable.ic_new_notification)
+                .setContentTitle(notificationTitle)
+                .setContentText(notificationMessage)
+                .setContentIntent(pendingIntent)
+                .setAutoCancel(true);
+
+        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
+        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
+        notificationManager.notify(getNotificationId(), builder.build());
+    }
+
+    private void createNotificationChannel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            CharSequence name = getString(R.string.channel_name);
+            String description = getString(R.string.channel_description);
+            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
+            channel.setDescription(description);
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
+        }
+    }
+
+    private int getNotificationId() {
+        return notificationIdCounter++;
+    }
 }
