@@ -10,10 +10,7 @@ import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withSpinnerText;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
-import static com.example.eventwiz.UITestMatchers.withDrawable;
 import static org.hamcrest.CoreMatchers.allOf;
-import static org.hamcrest.CoreMatchers.containsString;
-import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.anything;
 import static org.hamcrest.Matchers.hasToString;
@@ -21,8 +18,6 @@ import static org.hamcrest.Matchers.not;
 
 import static java.lang.Thread.sleep;
 
-
-import android.app.Activity;
 
 import androidx.test.espresso.action.ViewActions;
 import androidx.test.ext.junit.rules.ActivityScenarioRule;
@@ -36,11 +31,12 @@ import org.junit.runner.RunWith;
 @RunWith(AndroidJUnit4.class)
 @LargeTest
 /*
- * This UI Component Test helps test the User Story 2.9.1
+ * This UI Component Test helps test the User Stories 2.7.1,  2.9.1
+ * Requirement: As an attendee, I want to sign up to attend an event from the event details (as in I promise to go).
  * Requirements: As an attendee, I want to know what events I signed up for currently and in the future.
  *
  */
-public class US020901Test {
+public class US271_291Test {
 
     @Rule
     public ActivityScenarioRule<MainActivity> scenario = new ActivityScenarioRule<>(MainActivity.class);
