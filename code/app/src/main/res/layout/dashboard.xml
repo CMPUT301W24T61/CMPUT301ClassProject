@@ -142,8 +142,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
-        app:fabAlignmentMode="center"
-        android:backgroundTint="@color/white">
+        android:backgroundTint="@color/white"
+        app:fabAlignmentMode="center">
 
 
     </com.google.android.material.bottomappbar.BottomAppBar>
