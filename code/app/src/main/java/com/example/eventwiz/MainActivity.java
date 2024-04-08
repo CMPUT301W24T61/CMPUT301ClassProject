@@ -303,59 +303,70 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // Directly check GPS status and update UI when activity resumes
+        updateGPSStatus(locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER));
+    }
+
     public void buttonSwitchGPS(View view) {
-        if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-            turnOffGPS();
-        } else {
+        // Check if GPS is enabled or not and act accordingly
+        if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+            // GPS is off, so prompt the user to turn it on
             turnOnGPS();
+        } else {
+            // GPS is on, so prompt the user to turn it off
+            turnOffGPS();
         }
     }
 
     private void turnOnGPS() {
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
-        alertDialogBuilder.setMessage("Location is disabled. Would you like to enable it?")
+        alertDialogBuilder.setMessage("GPS is disabled in your device. Would you like to enable it?")
                 .setCancelable(true)
                 .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
+                    public void onClick(DialogInterface dialog, int which) {
+                        // Intent to let user turn on GPS
                         startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
-                        updateGPSStatus(true); // Update GPS status text when GPS is turned on
                     }
                 })
                 .setNegativeButton("No", new DialogInterface.OnClickListener() {
                     @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        dialogInterface.cancel();
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
                     }
                 });
-        AlertDialog alertDialog = alertDialogBuilder.create();
-        alertDialog.show();
+        AlertDialog alert = alertDialogBuilder.create();
+        alert.show();
     }
 
     private void turnOffGPS() {
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
-        alertDialogBuilder.setMessage("Location is enabled. Would you like to disable it?")
+        alertDialogBuilder.setMessage("GPS is currently enabled. Do you want to disable it?")
                 .setCancelable(true)
                 .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
+                    public void onClick(DialogInterface dialog, int which) {
+                        // Intent to let user turn off GPS
                         startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
-                        updateGPSStatus(false); // Update GPS status text when GPS is turned off
                     }
                 })
                 .setNegativeButton("No", new DialogInterface.OnClickListener() {
                     @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        dialogInterface.cancel();
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
                     }
                 });
-        AlertDialog alertDialog = alertDialogBuilder.create();
-        alertDialog.show();
+        AlertDialog alert = alertDialogBuilder.create();
+        alert.show();
     }
 
     private void updateGPSStatus(boolean isGpsEnabled) {
         gpsStatus.setText(isGpsEnabled ? "Location ON" : "Location OFF");
     }
+
 
     // AsyncTask to check GPS status
     private class CheckGpsStatusTask extends AsyncTask<Void, Void, Boolean> {
