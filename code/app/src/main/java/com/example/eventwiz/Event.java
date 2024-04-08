@@ -44,6 +44,7 @@ public class Event implements Serializable {
         this.endTime = endTime;
         this.location = location;
         this.maxAttendees = maxAttendees;
+
         this.checkInQRCode = checkInQRCode;
         this.promotionQRCode = promotionQRCode;
         this.signups = signups;

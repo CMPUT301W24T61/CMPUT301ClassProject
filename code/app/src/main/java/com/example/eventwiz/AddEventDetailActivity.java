@@ -193,7 +193,7 @@ public class AddEventDetailActivity extends AppCompatActivity {
         String eventName = etEventName.getText().toString();
         String eventDescription = etEventDescription.getText().toString();
         String maxAttendeesStr = etMaxAttendees.getText().toString();
-        Integer maxAttendees = maxAttendeesStr.isEmpty() ? null : Integer.parseInt(maxAttendeesStr);
+        Integer maxAttendees = maxAttendeesStr.isEmpty() ? -1 : Integer.parseInt(maxAttendeesStr);
 
         String date = spinnerDay.getSelectedItem().toString() + "-" +
                 spinnerMonth.getSelectedItem().toString() + "-" +
