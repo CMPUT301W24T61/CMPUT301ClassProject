@@ -94,16 +94,11 @@ dependencies {
     implementation ("org.osmdroid:osmdroid-android:6.1.11")
     implementation ("org.osmdroid:osmdroid-mapsforge:6.1.11")
 
-
-
-
-
-
-
-
     annotationProcessor("com.github.bumptech.glide:compiler:4.12.0")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.4.0")
-    androidTestImplementation("androidx.test.espresso:espresso-contrib:3.4.0")
+    androidTestImplementation("androidx.test.espresso:espresso-contrib:3.4.0") {
+        exclude(module = "protobuf-lite")
+    }
     androidTestImplementation("androidx.test.espresso:espresso-intents:3.4.0")
 
 
