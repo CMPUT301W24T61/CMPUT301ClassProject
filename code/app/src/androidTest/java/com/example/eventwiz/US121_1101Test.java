@@ -2,6 +2,7 @@ package com.example.eventwiz;
 import static androidx.test.espresso.Espresso.onData;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
+import static androidx.test.espresso.action.ViewActions.swipeUp;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.intent.matcher.IntentMatchers.hasAction;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
@@ -14,6 +15,8 @@ import static org.hamcrest.CoreMatchers.allOf;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.Matchers.anything;
+import static org.hamcrest.Matchers.hasToString;
 import static org.hamcrest.Matchers.not;
 
 import static java.lang.Thread.sleep;
@@ -31,12 +34,9 @@ import org.junit.runner.RunWith;
 @RunWith(AndroidJUnit4.class)
 @LargeTest
 /*
- * This UI Component Test helps test the User Stories 1.1.2, 1.4.1, and 1.7.1
- * Requirement: As an organizer, I want the option to reuse an existing QR Code for attendee check-ins.
- * Requiremment: As an organizer, I want to upload an event poster to provide visual information to attendees.
- * Requirement: As an organizer, I want to create a new event and generate a unique promotion QR code that links to the event description and event poster in the app.
+ * This UI Component Test helps test the User Stories 1.2.1
  */
-public class US112_141_171Test {
+public class US121_1101Test {
     @Rule
     public ActivityScenarioRule<MainActivity> scenario = new ActivityScenarioRule<>(MainActivity.class);
 
@@ -47,7 +47,7 @@ public class US112_141_171Test {
 
         //Go to the user dashboard
         goto_userDashboard();
-        sleep(250);
+        sleep(1000);
         //Check_userdashboard();
         check_userDashboard();
         //Go to the event creation page
@@ -73,6 +73,17 @@ public class US112_141_171Test {
         //Check the creation success page
         Thread.sleep(4000);
         check_SuccessPage();
+        //Go to the hosted event
+        goto_HostedEventsAfterCreation();
+        //Go to attendee check in list
+        goto_attendeePresentList();
+        //Go to dashboard
+        goto_dash();
+        //Signed in list
+        goto_attendeeSignedinList();
+        Thread.sleep(1000);
+        //Go to the dashboard
+        goto_dash();
 
     }
 
@@ -131,7 +142,7 @@ public class US112_141_171Test {
 
     private void fill_eventDetails() {
         //Add Event Name
-        onView(withId(R.id.etEventName)).perform(ViewActions.typeText("New Event"));
+        onView(withId(R.id.etEventName)).perform(ViewActions.typeText("New Event for Attendee Check"));
         onView(withId(R.id.etEventName)).perform(ViewActions.closeSoftKeyboard());
         //Set the day
         onView(withId(R.id.spinnerDay)).perform(click());
@@ -248,5 +259,42 @@ public class US112_141_171Test {
         onView(withId(R.id.ivCheckInQRCode)).check(matches(not(withDrawable(R.drawable.image_placeholder_background))));
         onView(withId(R.id.ivPromotionQRCode)).check(matches(not(withDrawable(R.drawable.image_placeholder_background))));
 
+    }
+
+    private void goto_HostedEventsAfterCreation() {
+        //Click on the home icon to go back after event cration
+        onView(withId(R.id.gotodasboard)).perform(click());
+        //Click on hosted events button
+        onView(withId(R.id.myHostedEvents)).perform(click());
+        //
+        onData(anything()).inAdapterView(withId(R.id.lvEvents)).atPosition(0).perform(click());
+    }
+
+    private void goto_attendeePresentList() throws InterruptedException {
+        onView(withId(R.id.ScrlVw)).perform(swipeUp());
+        Thread.sleep(1000);
+        onView(withId(R.id.btnCheckInList)).check(matches(isDisplayed()));
+
+        //Check on the check in attendees button
+        onView(withId(R.id.btnCheckInList)).perform(click());
+    }
+
+    private void goto_attendeeSignedinList() throws InterruptedException {
+        onView(withId(R.id.ScrlVw)).perform(swipeUp());
+        Thread.sleep(1000);
+        onView(withId(R.id.btnSignUpList)).check(matches(isDisplayed()));
+
+        //Click on the signed up button
+        onView(withId(R.id.btnSignUpList)).perform(click());
+    }
+
+    private void goto_dash() {
+        onView(withId(R.id.BackArrow)).perform(click());
+    }
+
+    private void goto_hostedevent() {
+        onView(withId(R.id.myHostedEvents)).perform(click());
+        //
+        onData(anything()).inAdapterView(withId(R.id.lvEvents)).atPosition(0).perform(click());
     }
 }
