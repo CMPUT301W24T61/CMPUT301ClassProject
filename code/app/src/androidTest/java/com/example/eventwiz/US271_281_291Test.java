@@ -36,7 +36,7 @@ import org.junit.runner.RunWith;
  * Requirements: As an attendee, I want to know what events I signed up for currently and in the future.
  *
  */
-public class US271_291Test {
+public class US271_281_291Test {
 
     @Rule
     public ActivityScenarioRule<MainActivity> scenario = new ActivityScenarioRule<>(MainActivity.class);
