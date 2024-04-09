@@ -128,6 +128,7 @@ public class AddEventDetailActivity extends AppCompatActivity {
         String eventDescription = etEventDescription.getText().toString().trim();
         String maxAttendeesStr = etMaxAttendees.getText().toString();
 
+
         if (!TextUtils.isEmpty(maxAttendeesStr)) {
             try {
                 maxAttendees = Integer.parseInt(maxAttendeesStr);
