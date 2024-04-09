@@ -35,7 +35,7 @@ public class BrowseHostedEvents extends AppCompatActivity implements EventAdapte
         setContentView(R.layout.activity_browse_events);
 
         // Correct initialization of backButton
-        backButton = findViewById(R.id.back_arrow);
+        backButton = findViewById(R.id.BackArrow);
 
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
