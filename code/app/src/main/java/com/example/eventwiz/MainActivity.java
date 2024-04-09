@@ -1,12 +1,12 @@
 package com.example.eventwiz;
 
+
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
@@ -27,8 +27,16 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.installations.FirebaseInstallations;
+import com.google.firebase.installations.InstallationTokenResult;
+import com.google.firebase.messaging.FirebaseMessaging;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
+
+    private static final String TAG = "MainActivity";
 
     private FirebaseAuth userAuth;
     private SharedPreferences sp;
@@ -71,6 +79,8 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+
+        updateFCMTokenInFirestore();
 
         buttonRegister = findViewById(R.id.button_register);
         buttonRegister.setOnClickListener(new View.OnClickListener() {
@@ -389,7 +399,29 @@ public class MainActivity extends AppCompatActivity {
                 updateUI(currentUser);
             }
         }
+
     }
 
-
+    private void updateFCMTokenInFirestore() {
+        // Retrieve FCM token
+        FirebaseInstallations.getInstance().getToken(/* forceRefresh = */ true)
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        InstallationTokenResult tokenResult = task.getResult();
+                        String fcmToken = tokenResult.getToken();
+                        // Update the FCM token in Firestore
+                        if (FirebaseAuth.getInstance().getCurrentUser() != null) {
+                            String currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+                            DocumentReference userRef = FirebaseFirestore.getInstance().collection("Users").document(currentUserId);
+                            userRef.update("fcmToken", fcmToken)
+                                    .addOnSuccessListener(aVoid -> Log.d(TAG, "FCM token updated successfully"))
+                                    .addOnFailureListener(e -> Log.e(TAG, "Error updating FCM token: " + e.getMessage(), e));
+                        }
+                    } else {
+                        Log.e(TAG, "Failed to get Firebase Cloud Messaging token: " + task.getException().getMessage());
+                    }
+                });
+    }
 }
+
+

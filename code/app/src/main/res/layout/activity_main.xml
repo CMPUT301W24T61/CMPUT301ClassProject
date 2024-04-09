@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:alpha="80"
     android:background="@drawable/app_back"
-    tools:context=".MainActivity">
+    tools:context=".NotificationCreationActivity">
 
 
     <ImageView

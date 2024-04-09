@@ -1,0 +1,31 @@
+US 112_141_171_1111Test Tests the user stories 01.01.02, 01.04.01, 01.07.01, and 01.11.01. 
+The functionality that this is tested is as follows:
+US 01.01.02: As an organizer, I want the option to reuse an existing QR code for attendee check-ins.
+US 01.04.01 As an organizer, I want to upload an event poster to provide visual information to attendees. REQUIRES USER INTERACTION DURING TEST
+US 01.07.01 As an organizer, I want to create a new event and generate a unique promotion QR code that links to the event description and event poster in the app.
+US 01.11.01 As an organizer, I want to OPTIONALLY limit the number of attendees that can sign up for an event.
+
+US271_281_291Test Tests the user stories 02.07.01, 02.08.01, 02.09.01
+The functionality that this is tested is as follows:
+US 02.07.01 As an attendee, I want to sign up to attend an event from the event details (as in I promise to go).
+US 02.08.01 As an attendee, I want to browse event posters/event details of other events.
+US 02.09.01 As an attendee, I want to know what events I signed up for currently and in and in the future.
+
+US121_1101Test Tests the user stories 01.02.01, and 01.10.01.
+The functionality that is tested is as follows:
+US 01.02.01 As an organizer, I want to view the list of attendees who have checked in to my event.
+US 01.10.01 As an organizer, I want to see who is signed up to attend my event.
+
+US020201Test Tests the user story 02.02.01 as the name suggests which is the following function: As an attendee, I want to upload a profile picture for a more personalized experience. REQUIRES USER INTERACTION DURING TEST
+
+US020202Test Tests the user story 02.02.02 which is the following function: As an attendee, I want to remove profile pictures if need be.
+
+US020203Test Tests the user story 02.02.03 which is the following function: As an attendee, I want to update information such as name, homepage, and contact information on my profile.
+
+US020601Test Tests the user story 02.06.01 which is the following function: As an attendee, I do not want to login to the app. No username, no password.
+
+US030201Test Tests the user story 03.02.01 which is the following function: As a user, I want the option to enable or disable geolocation tracking for event verification.
+
+US010101Test Tests the user story 01.01.01 which is the following function: As an organizer, I want to create a new event and generate a unique QR code for attendee check-ins.
+
+US020203Test Tests the user story 02.02.03 which is teh following function: As an attendee, I want to update information such as name, homepage, and contact information on my profile.

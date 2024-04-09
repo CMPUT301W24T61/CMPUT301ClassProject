@@ -7,6 +7,7 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
 
@@ -26,6 +27,16 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.EventWiz"
         tools:targetApi="31">
+
+        <service android:name=".FirebaseService"
+            android:permission="com.google.android.c2dm.permission.SEND"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+            </intent-filter>
+
+        </service>
 
         <!-- Add your API key here -->
         <meta-data
@@ -65,6 +76,10 @@
         <activity
             android:name=".AttendeeListActivity"
             android:parentActivityName=".HostedEventDashboardActivity" />
+
+        <activity
+            android:name=".NotificationCreationActivity"
+            android:parentActivityName=".HostedEventDashboardActivity" />
         <activity
             android:name=".AdminDashboard"
             android:exported="false"
@@ -84,7 +99,7 @@
         <activity
             android:name=".BrowseEventsActivity"
             android:exported="false"
-            android:parentActivityName=".MainActivity" />
+            android:parentActivityName=".DashboardActivity" />
         <activity
             android:name=".ViewProfileActivity"
             android:parentActivityName=".DashboardActivity"

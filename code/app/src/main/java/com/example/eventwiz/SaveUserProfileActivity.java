@@ -13,7 +13,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -21,10 +20,8 @@ import android.widget.Toast;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -124,7 +121,7 @@ public class SaveUserProfileActivity extends AppCompatActivity {
                                 // Proceed with uploading user information without a profile picture
                                 dialogInterface.dismiss();
                                 uploadUserInfo();
-                                Intent intent = new Intent(SaveUserProfileActivity.this,MainActivity.class);
+                                Intent intent = new Intent(SaveUserProfileActivity.this, MainActivity.class);
                                 startActivity(intent);
                                 finish();
                             }

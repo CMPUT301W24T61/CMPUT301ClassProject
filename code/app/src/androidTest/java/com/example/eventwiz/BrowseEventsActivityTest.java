@@ -34,9 +34,9 @@ import org.junit.runner.RunWith;
 public class    BrowseEventsActivityTest {
 
     @Rule
-    public ActivityScenarioRule<MainActivity> scenario = new ActivityScenarioRule<>(MainActivity.class);
+    public ActivityScenarioRule<NotificationCreationActivity> scenario = new ActivityScenarioRule<>(NotificationCreationActivity.class);
     @Rule
-    public IntentsTestRule<MainActivity> intentsTestRule = new IntentsTestRule<>(MainActivity.class);
+    public IntentsTestRule<NotificationCreationActivity> intentsTestRule = new IntentsTestRule<>(NotificationCreationActivity.class);
 
     @Test
     /**
