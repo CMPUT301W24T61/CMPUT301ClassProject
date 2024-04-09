@@ -25,8 +25,6 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.squareup.picasso.Picasso;
 
@@ -60,7 +58,7 @@ import com.squareup.picasso.Picasso;
         tvUserHomepage = findViewById(R.id.text_homepage);
         editProfileBtn = findViewById(R.id.edit_profile);
         ivProfileImage = findViewById(R.id.image_profile); // Initialize ImageView
-        backButton = findViewById(R.id.BackArrow);
+        backButton = findViewById(R.id.back_arrow);
 
 
         backButton.setOnClickListener(new View.OnClickListener() {

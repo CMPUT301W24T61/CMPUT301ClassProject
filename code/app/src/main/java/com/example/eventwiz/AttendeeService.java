@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AttendeeService {
-    private static FirebaseFirestore db = FirebaseFirestore.getInstance();
+    public static FirebaseFirestore db = FirebaseFirestore.getInstance();
 
     public interface EventQueryListener {
         void onEventFound(DocumentSnapshot eventDocument, boolean isCheckIn);
@@ -26,6 +26,12 @@ public class AttendeeService {
         void onEventsFetched(List<Event> events);
         void onFetchError(Exception e);
     }
+
+    public interface AnnouncementsFetchListener {
+        void onAnnouncementsFetched(List<Announcement> announcements);
+        void onFetchError(Exception e);
+    }
+
     /**
      * Fetches events from the Firestore database and populates the events list.
      * Notifies the adapter when the data set changes.
@@ -143,4 +149,21 @@ public class AttendeeService {
         void onEventDetailsLoaded(Event event);
         void onEventDetailsError();
     }
+
+    public static void fetchAnnouncements(AnnouncementsFetchListener listener) {
+        db.collection("events").get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                List<Announcement> announcements = new ArrayList<>();
+                for (QueryDocumentSnapshot document : task.getResult()) {
+                    Announcement announcement = document.toObject(Announcement.class);
+                    announcements.add(announcement);
+                }
+                listener.onAnnouncementsFetched(announcements);
+            } else {
+                Log.e("AttendeeService", "Error getting announcements: ", task.getException());
+                listener.onFetchError(task.getException());
+            }
+        });
+    }
+
 }

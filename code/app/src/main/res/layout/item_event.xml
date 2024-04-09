@@ -2,11 +2,12 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@color/lightgray"
     android:padding="16dp">
 
     <!-- Event Poster -->
     <ImageView
-        android:id="@+id/ivEventPoster"
+        android:id="@+id/iv_event_poster"
         android:layout_width="match_parent"
         android:layout_height="200dp"
         android:scaleType="centerCrop"
@@ -14,13 +15,13 @@
 
     <!-- Event Name -->
     <TextView
-        android:id="@+id/tvEventName"
+        android:id="@+id/tv_event_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="18sp"
         android:textStyle="bold"
         android:text="Event Name"
-        android:layout_below="@id/ivEventPoster"
+        android:layout_below="@id/iv_event_poster"
         android:layout_marginTop="8dp" />
 
     <!-- Event Date and Time -->
@@ -28,7 +29,7 @@
         android:id="@+id/tvEventDateTime"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/tvEventName"
+        android:layout_below="@id/tv_event_name"
         android:text="May 5, 2024 09:00 AM - 05:00 PM"
         android:textSize="14sp"
         android:layout_marginTop="4dp" />

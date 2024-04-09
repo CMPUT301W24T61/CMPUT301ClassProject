@@ -1,5 +1,6 @@
 package com.example.eventwiz;
 
+
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -10,6 +11,7 @@ import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -25,8 +27,16 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.installations.FirebaseInstallations;
+import com.google.firebase.installations.InstallationTokenResult;
+import com.google.firebase.messaging.FirebaseMessaging;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
+
+    private static final String TAG = "MainActivity";
 
     private FirebaseAuth userAuth;
     private SharedPreferences sp;
@@ -38,6 +48,10 @@ public class MainActivity extends AppCompatActivity {
     // Flag to track if profile creation dialog has been shown
     private boolean profileCreationDialogShown = false;
 
+    private Button buttonRegister;
+
+    private ProgressBar loadingProgressBar;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,8 +60,11 @@ public class MainActivity extends AppCompatActivity {
         userAuth = FirebaseAuth.getInstance();
         sp = getSharedPreferences("MyPrefs", MODE_PRIVATE);
 
+
         gpsStatus = findViewById(R.id.gps_status);
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+
+        loadingProgressBar = findViewById(R.id.loading_progress_bar);
 
         Button buttonGetStarted = findViewById(R.id.button_get_started);
         buttonGetStarted.setOnClickListener(new View.OnClickListener() {
@@ -63,7 +80,9 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        Button buttonRegister = findViewById(R.id.button_register);
+        updateFCMTokenInFirestore();
+
+        buttonRegister = findViewById(R.id.button_register);
         buttonRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -76,13 +95,19 @@ public class MainActivity extends AppCompatActivity {
         buttonScanQR.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this, QRCodeScannerActivity.class);
-                startActivity(intent);
+                FirebaseUser currentUser = userAuth.getCurrentUser();
+                if (currentUser != null) {
+                    uid = currentUser.getUid();
+                    checkUserProfileExistsForQRScan(uid);
+                } else {
+                    Toast.makeText(MainActivity.this, "User is not signed in", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
         // Check GPS status asynchronously
         new CheckGpsStatusTask().execute();
+
     }
 
     @Override
@@ -90,9 +115,32 @@ public class MainActivity extends AppCompatActivity {
         super.onStart();
         // Check user authentication status asynchronously
         new CheckUserAuthStatusTask().execute();
+
+        // Check if anonymous userID is saved
+        checkIfAnonymousUserIdSaved();
+
+        FirebaseUser currentUser = userAuth.getCurrentUser();
+        if (currentUser != null) {
+            uid = currentUser.getUid();
+            onStartProfileButtonVisibility(uid);
+        }
     }
 
-    private boolean checkUserProfileExists(String uid) {
+    private void checkIfAnonymousUserIdSaved() {
+        // Retrieve the anonymous userID from SharedPreferences
+        String savedUserId = sp.getString("anonymousUserId", null);
+
+        // Check if the saved userID is not null
+        if (savedUserId != null) {
+            // Anonymous UserID is saved, you can log it or display it
+            Log.d("SharedPreferences", "Anonymous UserID found: " + savedUserId);
+        } else {
+            // Anonymous UserID is not saved
+            Log.d("SharedPreferences", "No Anonymous UserID found");
+        }
+    }
+
+    private void checkUserProfileExists(String uid) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         DocumentReference docRef = db.collection("Users").document(uid); // Change "users" to your collection where user profiles are stored
         docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -111,6 +159,7 @@ public class MainActivity extends AppCompatActivity {
                                 // Show dialog only if it hasn't been shown before
                                 Intent intent = new Intent(MainActivity.this, DashboardActivity.class);
                                 startActivity(intent);
+
                             }
                         } else {
                             // Either userName or userEmail is missing
@@ -136,7 +185,53 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
-        return false;
+    }
+
+    private void checkUserProfileExistsForQRScan(String uid) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        DocumentReference docRef = db.collection("Users").document(uid); // Change "users" to your collection where user profiles are stored
+        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
+                        // User document exists
+                        Intent intent = new Intent(MainActivity.this, QRCodeScannerActivity.class);
+                        startActivity(intent);
+                    } else {
+                        // User document does not exist
+                        showCreateProfileDialogForQRScan();
+                    }
+                } else {
+                    // Handle error
+                    Log.e("Firestore", "Error checking user profile existence: ", task.getException());
+                }
+            }
+        });
+    }
+
+    private void onStartProfileButtonVisibility(String uid) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        DocumentReference docRef = db.collection("Users").document(uid); // Change "users" to your collection where user profiles are stored
+        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
+                        // User document exists, hide the "Create Profile" button
+                        buttonRegister.setVisibility(View.GONE);
+                    } else {
+                        // User document does not exist, show the "Create Profile" button
+                        buttonRegister.setVisibility(View.VISIBLE);
+                    }
+                } else {
+                    // Handle error
+                    Log.e("Firestore", "Error checking user profile existence: ", task.getException());
+                }
+            }
+        });
     }
 
     private void showCreateProfileDialog() {
@@ -157,10 +252,29 @@ public class MainActivity extends AppCompatActivity {
         alertDialog.show();
     }
 
+    private void showCreateProfileDialogForQRScan() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("No User Profile Found!");
+        builder.setMessage("Create a Profile to Access this Feature.")
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        // Do nothing or navigate to profile creation activity
+                        dialogInterface.dismiss();
+                    }
+                });
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
+    }
+
     private void attemptAnonymousAuthentication() {
+        // Show loading ProgressBar
+        loadingProgressBar.setVisibility(View.VISIBLE);
         userAuth.signInAnonymously().addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
+                loadingProgressBar.setVisibility(View.GONE);
                 if (task.isSuccessful()) {
                     FirebaseUser user = userAuth.getCurrentUser();
                     if (user != null) {
@@ -285,5 +399,29 @@ public class MainActivity extends AppCompatActivity {
                 updateUI(currentUser);
             }
         }
+
+    }
+
+    private void updateFCMTokenInFirestore() {
+        // Retrieve FCM token
+        FirebaseInstallations.getInstance().getToken(/* forceRefresh = */ true)
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        InstallationTokenResult tokenResult = task.getResult();
+                        String fcmToken = tokenResult.getToken();
+                        // Update the FCM token in Firestore
+                        if (FirebaseAuth.getInstance().getCurrentUser() != null) {
+                            String currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+                            DocumentReference userRef = FirebaseFirestore.getInstance().collection("Users").document(currentUserId);
+                            userRef.update("fcmToken", fcmToken)
+                                    .addOnSuccessListener(aVoid -> Log.d(TAG, "FCM token updated successfully"))
+                                    .addOnFailureListener(e -> Log.e(TAG, "Error updating FCM token: " + e.getMessage(), e));
+                        }
+                    } else {
+                        Log.e(TAG, "Failed to get Firebase Cloud Messaging token: " + task.getException().getMessage());
+                    }
+                });
     }
 }
+
+

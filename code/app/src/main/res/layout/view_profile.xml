@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/app_back"
     tools:context=".DashboardActivity">
 
     <TextView
@@ -17,11 +18,11 @@
         android:textStyle="bold"
         android:background="@color/turqoise"
         android:padding="16dp"
-        app:layout_anchor="@id/BackArrow"
+        app:layout_anchor="@id/back_arrow"
         app:layout_anchorGravity="start"/>
 
     <ImageButton
-        android:id="@+id/BackArrow"
+        android:id="@+id/back_arrow"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingTop="18dp"

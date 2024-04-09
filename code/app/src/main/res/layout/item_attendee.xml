@@ -3,6 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/lightgray"
     android:padding="16dp">
 
     <ImageView
@@ -35,15 +36,7 @@
         app:layout_constraintTop_toBottomOf="@+id/tvAttendeeName"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <TextView
-        android:id="@+id/tvAttendeeHomepage"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="User Homepage"
-        android:textSize="14sp"
-        app:layout_constraintStart_toStartOf="@+id/tvAttendeeEmail"
-        app:layout_constraintTop_toBottomOf="@+id/tvAttendeeEmail"
-        app:layout_constraintEnd_toEndOf="parent" />
+
 
     <TextView
         android:id="@+id/tvAttendeeMobile"
@@ -51,7 +44,7 @@
         android:layout_height="wrap_content"
         android:text="User Mobile"
         android:textSize="14sp"
-        app:layout_constraintStart_toStartOf="@+id/tvAttendeeHomepage"
-        app:layout_constraintTop_toBottomOf="@+id/tvAttendeeHomepage"
+        app:layout_constraintStart_toStartOf="@+id/tvAttendeeEmail"
+        app:layout_constraintTop_toBottomOf="@+id/tvAttendeeEmail"
         app:layout_constraintEnd_toEndOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

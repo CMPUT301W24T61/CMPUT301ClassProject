@@ -32,7 +32,7 @@ public class AttendeeListActivity extends AppCompatActivity {
             loadAttendeesForEvent(eventId);
         }
 
-        ImageButton backButton = findViewById(R.id.BackArrow);
+        ImageButton backButton = findViewById(R.id.back_arrow);
         backButton.setOnClickListener(v -> onBackPressed());
     }
 

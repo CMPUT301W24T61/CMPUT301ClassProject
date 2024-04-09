@@ -5,6 +5,8 @@ import android.util.Log;
 import android.util.Pair;
 import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.TextView;
+
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -19,13 +21,14 @@ public class CheckedInAttendeesActivity extends AppCompatActivity {
     private CheckedInAttendeeAdapter adapter;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private List<Pair<UserProfile, Integer>> attendeesInfo = new ArrayList<>();
+    private TextView tvTotalCheckedInCount;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_checked_in_attendees);
         setupActionBar();
-
+        tvTotalCheckedInCount = findViewById(R.id.tvTotalCheckedInCount);
         lvAttendees = findViewById(R.id.lvAttendees);
         adapter = new CheckedInAttendeeAdapter(this, R.layout.item_checked_in_attendee, attendeesInfo);
 
@@ -36,7 +39,7 @@ public class CheckedInAttendeesActivity extends AppCompatActivity {
             loadCheckedInAttendeesForEvent(eventId);
         }
 
-        ImageButton backButton = findViewById(R.id.BackArrow);
+        ImageButton backButton = findViewById(R.id.back_arrow);
         backButton.setOnClickListener(v -> onBackPressed());
     }
 
@@ -47,6 +50,12 @@ public class CheckedInAttendeesActivity extends AppCompatActivity {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
     }
+
+    private void updateTotalCheckedInCount(int totalCount) {
+        String totalCheckedInText = "Total Checked In: " + totalCount;
+        tvTotalCheckedInCount.setText(totalCheckedInText);
+    }
+
 
     private void loadCheckedInAttendeesForEvent(String eventId) {
         Log.d("CheckedInAttendees", "Loading checked-in attendees for event: " + eventId);
@@ -70,13 +79,14 @@ public class CheckedInAttendeesActivity extends AppCompatActivity {
                 if (userProfile != null) {
                     profiles.put(userId, userProfile);
                     if (profiles.size() == userIds.size()) {
-                        for (Map.Entry<String, Integer> entry : checkInsCount.entrySet()) {
-                            UserProfile profile = profiles.get(entry.getKey());
-                            Integer count = entry.getValue();
+                        attendeesInfo.clear();
+                        for (String id : profiles.keySet()) {
+                            UserProfile profile = profiles.get(id);
+                            Integer count = checkInsCount.getOrDefault(id, 0);
                             attendeesInfo.add(new Pair<>(profile, count));
                         }
                         adapter.notifyDataSetChanged();
-                        Log.d("CheckedInAttendees", "User profiles retrieved and displayed.");
+                        updateTotalCheckedInCount(profiles.size());
                     }
                 } else {
                     Log.d("CheckedInAttendees", "User profile is null for user ID: " + userId);
@@ -87,3 +97,4 @@ public class CheckedInAttendeesActivity extends AppCompatActivity {
         }
     }
 }
+

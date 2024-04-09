@@ -20,7 +20,6 @@ import android.graphics.Paint;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -43,6 +42,7 @@ public class DashboardActivity extends AppCompatActivity {
     // Declare UI components
     private Button createEventButton;
     private Button hostedEventsButton;
+    private Button signedUpEventsButton;
     private Button browseEventsButton;
     private Button profileButton;
 
@@ -55,8 +55,6 @@ public class DashboardActivity extends AppCompatActivity {
     SharedPreferences sp;
 
     private String currentID;
-
-
 
 
     /**
@@ -81,10 +79,11 @@ public class DashboardActivity extends AppCompatActivity {
         // Initialize UI components
         createEventButton = findViewById(R.id.createEvent);
         hostedEventsButton = findViewById(R.id.myHostedEvents);
+        signedUpEventsButton = findViewById(R.id.mySignedUpEvents);
         browseEventsButton = findViewById(R.id.browseEvents);
         profileButton = findViewById(R.id.myProfile);
         scanQRButton = findViewById(R.id.fabCamera);
-        backButton = findViewById(R.id.BackArrow);
+        backButton = findViewById(R.id.back_arrow);
 
         tvwelcomeText = findViewById(R.id.Welcome);
         savedPic = findViewById(R.id.ivProfile);
@@ -102,14 +101,20 @@ public class DashboardActivity extends AppCompatActivity {
         });
 
 
-
-
         // Set onClickListeners for each button
         createEventButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 // Intent to navigate to CreateEventActivity
                 Intent intent = new Intent(DashboardActivity.this, AddEventDetailActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        signedUpEventsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(DashboardActivity.this, BrowseSignedUpEventsActivity.class);
                 startActivity(intent);
             }
         });
@@ -149,17 +154,6 @@ public class DashboardActivity extends AppCompatActivity {
             }
         });
 
-
-
-        //manageEventsButton.setOnClickListener(new View.OnClickListener() {
-        //@Override
-        //public void onClick(View view) {
-
-        //Intent intent = new Intent(OrganizerDashboardActivity.this, ManageEventsActivity.class);
-        //startActivity(intent);
-        //}
-        //});
-
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -179,7 +173,7 @@ public class DashboardActivity extends AppCompatActivity {
 
 
         super.onStart();
-        Toast.makeText(DashboardActivity.this,"Loading Current Profile!", Toast.LENGTH_SHORT).show();
+        Toast.makeText(DashboardActivity.this, "Loading Current Profile!", Toast.LENGTH_SHORT).show();
 
 
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();

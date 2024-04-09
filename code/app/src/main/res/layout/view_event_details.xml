@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/app_back"
     android:fillViewport="true">
 
     <RelativeLayout
@@ -11,21 +12,21 @@
         android:background="@android:color/white">
 
         <ImageButton
-            android:id="@+id/gotodasboard"
+            android:id="@+id/goback"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
             android:background="@android:color/transparent"
             android:scaleType="fitCenter"
-            android:contentDescription="go back to user_dashboard"
+            android:contentDescription="go back to browse_events"
             android:paddingLeft="20dp"
             android:paddingTop="18dp"
-            android:src="@drawable/ic_home" />
+            android:src="@drawable/ic_back_arrow" />
 
 
         <TextView
-            android:id="@+id/tvEventName"
+            android:id="@+id/tv_event_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/tvSuccessMessage"
@@ -33,14 +34,14 @@
             android:textColor="@android:color/black"
             android:gravity="center_horizontal"
             android:textSize="30sp"
-            android:layout_marginTop="100dp"
+            android:layout_marginTop="50dp"
             tools:ignore="NotSibling" />
 
         <TextView
             android:id="@+id/tvEventDate"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/tvEventName"
+            android:layout_below="@id/tv_event_name"
             android:text="Date: TBD"
             android:textColor="@android:color/black"
             android:gravity="center_horizontal"
@@ -80,6 +81,9 @@
             android:textSize="18sp"
             android:layout_marginTop="8dp" />
 
+
+
+
         <TextView
             android:id="@+id/tvEventDescription"
             android:layout_width="match_parent"
@@ -93,22 +97,22 @@
 
 
         <ImageView
-            android:id="@+id/ivEventPoster"
+            android:id="@+id/iv_event_poster"
             android:layout_width="200dp"
             android:layout_height="200dp"
             android:layout_below="@id/tvMaxAttendees"
             android:layout_centerHorizontal="true"
             android:src="@drawable/image_placeholder_background"
-            android:layout_marginTop="32dp"
+            android:layout_marginTop="10dp"
             android:contentDescription="event_poster" />
 
         <ImageView
             android:id="@+id/ivCheckInQRCode"
             android:layout_width="100dp"
             android:layout_height="100dp"
-            android:layout_below="@id/ivEventPoster"
-            android:layout_alignStart="@id/ivEventPoster"
-            android:layout_marginTop="16dp"
+            android:layout_below="@id/iv_event_poster"
+            android:layout_alignStart="@id/iv_event_poster"
+            android:layout_marginTop="5dp"
             android:src="@drawable/image_placeholder_background"
             android:contentDescription="qr code" />
 
@@ -116,9 +120,9 @@
             android:id="@+id/ivPromotionQRCode"
             android:layout_width="100dp"
             android:layout_height="100dp"
-            android:layout_below="@id/ivEventPoster"
-            android:layout_alignEnd="@id/ivEventPoster"
-            android:layout_marginTop="16dp"
+            android:layout_below="@id/iv_event_poster"
+            android:layout_alignEnd="@id/iv_event_poster"
+            android:layout_marginTop="5dp"
             android:src="@drawable/image_placeholder_background"
             android:contentDescription="promotion_qr_code" />
 
@@ -157,18 +161,54 @@
 
         <LinearLayout
             android:id="@+id/buttonContainer"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/tvPromotionQRLabel"
-            android:layout_centerInParent="true"
-            android:orientation="horizontal"
-            android:gravity="center">
+            android:layout_width="208dp"
+            android:layout_height="63dp"
+            android:layout_below="@id/iv_event_poster"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="130dp"
+            android:layout_marginEnd="83dp"
+            android:orientation="horizontal">
 
-            <Button
+            <ImageButton
+                android:id="@+id/btnMapService"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="10dp"
+                android:background="@drawable/circle"
+                android:backgroundTint="@color/amber"
+                android:contentDescription="view location on map"
+                android:elevation="8dp"
+                android:padding="10dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_location" />
+
+            <ImageButton
                 android:id="@+id/btnSignUp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Sign Up" />
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="10dp"
+                android:background="@drawable/circle"
+                android:contentDescription="sign up"
+                android:backgroundTint="@color/turqoise"
+                android:elevation="8dp"
+                android:padding="10dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_checkin" />
+
+            <ImageButton
+                android:id="@+id/btnAnnouncements"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/circle"
+                android:contentDescription="view announcements"
+                android:elevation="8dp"
+                android:padding="10dp"
+                android:backgroundTint="@color/amber"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_announce" />
         </LinearLayout>
 
 

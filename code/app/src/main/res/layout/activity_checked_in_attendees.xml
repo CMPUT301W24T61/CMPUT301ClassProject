@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/app_back"
     tools:context=".BrowseEventsActivity">
 
     <TextView
@@ -17,20 +18,32 @@
         android:textStyle="bold"
         android:background="@color/turqoise"
         android:padding="16dp"/>
+    <TextView
+        android:id="@+id/tvTotalCheckedInCount"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Total Checked In: 0"
+        android:gravity="center"
+        android:textSize="18sp"
+        android:textColor="@android:color/white"
+        android:background="@color/turqoise"
+        android:padding="8dp"
+        app:layout_constraintTop_toBottomOf="@id/tvHeader"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <ImageButton
-        android:id="@+id/BackArrow"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/back_arrow"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:background="@android:color/transparent"
-        android:contentDescription="go back to previous page"
-        android:paddingLeft="14dp"
         android:paddingTop="18dp"
+        android:paddingLeft="14dp"
         android:src="@drawable/ic_back_arrow"
-        tools:layout_editor_absoluteX="0dp"
-        tools:layout_editor_absoluteY="0dp" />
+        android:contentDescription="go back to previous page"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true"
+        android:background="@android:color/transparent"/>
 
     <ListView
         android:id="@+id/lvAttendees"
@@ -42,6 +55,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvHeader" />
+        app:layout_constraintTop_toBottomOf="@+id/tvTotalCheckedInCount" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -32,9 +32,9 @@ import org.junit.runner.RunWith;
 public class SaveUserProfileActivityTest {
 
     @Rule
-    public ActivityScenarioRule<MainActivity> scenario = new ActivityScenarioRule<>(MainActivity.class);
+    public ActivityScenarioRule<NotificationCreationActivity> scenario = new ActivityScenarioRule<>(NotificationCreationActivity.class);
     @Rule
-    public IntentsTestRule<MainActivity> intentsTestRule = new IntentsTestRule<>(MainActivity.class);
+    public IntentsTestRule<NotificationCreationActivity> intentsTestRule = new IntentsTestRule<>(NotificationCreationActivity.class);
     @Test
     /**
      * Test function that tests the UI component for the creation of a Profile
@@ -57,6 +57,6 @@ public class SaveUserProfileActivityTest {
         onView(withId(R.id.editText_mobile)).perform(ViewActions.closeSoftKeyboard());
         //Click save profile
         onView(withId(R.id.button_register)).perform(click());
-        Intents.intended(hasComponent(MainActivity.class.getName()));
+        Intents.intended(hasComponent(NotificationCreationActivity.class.getName()));
     }
 }
