@@ -179,9 +179,18 @@ public class HostedEventDashboardActivity extends AppCompatActivity {
                         long minutes = (millisUntilFinished % (1000 * 60 * 60)) / (1000 * 60);
                         long seconds = (millisUntilFinished % (1000 * 60)) / 1000;
 
-                        String countdown = String.format(Locale.getDefault(), "         Your Event Starts in:\n%02d days, %02d hrs, %02d mins, %02d sec", days, hours, minutes, seconds);
+                        String countdown;
+                        if (days > 0) {
+                            countdown = String.format(Locale.getDefault(), "%02d days to go", days);
+                        } else if (hours > 0) {
+                            countdown = String.format(Locale.getDefault(), "%02d hrs, %02d mins to go", hours, minutes);
+                        } else {
+                            countdown = String.format(Locale.getDefault(), "%02d mins, %02d secs to go", minutes, seconds);
+                        }
+
                         tvCountdownTimer.setText(countdown);
                     }
+
 
                     @Override
                     public void onFinish() {

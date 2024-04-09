@@ -23,12 +23,15 @@ import androidx.core.content.ContextCompat;
 import com.bumptech.glide.Glide;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.GeoPoint;
+import com.squareup.picasso.Picasso;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -39,7 +42,8 @@ public class EventCheckIn extends AppCompatActivity {
     private Button btnSignUp, btnCheckIn;
     private ImageView ivEventPoster, ivCheckInQRCode, ivPromotionQRCode;
     private FirebaseFirestore db;
-    private static final int MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
+    private FusedLocationProviderClient fusedLocationClient;
+    private static final int LOCATION_PERMISSION_REQUEST_CODE = 1001;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +56,7 @@ public class EventCheckIn extends AppCompatActivity {
             actionBar.setBackgroundDrawable(new ColorDrawable(color));
         }
         db = FirebaseFirestore.getInstance();
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
         initializeUI();
         String eventId = getIntent().getStringExtra("eventId");
         if (eventId != null && !eventId.isEmpty()) {
@@ -61,126 +66,108 @@ public class EventCheckIn extends AppCompatActivity {
         btnCheckIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                checkInToEvent();
+                // Check location permission
+                if (ContextCompat.checkSelfPermission(EventCheckIn.this,
+                        Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                    // Permission granted, proceed with location-based check-in
+                    getLastLocation();
+                } else {
+                    // Permission not granted, request it from the user
+                    ActivityCompat.requestPermissions(EventCheckIn.this,
+                            new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                            LOCATION_PERMISSION_REQUEST_CODE);
+                }
             }
         });
-        ImageButton btnGoToDashboard = findViewById(R.id.goback);
+
+        ImageButton btnGoToDashboard = findViewById(R.id.gotodasboard);
         btnGoToDashboard.setOnClickListener(v -> goToDashboardActivity());
     }
 
-    private void checkInToEvent() {
+    // Method to get last known location
+    private void getLastLocation() {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+                ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // Permission not granted, request it from the user
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                    LOCATION_PERMISSION_REQUEST_CODE);
+            return;
+        }
+
+        fusedLocationClient.getLastLocation()
+                .addOnCompleteListener(this, new OnCompleteListener<Location>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Location> task) {
+                        if (task.isSuccessful() && task.getResult() != null) {
+                            Location location = task.getResult();
+                            GeoPoint geoPoint = new GeoPoint(location.getLatitude(), location.getLongitude());
+                            performCheckIn(geoPoint);
+                        } else {
+                            Toast.makeText(EventCheckIn.this, "Unable to retrieve location. Proceeding with basic check-in.", Toast.LENGTH_SHORT).show();
+                            checkInWithoutLocation();
+                        }
+                    }
+                });
+    }
+
+
+    private void checkInWithoutLocation() {
+        performCheckIn(null);
+    }
+
+    private void performCheckIn(GeoPoint location) {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         String eventId = getIntent().getStringExtra("eventId");
 
         if (user != null && eventId != null && !eventId.isEmpty()) {
             String userId = user.getUid();
 
-            // Check location permissions
-            if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
-                    == PackageManager.PERMISSION_GRANTED) {
-                // Location permissions granted, proceed with location retrieval
-                getLocationAndCheckIn(eventId, userId);
-            } else {
-                // Request location permissions
-                ActivityCompat.requestPermissions(this,
-                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                        MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
-            }
-        } else {
-            // User not logged in or eventId is null/empty
-            Toast.makeText(this, "Error: User not logged in or invalid event ID.", Toast.LENGTH_LONG).show();
-        }
-    }
-
-    private void getLocationAndCheckIn(String eventId, String userId) {
-        // Get the FusedLocationProviderClient
-        FusedLocationProviderClient fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
-
-        // Request location updates
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            return;
-        }
-        fusedLocationClient.getLastLocation()
-                .addOnSuccessListener(this, location -> {
-                    if (location != null) {
-                        // Location retrieved successfully, now you can proceed with check-in
-                        double latitude = location.getLatitude();
-                        double longitude = location.getLongitude();
-                        // Store the location in the database or perform any other action
-                        // Here you can update the check-ins count along with the location
-                        updateCheckInsAndLocation(eventId, userId, latitude, longitude);
-                    } else {
-                        // Location is null
-                        Toast.makeText(this, "Location not available", Toast.LENGTH_SHORT).show();
+            // Update event document
+            DocumentReference eventRef = db.collection("events").document(eventId);
+            eventRef.get().addOnCompleteListener(task -> {
+                if (task.isSuccessful() && task.getResult() != null) {
+                    DocumentSnapshot document = task.getResult();
+                    Map<String, Object> checkIns = (Map<String, Object>) document.get("checkInsCount");
+                    if (checkIns == null) {
+                        checkIns = new HashMap<>();
                     }
-                });
-    }
+                    Object currentCountObject = checkIns.get(userId);
+                    int currentCount = 0;
+                    if (currentCountObject instanceof Long) {
+                        currentCount = ((Long) currentCountObject).intValue();
+                    } else if (currentCountObject instanceof Integer) {
+                        currentCount = (Integer) currentCountObject;
+                    }
+                    checkIns.put(userId, currentCount + 1);
 
-    // Update check-in logic
-    private void updateCheckInsAndLocation(String eventId, String userId, double latitude, double longitude) {
-        DocumentReference eventRef = db.collection("events").document(eventId);
-        DocumentReference userRef = db.collection("users").document(userId); // Reference to user document
-
-        // First, get the current event document to check the existing check-ins
-        eventRef.get().addOnCompleteListener(task -> {
-            if (task.isSuccessful() && task.getResult() != null) {
-                DocumentSnapshot eventDocument = task.getResult();
-                Map<String, Object> checkIns = eventDocument.get("checkInsCount") != null ?
-                        (Map<String, Object>) eventDocument.get("checkInsCount") : new HashMap<>();
-
-                // Increment the count
-                if (checkIns != null) {
-                    checkIns.put(userId, (int) checkIns.getOrDefault(userId, 0) + 1);
+                    eventRef.update("checkInsCount", checkIns)
+                            .addOnSuccessListener(aVoid -> {
+                                Toast.makeText(EventCheckIn.this, "Checked in successfully", Toast.LENGTH_SHORT).show();
+                            })
+                            .addOnFailureListener(e -> {
+                                Log.e("EventCheckIn", "Failed to check in: " + e.getMessage());
+                                Toast.makeText(EventCheckIn.this, "Failed to check in", Toast.LENGTH_SHORT).show();
+                            });
+                } else {
+                    Log.e("EventCheckIn", "Failed to get event document: ", task.getException());
+                    Toast.makeText(EventCheckIn.this, "Failed to check in", Toast.LENGTH_SHORT).show();
                 }
+            });
 
-                // Update the document with check-ins count
-                eventRef.update("checkInsCount", checkIns)
+            // Update user document with the last check-in location
+            DocumentReference userRef = db.collection("Users").document(userId);
+            if (location != null) {
+                userRef.update("lastCheckInLocation", location)
                         .addOnSuccessListener(aVoid -> {
-                            Toast.makeText(EventCheckIn.this, "Checked in successfully", Toast.LENGTH_SHORT).show();
-
-                            // Update user document with last check-in location
-                            userRef.update("lastCheckInLocation", new GeoPoint(latitude, longitude))
-                                    .addOnSuccessListener(aVoid1 -> Log.d("EventCheckIn", "User location updated successfully"))
-                                    .addOnFailureListener(e -> Log.e("EventCheckIn", "Error updating user location", e));
-
-                            // Optionally, navigate to another activity or update UI
+                            Log.d("EventCheckIn", "User location updated successfully");
                         })
                         .addOnFailureListener(e -> {
-                            Toast.makeText(EventCheckIn.this, "Failed to check in: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                            Log.e("EventCheckIn", "Failed to update user location: " + e.getMessage());
                         });
-            } else {
-                Log.d("EventCheckIn", "Failed to get event document: ", task.getException());
-                Toast.makeText(EventCheckIn.this, "Failed to check in", Toast.LENGTH_SHORT).show();
             }
-        });
-    }
-
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                // Permission granted, proceed with location retrieval
-                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                String eventId = getIntent().getStringExtra("eventId");
-                if (user != null && eventId != null && !eventId.isEmpty()) {
-                    String userId = user.getUid();
-                    getLocationAndCheckIn(eventId, userId);
-                } else {
-                    // Handle the case where user or eventId is null
-                }
-            } else {
-                // Permission denied, show a message to the user
-                Toast.makeText(this, "Location permission denied.", Toast.LENGTH_SHORT).show();
-            }
+        } else {
+            Toast.makeText(this, "Error: User not logged in or invalid event ID.", Toast.LENGTH_LONG).show();
         }
     }
 
@@ -217,14 +204,46 @@ public class EventCheckIn extends AppCompatActivity {
             tvMaxAttendees.setText(String.format("Max Attendees: %d", event.getMaxAttendees()));
             tvEventDescription.setText(String.format("Event Description: %s", event.getDescription()));
 
-            Glide.with(this).load(event.getPosterUrl()).placeholder(R.drawable.image_placeholder_background).into(ivEventPoster);
-            Glide.with(this).load(event.getCheckInQRCode()).placeholder(R.drawable.image_placeholder_background).into(ivCheckInQRCode);
-            Glide.with(this).load(event.getPromotionQRCode()).placeholder(R.drawable.image_placeholder_background).into(ivPromotionQRCode);
+            // Load images only if the URLs are not null
+            if (event.getPosterUrl() != null) {
+                Picasso.get().load(event.getPosterUrl()).placeholder(R.drawable.image_placeholder_background).into(ivEventPoster);
+            } else {
+                ivEventPoster.setImageResource(R.drawable.image_placeholder_background); // Set a placeholder image
+            }
+            if (event.getCheckInQRCode() != null) {
+                Picasso.get().load(event.getCheckInQRCode()).placeholder(R.drawable.image_placeholder_background).into(ivCheckInQRCode);
+            } else {
+                ivCheckInQRCode.setImageResource(R.drawable.image_placeholder_background); // Set a placeholder image
+            }
+            if (event.getPromotionQRCode() != null) {
+                Picasso.get().load(event.getPromotionQRCode()).placeholder(R.drawable.image_placeholder_background).into(ivPromotionQRCode);
+            } else {
+                ivPromotionQRCode.setImageResource(R.drawable.image_placeholder_background); // Set a placeholder image
+            }
         }
     }
+
+
+
 
     private void goToDashboardActivity() {
         Intent intent = new Intent(EventCheckIn.this, DashboardActivity.class);
         startActivity(intent);
+    }
+
+    private void requestLocationPermission() {
+        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_PERMISSION_REQUEST_CODE);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == LOCATION_PERMISSION_REQUEST_CODE) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                getLastLocation();
+            } else {
+                Toast.makeText(this, "Location permission is required for check-in.", Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 }

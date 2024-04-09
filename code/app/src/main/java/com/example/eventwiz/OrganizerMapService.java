@@ -99,7 +99,7 @@ public class OrganizerMapService extends AppCompatActivity implements OnMapReady
                         // Iterate through each signed up user ID
                         for (String userId : signedUpUserIds.keySet()) {
                             // Get reference to the user document
-                            DocumentReference userRef = db.collection("users").document(userId);
+                            DocumentReference userRef = db.collection("Users").document(userId);
                             // Query the user document to get the GeoPoint data for the last check-in location
                             userRef.get().addOnSuccessListener(userDocumentSnapshot -> {
                                 if (userDocumentSnapshot.exists()) {

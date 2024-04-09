@@ -142,6 +142,11 @@
             android:name=".AnnouncementsListActivity"
             android:parentActivityName=".ViewEventDetailsActivity" />
 
+        <activity
+            android:name=".EventCheckIn"
+            android:label="Event Check-In">
+        </activity>
+
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="com.example.eventwiz.fileprovider"
