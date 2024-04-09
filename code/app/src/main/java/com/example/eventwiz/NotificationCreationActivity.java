@@ -38,12 +38,18 @@ public class NotificationCreationActivity extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance();
         mFirestore = FirebaseFirestore.getInstance();
+        FirebaseMessaging.getInstance().subscribeToTopic(TOPIC)
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        Log.d(TAG, "Successfully subscribed to topic.");
+                    } else {
+                        Log.e(TAG, "Failed to subscribe to topic: " + task.getException().getMessage());
+                    }
+                });
+
 
         // Retrieve the event ID from the intent
         eventId = getIntent().getStringExtra("eventId");
-
-        // Fetch the user IDs of signups from the events document
-        fetchSignupUserIds(eventId);
 
         FirebaseService.setSharedPref(getSharedPreferences("sharedPref", Context.MODE_PRIVATE));
 
@@ -67,9 +73,7 @@ public class NotificationCreationActivity extends AppCompatActivity {
             String message = ((EditText) findViewById(R.id.etDescription)).getText().toString();
             String recipientToken = ((EditText) findViewById(R.id.etToken)).getText().toString();
             if (!title.isEmpty() && !message.isEmpty() && !recipientToken.isEmpty()) {
-                NotificationData notificationData = new NotificationData(title, message);
-                PushNotification pushNotification = new PushNotification(notificationData, recipientToken);
-                sendNotification(pushNotification);
+                fetchSignupUserIds(eventId, title, message, recipientToken);
             }
         });
     }
@@ -103,31 +107,33 @@ public class NotificationCreationActivity extends AppCompatActivity {
         });
     }
 
-    private void fetchSignupUserIds(String eventId) {
-        mFirestore.collection("events").document(eventId).collection("signups")
+
+    private void fetchSignupUserIds(String eventId, String title, String message, String recipientToken) {
+        mFirestore.collection("events").document(eventId)
                 .get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
-                        List<String> userIds = new ArrayList<>();
-                        for (DocumentSnapshot document : task.getResult()) {
-                            String userId = document.getString("userId");
-                            if (userId != null) {
-                                userIds.add(userId);
+                        DocumentSnapshot eventDocument = task.getResult();
+                        if (eventDocument.exists()) {
+                            Event event = eventDocument.toObject(Event.class);
+                            if (event != null && event.getSignups() != null && event.getSignups().contains(mAuth.getCurrentUser().getUid())) {
+                                Log.d(TAG, "User found in signups");
+                                NotificationData notificationData = new NotificationData(title, message);
+                                PushNotification pushNotification = new PushNotification(notificationData, recipientToken);
+                                sendNotification(pushNotification);
+                                Log.d(TAG, "Notification sent");
+                            } else {
+                                Log.d(TAG, "User is not signed up for this event");
                             }
-                        }
-                        // Check the UID against the user IDs in the signups
-                        String uid = mAuth.getCurrentUser().getUid();
-                        Log.d(TAG, "Anonymous ID: " + uid);
-                        if (userIds.contains(uid)) {
-                            // Subscribe the device
-                            FirebaseMessaging.getInstance().subscribeToTopic(TOPIC);
-                            Log.d(TAG, "Device subscribed to topic: " + TOPIC);
                         } else {
-                            Log.d(TAG, "User is not signed up for this event");
+                            Log.d(TAG, "Event document doesn't exist");
                         }
                     } else {
-                        Log.e(TAG, "Error getting signups: ", task.getException());
+                        Log.e(TAG, "Error getting event document: ", task.getException());
                     }
                 });
     }
+
+
+
 }
