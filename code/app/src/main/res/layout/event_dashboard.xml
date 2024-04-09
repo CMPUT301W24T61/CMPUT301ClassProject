@@ -36,34 +36,41 @@
         android:layout_height="match_parent"
         android:paddingBottom="20dp">
 
+        <!-- Encapsulating TextViews in CardView -->
+
         <TextView
             android:id="@+id/tv_event_status"
-            android:layout_width="wrap_content"
+            android:layout_width="380dp"
             android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="80dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginStart="17dp"
+            android:layout_marginTop="74dp"
+            android:layout_marginEnd="14dp"
             android:text="Event Status"
-            android:textStyle="bold"
             android:textColor="@color/black"
-            android:textSize="20sp" />
+            android:textSize="20sp"
+            android:textStyle="bold" />
 
-        <!-- Encapsulating TextViews in CardView -->
         <androidx.cardview.widget.CardView
-            android:layout_width="match_parent"
+            android:id="@+id/cardView"
+            android:layout_width="387dp"
             android:layout_height="wrap_content"
             android:layout_below="@id/tv_event_status"
-            android:layout_marginTop="15dp"
             android:layout_marginStart="24dp"
+            android:layout_marginTop="15dp"
             android:layout_marginEnd="24dp"
             app:cardCornerRadius="8dp"
             app:cardElevation="8dp">
 
             <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_width="375dp"
+                android:layout_height="match_parent"
                 android:padding="16dp">
 
                 <!-- Your TextViews -->
+
                 <TextView
                     android:id="@+id/tv_event_id"
                     android:layout_width="wrap_content"
@@ -77,7 +84,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/tv_event_id"
-                    android:layout_marginTop="8dp"
+                    android:layout_marginTop="2dp"
                     android:gravity="center"
                     android:text="Event Name: "
                     android:textColor="@color/black"
@@ -118,7 +125,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/tv_end_time"
-                    android:layout_marginTop="8dp"
+                    android:layout_marginTop="3dp"
                     android:text="Location: "
                     android:textColor="@color/black"
                     android:textSize="18sp" />
@@ -137,18 +144,22 @@
 
         </androidx.cardview.widget.CardView>
 
+        <!-- Round Buttons -->
+
         <ImageView
             android:id="@+id/iv_event_poster"
-            android:layout_width="300dp"
-            android:layout_height="200dp"
-            android:layout_below="@id/tv_event_status"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="330dp"
-            android:elevation="8dp"
+            android:layout_width="289dp"
+            android:layout_height="182dp"
+            android:layout_below="@+id/cardView"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginStart="58dp"
+            android:layout_marginTop="6dp"
+            android:layout_marginEnd="64dp"
             android:contentDescription="event_poster"
+            android:elevation="8dp"
             android:src="@drawable/image_placeholder_background" />
 
-        <!-- Round Buttons -->
         <ImageButton
             android:id="@+id/button_notifications"
             android:layout_width="50dp"
@@ -160,9 +171,9 @@
             android:layout_marginEnd="10dp"
             android:background="@drawable/rounded_button"
             android:backgroundTint="@color/amber"
+            android:elevation="8dp"
             android:padding="10dp"
             android:scaleType="fitCenter"
-            android:elevation="8dp"
             android:src="@drawable/ic_create_notification"
             android:tooltipText="Send Notifications" />
 
@@ -172,15 +183,15 @@
             android:layout_height="50dp"
             android:layout_below="@id/iv_event_poster"
             android:layout_marginStart="10dp"
-            android:layout_marginEnd="10dp"
             android:layout_marginTop="15dp"
+            android:layout_marginEnd="10dp"
             android:layout_toEndOf="@id/button_notifications"
             android:background="@drawable/rounded_button"
-            android:src="@drawable/ic_announce"
-            android:tooltipText="Announcements"
-            android:scaleType="fitCenter"
             android:elevation="8dp"
-            android:padding="10dp" />
+            android:padding="10dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_announce"
+            android:tooltipText="Announcements" />
 
         <ImageButton
             android:id="@+id/button_map"
@@ -188,15 +199,15 @@
             android:layout_height="50dp"
             android:layout_below="@id/iv_event_poster"
             android:layout_marginStart="10dp"
-            android:layout_marginEnd="10dp"
             android:layout_marginTop="15dp"
+            android:layout_marginEnd="10dp"
             android:layout_toEndOf="@id/button_announce"
             android:background="@drawable/rounded_button"
-            android:src="@drawable/ic_map"
-            android:tooltipText="check-in Map"
-            android:scaleType="fitCenter"
             android:elevation="8dp"
-            android:padding="10dp" />
+            android:padding="10dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_map"
+            android:tooltipText="check-in Map" />
 
         <ImageButton
             android:id="@+id/button_qr_codes"
@@ -204,15 +215,15 @@
             android:layout_height="50dp"
             android:layout_below="@id/iv_event_poster"
             android:layout_marginStart="10dp"
-            android:layout_marginEnd="10dp"
             android:layout_marginTop="15dp"
+            android:layout_marginEnd="10dp"
             android:layout_toEndOf="@id/button_map"
             android:background="@drawable/rounded_button"
-            android:tooltipText="share QR codes"
-            android:src="@drawable/ic_qr_code"
-            android:scaleType="fitCenter"
             android:elevation="8dp"
-            android:padding="10dp"/>
+            android:padding="10dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_qr_code"
+            android:tooltipText="share QR codes" />
 
         <ImageButton
             android:id="@+id/button_attendance"
@@ -225,8 +236,8 @@
             android:layout_marginEnd="30dp"
             android:layout_toEndOf="@id/button_qr_codes"
             android:background="@drawable/rounded_button"
-            android:padding="10dp"
             android:elevation="8dp"
+            android:padding="10dp"
             android:scaleType="fitCenter"
             android:src="@drawable/ic_checkin" />
 

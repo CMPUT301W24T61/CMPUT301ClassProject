@@ -8,4 +8,8 @@ public class UITestMatchers {
     public static DrawableMatcher noDrawable() {
         return new DrawableMatcher(-1);
     }
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> main

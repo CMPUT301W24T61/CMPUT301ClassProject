@@ -40,6 +40,7 @@ public class EventCreationSuccessActivity extends AppCompatActivity {
     private ImageView ivEventPoster, ivCheckInQRCode, ivPromotionQRCode;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private Event event;
+    private ImageButton btnGoToDashboard;
 
     /**
      * Called when the activity is starting. Responsible for initializing the UI,
@@ -97,6 +98,8 @@ public class EventCreationSuccessActivity extends AppCompatActivity {
                 Log.e("EventCreationSuccess", "Promotion QR Code URL is null or empty.");
             }
         });
+
+        btnGoToDashboard.setOnClickListener(v -> goToDashboardActivity());
     }
 
     private void fetchEventDetails(String eventId) {
@@ -138,8 +141,7 @@ public class EventCreationSuccessActivity extends AppCompatActivity {
         ivCheckInQRCode = findViewById(R.id.ivCheckInQRCode);
         ivPromotionQRCode = findViewById(R.id.ivPromotionQRCode);
 
-        ImageButton btnGoToDashboard = findViewById(R.id.goback);
-        btnGoToDashboard.setOnClickListener(v -> goToDashboardActivity());
+        btnGoToDashboard = findViewById(R.id.goback);
 
         //adding share functionality
         ivCheckInQRCode.setOnClickListener(v -> shareImage(ivCheckInQRCode));

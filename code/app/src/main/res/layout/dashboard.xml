@@ -33,109 +33,105 @@
                 android:background="@android:color/transparent"/>
 
 
-        <RelativeLayout
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingBottom="56dp">
+
+        <TextView
+            android:id="@+id/Welcome"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="100dp"
+            android:text="Welcome"
+            android:textColor="@color/black"
+            android:textSize="24sp" />
+
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/ivProfile"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:layout_below="@id/Welcome"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/circle"
+            android:elevation="8dp"
+            android:src="@drawable/ic_default_profile_icon" />
+
+        <ImageButton
+            android:id="@+id/delete_button"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_alignEnd="@id/ivProfile"
+            android:layout_alignBottom="@id/ivProfile"
+            android:layout_marginTop="100dp"
+            android:layout_marginEnd="-20dp"
+            android:background="@drawable/circle"
+            android:elevation="4dp"
+            android:padding="5dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_delete"
+            app:layout_constraintStart_toEndOf="@id/ivProfile"
+            app:layout_constraintTop_toTopOf="@id/ivProfile" />
+
+
+        <Button
+            android:id="@+id/createEvent"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:paddingBottom="56dp">
-
-            <TextView
-                android:id="@+id/Welcome"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="100dp"
-                android:text="Welcome"
-                android:textColor="@color/black"
-                android:textSize="24sp" />
+            android:layout_height="wrap_content"
+            android:layout_below="@id/ivProfile"
+            android:layout_marginTop="24dp"
+            android:backgroundTint="@color/amber"
+            android:text="Create Event"
+            android:textColor="@color/black" />
 
 
-            <de.hdodenhof.circleimageview.CircleImageView
-                android:id="@+id/ivProfile"
-                android:layout_width="150dp"
-                android:layout_height="150dp"
-                android:layout_below="@id/Welcome"
-                android:layout_centerHorizontal="true"
-                android:background="@drawable/circle"
-                android:elevation="8dp"
-                android:layout_marginTop="16dp"
-                android:src="@drawable/ic_default_profile_icon"/>
-
-            <ImageButton
-                android:id="@+id/delete_button"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_marginTop="100dp"
-                android:layout_alignBottom="@id/ivProfile"
-                android:layout_alignEnd="@id/ivProfile"
-                android:background="@drawable/circle"
-                android:layout_marginEnd="-20dp"
-                android:src="@drawable/ic_delete"
-                android:padding="5dp"
-                android:scaleType="fitCenter"
-                android:elevation="4dp"
-                app:layout_constraintStart_toEndOf="@id/ivProfile"
-                app:layout_constraintTop_toTopOf="@id/ivProfile" />
+        <Button
+            android:id="@+id/myHostedEvents"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/createEvent"
+            android:layout_marginTop="16dp"
+            android:backgroundTint="@color/amber"
+            android:text="My Hosted Events"
+            android:textColor="@color/black" />
 
 
+        <Button
+            android:id="@+id/mySignedUpEvents"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/myHostedEvents"
+            android:layout_marginTop="16dp"
+            android:backgroundTint="@color/amber"
+            android:text="My Signed Up Events"
+            android:textColor="@color/black" />
 
 
-
-            <Button
-                android:id="@+id/createEvent"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/ivProfile"
-                android:layout_marginTop="24dp"
-                android:backgroundTint="@color/amber"
-                android:text="Create Event"
-                android:textColor="@color/black" />
-
-
-            <Button
-                android:id="@+id/myHostedEvents"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/createEvent"
-                android:layout_marginTop="16dp"
-                android:backgroundTint="@color/amber"
-                android:text="My Hosted Events"
-                android:textColor="@color/black" />
+        <Button
+            android:id="@+id/browseEvents"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/mySignedUpEvents"
+            android:layout_marginTop="16dp"
+            android:backgroundTint="@color/amber"
+            android:text="Browse Events"
+            android:textColor="@color/black" />
 
 
-            <Button
-                android:id="@+id/mySignedUpEvents"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/myHostedEvents"
-                android:layout_marginTop="16dp"
-                android:backgroundTint="@color/amber"
-                android:text="My Signed Up Events"
-                android:textColor="@color/black" />
+        <Button
+            android:id="@+id/myProfile"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/browseEvents"
+            android:layout_marginTop="16dp"
+            android:backgroundTint="@color/amber"
+            android:text="My Profile"
+            android:textColor="@color/black" />
 
-
-            <Button
-                android:id="@+id/browseEvents"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/mySignedUpEvents"
-                android:layout_marginTop="16dp"
-                android:backgroundTint="@color/amber"
-                android:text="Browse Events"
-                android:textColor="@color/black" />
-
-
-            <Button
-                android:id="@+id/myProfile"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/browseEvents"
-                android:layout_marginTop="16dp"
-                android:backgroundTint="@color/amber"
-                android:text="My Profile"
-                android:textColor="@color/black" />
-
-        </RelativeLayout>
-
+    </RelativeLayout>
 
     <com.google.android.material.bottomappbar.BottomAppBar
         android:id="@+id/bottomAppBar"
