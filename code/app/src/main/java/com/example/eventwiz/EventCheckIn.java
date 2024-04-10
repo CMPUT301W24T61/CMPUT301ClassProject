@@ -199,6 +199,13 @@ public class EventCheckIn extends AppCompatActivity {
             tvEventEndTime.setText(String.format("End Time: %s", event.getEndTime()));
             tvEventLocation.setText(String.format("Location: %s", event.getLocation()));
             tvMaxAttendees.setText(String.format("Max Attendees: %d", event.getMaxAttendees()));
+            // Check if max attendees is set to maximum value
+            if (event.getMaxAttendees() == Integer.MAX_VALUE) {
+                tvMaxAttendees.setVisibility(View.GONE);
+            } else {
+                tvMaxAttendees.setText(String.format("Max Attendees: %d", event.getMaxAttendees()));
+                tvMaxAttendees.setVisibility(View.VISIBLE); // Ensure visibility is set to VISIBLE
+            }
             tvEventDescription.setText(String.format("Event Description: %s", event.getDescription()));
 
             // Load images only if the URLs are not null

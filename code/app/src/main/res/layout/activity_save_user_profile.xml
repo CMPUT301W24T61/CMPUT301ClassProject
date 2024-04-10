@@ -32,7 +32,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            android:text="Click to Add Image"
+            android:text="Click to Add Image.\nYour previous Picture is not Saved!"
             android:layout_below="@id/profile_pic_button"
             android:textAlignment="center"
             android:layout_marginBottom="50dp" />
@@ -59,7 +59,7 @@
             android:padding="6dp"
             android:textColor="#555555"
             android:textSize="20dp"
-            android:layout_marginTop="20dp" />
+            android:layout_marginTop="40dp" />
 
         <EditText
             android:id="@+id/editText_register_name"

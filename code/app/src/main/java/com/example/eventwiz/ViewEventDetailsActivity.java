@@ -16,6 +16,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.TooltipCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -216,6 +217,17 @@ public class ViewEventDetailsActivity extends AppCompatActivity {
             tvEventEndTime.setText(String.format("To: %s", event.getEndTime()));
             tvEventLocation.setText(String.format("Venue: %s", event.getLocation()));
 
+            // Check if the current user has already signed up for the event
+            FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+            if (currentUser != null && event.getSignups() != null && event.getSignups().contains(currentUser.getUid())) {
+                // If user has already signed up, change the sign-up button color to green
+                btnSignUp.setBackgroundTintList(ContextCompat.getColorStateList(this, R.color.green));
+
+                // Set up tooltip for the sign-up button
+                TooltipCompat.setTooltipText(btnSignUp, "You are already signed up!");
+
+            }
+
             // Check if description is not null before setting it
             if (event.getDescription() != null) {
                 tvEventDescription.setText(String.format("%s", event.getDescription()));
@@ -265,9 +277,8 @@ public class ViewEventDetailsActivity extends AppCompatActivity {
         } else {
             Toast.makeText(ViewEventDetailsActivity.this, "Invalid event ID", Toast.LENGTH_SHORT).show();
         }
-
-
     }
+
     @Override
     public void onBackPressed() {
         FragmentManager fragmentManager = getSupportFragmentManager();
@@ -278,6 +289,4 @@ public class ViewEventDetailsActivity extends AppCompatActivity {
             super.onBackPressed();
         }
     }
-
-
 }

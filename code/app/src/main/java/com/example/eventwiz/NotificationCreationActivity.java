@@ -1,11 +1,15 @@
 package com.example.eventwiz;
 
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.Context;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.EditText;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.NotificationCompat;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -25,7 +29,7 @@ import retrofit2.Response;
 
 public class NotificationCreationActivity extends AppCompatActivity {
 
-    private static final String TAG = "Activity";
+    private static final String TAG = "Push Notifications";
     private static final String TOPIC = "/topics/my-topic";
     private FirebaseAuth mAuth;
     private FirebaseFirestore mFirestore;
@@ -133,7 +137,6 @@ public class NotificationCreationActivity extends AppCompatActivity {
                     }
                 });
     }
-
 
 
 }
