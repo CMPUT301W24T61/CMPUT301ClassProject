@@ -37,6 +37,8 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
+    private static final int REQUEST_ENABLE_GPS = 1001;
+    private static final int REQUEST_DISABLE_GPS = 1002;
 
     private FirebaseAuth userAuth;
     private SharedPreferences sp;
@@ -314,54 +316,42 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void buttonSwitchGPS(View view) {
-        if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+        boolean isGpsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+
+        // Show dialog based on the current GPS status
+        if (isGpsEnabled) {
+            // GPS is currently enabled, prompt user to disable it
             turnOffGPS();
         } else {
+            // GPS is currently disabled, prompt user to enable it
             turnOnGPS();
         }
     }
 
     private void turnOnGPS() {
-        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
-        alertDialogBuilder.setMessage("Location is disabled. Would you like to enable it?")
-                .setCancelable(true)
-                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
-                        updateGPSStatus(true); // Update GPS status text when GPS is turned on
-                    }
-                })
-                .setNegativeButton("No", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        dialogInterface.cancel();
-                    }
-                });
-        AlertDialog alertDialog = alertDialogBuilder.create();
-        alertDialog.show();
+        // Start an activity to prompt the user to enable GPS
+        startActivityForResult(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS), REQUEST_ENABLE_GPS);
     }
 
     private void turnOffGPS() {
-        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
-        alertDialogBuilder.setMessage("Location is enabled. Would you like to disable it?")
-                .setCancelable(true)
-                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
-                        updateGPSStatus(false); // Update GPS status text when GPS is turned off
-                    }
-                })
-                .setNegativeButton("No", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        dialogInterface.cancel();
-                    }
-                });
-        AlertDialog alertDialog = alertDialogBuilder.create();
-        alertDialog.show();
+        // Start an activity to prompt the user to disable GPS
+        startActivityForResult(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS), REQUEST_DISABLE_GPS);
     }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_ENABLE_GPS) {
+            // Check if GPS is enabled after the user has interacted with the settings
+            boolean isGpsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+            updateGPSStatus(isGpsEnabled);
+        } else if (requestCode == REQUEST_DISABLE_GPS) {
+            // Check if GPS is disabled after the user has interacted with the settings
+            boolean isGpsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+            updateGPSStatus(isGpsEnabled);
+        }
+    }
+
 
     private void updateGPSStatus(boolean isGpsEnabled) {
         gpsStatus.setText(isGpsEnabled ? "Location ON" : "Location OFF");

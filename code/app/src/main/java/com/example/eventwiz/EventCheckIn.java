@@ -96,17 +96,14 @@ public class EventCheckIn extends AppCompatActivity {
         }
 
         fusedLocationClient.getLastLocation()
-                .addOnCompleteListener(this, new OnCompleteListener<Location>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Location> task) {
-                        if (task.isSuccessful() && task.getResult() != null) {
-                            Location location = task.getResult();
-                            GeoPoint geoPoint = new GeoPoint(location.getLatitude(), location.getLongitude());
-                            performCheckIn(geoPoint);
-                        } else {
-                            Toast.makeText(EventCheckIn.this, "Unable to retrieve location. Proceeding with basic check-in.", Toast.LENGTH_SHORT).show();
-                            checkInWithoutLocation();
-                        }
+                .addOnCompleteListener(this, task -> {
+                    if (task.isSuccessful() && task.getResult() != null) {
+                        Location location = task.getResult();
+                        GeoPoint geoPoint = new GeoPoint(location.getLatitude(), location.getLongitude());
+                        performCheckIn(geoPoint);
+                    } else {
+                        Toast.makeText(EventCheckIn.this, "Unable to retrieve location. Proceeding with basic check-in.", Toast.LENGTH_SHORT).show();
+                        checkInWithoutLocation();
                     }
                 });
     }
